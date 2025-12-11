@@ -40,15 +40,15 @@ pipeline {
             steps {
                 sshagent(['SshVmBackFrontend']) {
                     sh """
-                        scp -o StrictHostKeyChecking=no -r proto-back/target/*.jar \$VM_USER@\${VM_IP}:\$BACKEND_DIR
-                        scp -o StrictHostKeyChecking=no -r proto-front/build/* \$VM_USER@\${VM_IP}:\$FRONTEND_DIR
+                        scp -o StrictHostKeyChecking=no -r proto-back/target/*.jar toto@172.31.253.225:/home/toto/projet/proto-back
+                        scp -o StrictHostKeyChecking=no -r proto-front/build/* toto@172.31.253.225:/home/toto/projet/proto-front
                     """
 
                     sh """
-                        ssh -o StrictHostKeyChecking=no \$VM_USER@\${VM_IP} '
+                        ssh -o StrictHostKeyChecking=no toto@172.31.253.225 << 'EOF'
                             pkill -f "proto-back" || true
-                            nohup java -jar \$BACKEND_DIR/proto-back-1.0-SNAPSHOT.jar > backend.log 2>&1 &
-                        '
+                            nohup java -jar /home/toto/projet/proto-back/proto-back-1.0-SNAPSHOT.jar > backend.log 2>&1 &
+                        EOF
                     """
                 }
             }
