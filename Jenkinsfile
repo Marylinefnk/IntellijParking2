@@ -41,7 +41,7 @@ pipeline {
                 sshagent(['SshVmBackFrontend']) {
                     sh """
                         scp -o StrictHostKeyChecking=no -r proto-back/target/*.jar \$VM_USER@\${VM_IP}:\$BACKEND_DIR
-                        scp -o StrictHostKeyChecking=no -r proto-front/dist/* \$VM_USER@\${VM_IP}:\$FRONTEND_DIR
+                        scp -o StrictHostKeyChecking=no -r proto-front/build/* \$VM_USER@\${VM_IP}:\$FRONTEND_DIR
                     """
 
                     sh """
