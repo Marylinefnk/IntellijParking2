@@ -39,7 +39,6 @@ pipeline {
         stage('Deploy to VM') {
             steps {
                 sshagent(['SshVmBackFrontend']) {
-sshagent(['ssh_vm_backfront']) {
             sh "scp -o StrictHostKeyChecking=no proto-back/target/proto-back-1.0-SNAPSHOT.jar toto@172.31.253.225:/home/toto/projet/proto-back"
             sh "scp -o StrictHostKeyChecking=no -r proto-front/build/* toto@172.31.253.225:/home/toto/projet/proto-front"
             sh "ssh -o StrictHostKeyChecking=no toto@172.31.253.225 'pkill -f \"proto-back\" || true'"
