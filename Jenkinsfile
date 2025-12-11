@@ -39,17 +39,12 @@ pipeline {
         stage('Deploy to VM') {
             steps {
                 sshagent(['SshVmBackFrontend']) {
-                    sh """
-                        scp -o StrictHostKeyChecking=no -r proto-back/target/*.jar toto@172.31.253.225:/home/toto/projet/proto-back
-                        scp -o StrictHostKeyChecking=no -r proto-front/build/* toto@172.31.253.225:/home/toto/projet/proto-front
-                    """
-
-                    sh """
-                        ssh -o StrictHostKeyChecking=no toto@172.31.253.225 << 'EOF'
-                            pkill -f "proto-back" || true
-                            nohup java -jar /home/toto/projet/proto-back/proto-back-1.0-SNAPSHOT.jar > backend.log 2>&1 &
-                        EOF
-                    """
+sshagent(['ssh_vm_backfront']) {
+            sh "scp -o StrictHostKeyChecking=no proto-back/target/proto-back-1.0-SNAPSHOT.jar toto@172.31.253.225:/home/toto/projet/proto-back"
+            sh "scp -o StrictHostKeyChecking=no -r proto-front/build/* toto@172.31.253.225:/home/toto/projet/proto-front"
+            sh "ssh -o StrictHostKeyChecking=no toto@172.31.253.225 'pkill -f \"proto-back\" || true'"
+            sh "ssh -o StrictHostKeyChecking=no toto@172.31.253.225 'nohup java -jar /home/toto/projet/proto-back/proto-back-1.0-SNAPSHOT.jar > /home/toto/projet/proto-back/backend.log 2>&1 &'"
+            sh "ssh -o StrictHostKeyChecking=no toto@172.31.253.225 'nohup serve -s /home/toto/projet/proto-front > /home/toto/projet/proto-front/frontend.log 2>&1 &'"
                 }
             }
         }
