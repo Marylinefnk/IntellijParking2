@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         VM_USER = "toto"
-        VM_IP = "172.31.250.186"
+        VM_IP = "172.31.249.116"
         BACKEND_DIR = "/home/toto/projet/proto-back"
         FRONTEND_DIR = "/home/toto/projet/proto-front"
     }
@@ -39,12 +39,12 @@ pipeline {
         stage('Deploy to VM') {
             steps {
                 sshagent(['SshVmBackFrontend']) {
-                       sh 'scp -o StrictHostKeyChecking=no proto-back/target/proto-back-1.0-SNAPSHOT.jar toto@172.31.250.186:/home/toto/projet/proto-back'
-                       sh 'scp -o StrictHostKeyChecking=no -r proto-front/build/* toto@172.31.250.186:/home/toto/projet/proto-front'
-                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.253.225 killall java 2>/dev/null || true'
-                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.253.225 killall serve 2>/dev/null || true'
-                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.250.186 "cd /home/toto/projet/proto-back && nohup java -jar proto-back-1.0-SNAPSHOT.jar > backend.log 2>&1 &"'
-                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.250.186 "cd /home/toto/projet/proto-front && nohup serve -s . > frontend.log 2>&1 &"'
+                       sh 'scp -o StrictHostKeyChecking=no proto-back/target/proto-back-1.0-SNAPSHOT.jar toto@172.31.249.116:/home/toto/projet/proto-back'
+                       sh 'scp -o StrictHostKeyChecking=no -r proto-front/build/* toto@172.31.249.116:/home/toto/projet/proto-front'
+                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.249.116 killall java 2>/dev/null || true'
+                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.249.116 killall serve 2>/dev/null || true'
+                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.249.116 "cd /home/toto/projet/proto-back && nohup java -jar proto-back-1.0-SNAPSHOT.jar > backend.log 2>&1 &"'
+                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.249.116 "cd /home/toto/projet/proto-front && nohup serve -s . > frontend.log 2>&1 &"'
                 }
             }
         }
