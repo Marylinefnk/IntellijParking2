@@ -40,6 +40,7 @@ pipeline {
             steps {
                 sshagent(['SshVmBackFrontend']) {
                        sh 'scp -o StrictHostKeyChecking=no proto-back/target/proto-back-1.0-SNAPSHOT.jar toto@172.31.253.2:/home/toto/projet/proto-back'
+                       sh 'scp -o StrictHostKeyChecking=no proto-front/package.json proto-front/package-lock.json toto@172.31.253.2:/home/toto/projet/proto-front/'
                        sh 'scp -o StrictHostKeyChecking=no -r proto-front/build/* toto@172.31.253.2:/home/toto/projet/proto-front'
                        sh 'ssh -o StrictHostKeyChecking=no toto@172.31.253.2 killall java 2>/dev/null || true'
                        sh 'ssh -o StrictHostKeyChecking=no toto@172.31.253.2 pkill -f "npm" || true'
