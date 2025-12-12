@@ -13,7 +13,7 @@ pipeline {
             steps {
                 git branch: 'master',
                     url: 'git@github.com:Marylinefnk/IntellijParking2.git',
-                    credentialsId: 'github_ssh'
+                    credentialsId: 'SshGitJr'
             }
         }
 
