@@ -7,8 +7,10 @@ export default function Sample() {
   const [samples, setSamples] = useState([]);
   const setSampleData = async () => {
     axios.get(GET_SAMPLES).then((response) => {
+    console.log("Data reçue du backend :", response.data);
       setSamples(response.data);
     }).catch(error => {
+    console.error("Erreur chargement samples :", error);
       alert("Error Ocurred while loading data:" + error);
     });
   }
@@ -42,6 +44,9 @@ export default function Sample() {
   useEffect(() => {
     setSampleData();
   }, []);
+
+  console.log("State samples au rendu :", samples);
+
 
   if (samples.length === 0)
     return (<div className="container text-center" >No samples</div>)
