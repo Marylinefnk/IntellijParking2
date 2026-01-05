@@ -1,0 +1,11 @@
+.idea/
+*.iml
+proto-back/target/
+node_modules/
+dist/
+build/
+*.log
+.env
+.env.local
+tmp/
+temp/
