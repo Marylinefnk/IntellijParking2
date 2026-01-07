@@ -1,7 +1,7 @@
 ## Membres du groupe 
-Maryline FONKOU
-Junior FOKOU
-Tatiana Ndoumbeu
+- Maryline FONKOU
+- Junior FOKOU
+- Tatiana Ndoumbeu
 
 ## Branche par défaut (stable)
 - master
