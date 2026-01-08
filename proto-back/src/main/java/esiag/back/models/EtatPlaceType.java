@@ -1,4 +1,4 @@
-package esiag.back.models.sample;
+package esiag.back.models;
 
 public enum EtatPlaceType {
     //LIBRE, OCCUPEE, RESERVEE;

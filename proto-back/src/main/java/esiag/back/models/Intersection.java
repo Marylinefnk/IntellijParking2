@@ -1,9 +1,7 @@
 package esiag.back.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,6 +9,10 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(name = "intersection")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Intersection {
 
     @Id
@@ -29,14 +31,6 @@ public class Intersection {
     @JsonBackReference("zone-intersections")
     private Zone zone;
 
-    public Intersection() {
-    }
-
-    public Intersection(Double positionX, Double positionY, TypeIntersection typeIntersection) {
-        this.positionX = positionX;
-        this.positionY = positionY;
-        this.typeIntersection = typeIntersection;
-    }
 
 }
 

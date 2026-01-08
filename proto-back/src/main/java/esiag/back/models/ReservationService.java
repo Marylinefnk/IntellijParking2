@@ -1,8 +1,7 @@
 package esiag.back.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +10,10 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Table(name = "reservation_service")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ReservationService {
 
     @Id
@@ -33,18 +36,6 @@ public class ReservationService {
 
     @Enumerated(EnumType.STRING)
     private StatutReservation statut;
-
-    public ReservationService() {
-    }
-
-    public ReservationService(Personne personne, ServiceEntity service,
-                            LocalDateTime dateDebut, LocalDateTime dateFin, StatutReservation statut) {
-        this.personne = personne;
-        this.service = service;
-        this.dateDebut = dateDebut;
-        this.dateFin = dateFin;
-        this.statut = statut;
-    }
 
 }
 
