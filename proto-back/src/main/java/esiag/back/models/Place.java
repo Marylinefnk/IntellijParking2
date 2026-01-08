@@ -1,7 +1,15 @@
 package esiag.back.models;
 
-import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Getter;
+import lombok.Setter;
 
+import javax.persistence.*;
+import java.util.List;
+
+@Setter
+@Getter
 @Entity
 @Table(name = "place")
 public class Place {
@@ -9,27 +17,43 @@ public class Place {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_place")
-    private Integer idPlace;
+    private Long id;
 
-    @Column(name = "numero")
     private String numero;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type_place")
-    private String typePlace;
+    private TypePlace type;
 
-    @Column(name = "etat")
-    private String etat;
+    @Enumerated(EnumType.STRING)
+    private StatutPlace statut;
 
-    // getters/setters
-    public Integer getIdPlace() { return idPlace; }
-    public void setIdPlace(Integer idPlace) { this.idPlace = idPlace; }
+    private Double positionX;
+    private Double positionY;
 
-    public String getNumero() { return numero; }
-    public void setNumero(String numero) { this.numero = numero; }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_zone")
+    @JsonBackReference("zone-places")
+    private Zone zone;
 
-    public String getTypePlace() { return typePlace; }
-    public void setTypePlace(String typePlace) { this.typePlace = typePlace; }
+    @OneToMany(mappedBy = "place")
+    @JsonManagedReference("place-stationnements")
+    private List<Stationnement> stationnements;
 
-    public String getEtat() { return etat; }
-    public void setEtat(String etat) { this.etat = etat; }
+    @OneToMany(mappedBy = "place")
+    @JsonManagedReference("place-reservations")
+    private List<ReservationPlace> reservations;
+
+    public Place() {
+    }
+
+    public Place(String numero, TypePlace type, StatutPlace statut, Double positionX, Double positionY) {
+        this.numero = numero;
+        this.type = type;
+        this.statut = statut;
+        this.positionX = positionX;
+        this.positionY = positionY;
+    }
+
 }
+
