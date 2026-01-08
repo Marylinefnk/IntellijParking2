@@ -1,8 +1,7 @@
 package esiag.back.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,6 +10,10 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "personne")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Personne {
 
     @Id
@@ -40,14 +43,6 @@ public class Personne {
     @JsonManagedReference("personne-reservations-service")
     private List<ReservationService> reservationsService;
 
-    public Personne() {
-    }
-
-    public Personne(String nom, String prenom, String mail) {
-        this.nom = nom;
-        this.prenom = prenom;
-        this.mail = mail;
-    }
 
 }
 

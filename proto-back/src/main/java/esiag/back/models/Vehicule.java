@@ -2,8 +2,7 @@ package esiag.back.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -12,6 +11,10 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "vehicule")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Vehicule {
 
     @Id
@@ -37,13 +40,6 @@ public class Vehicule {
     @JsonManagedReference("vehicule-reservations")
     private List<ReservationPlace> reservations;
 
-    public Vehicule() {
-    }
-
-    public Vehicule(String immatriculation, TypeVehicule typeVehicule) {
-        this.immatriculation = immatriculation;
-        this.typeVehicule = typeVehicule;
-    }
 
 }
 
