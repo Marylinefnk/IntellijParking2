@@ -1,8 +1,7 @@
 package esiag.back.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,6 +10,10 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "service")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ServiceEntity {
 
     @Id
@@ -26,14 +29,6 @@ public class ServiceEntity {
     @OneToMany(mappedBy = "service")
     @JsonManagedReference("service-reservations")
     private List<ReservationService> reservations;
-
-    public ServiceEntity() {
-    }
-
-    public ServiceEntity(TypeService typeService, String description) {
-        this.typeService = typeService;
-        this.description = description;
-    }
 
 }
 

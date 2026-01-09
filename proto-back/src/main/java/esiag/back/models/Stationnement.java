@@ -1,8 +1,7 @@
 package esiag.back.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +10,10 @@ import java.time.LocalDateTime;
 @Getter
 @Entity
 @Table(name = "stationnement")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Stationnement {
 
     @Id
@@ -33,14 +36,6 @@ public class Stationnement {
     @JsonBackReference("place-stationnements")
     private Place place;
 
-    public Stationnement() {
-    }
-
-    public Stationnement(LocalDateTime dateEntree, Vehicule vehicule, Place place) {
-        this.dateEntree = dateEntree;
-        this.vehicule = vehicule;
-        this.place = place;
-    }
 
 }
 

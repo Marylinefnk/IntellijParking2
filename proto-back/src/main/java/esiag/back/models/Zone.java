@@ -1,8 +1,7 @@
 package esiag.back.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,6 +10,10 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "zone")
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Zone {
 
     @Id
@@ -31,12 +34,5 @@ public class Zone {
     @JsonManagedReference("zone-intersections")
     private List<Intersection> intersections;
 
-    public Zone() {
-    }
-
-    public Zone(String nom, String description) {
-        this.nom = nom;
-        this.description = description;
-    }
 
 }
