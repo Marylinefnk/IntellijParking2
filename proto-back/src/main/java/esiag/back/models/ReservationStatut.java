@@ -1,4 +1,4 @@
-package esiag.back.models.sample;
+package esiag.back.models;
 
 public enum ReservationStatut {
     //CONFIRMEE, EN_COURS, TERMINEE, ANNULEE;

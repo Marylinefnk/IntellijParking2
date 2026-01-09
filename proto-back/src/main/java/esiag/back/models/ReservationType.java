@@ -1,4 +1,4 @@
-package esiag.back.models.sample;
+package esiag.back.models;
 
 public enum ReservationType {
     //PLACE_DE_PARKING, SERVICE;
