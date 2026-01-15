@@ -54,6 +54,7 @@ public class PersonneController {
             personne.setNom(createDTO.getNom());
             personne.setPrenom(createDTO.getPrenom());
             personne.setMail(createDTO.getMail());
+            personne.setTypePersonne(createDTO.getTypePersonne());
 
             Personne created = personneService.create(personne);
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -70,6 +71,7 @@ public class PersonneController {
             personneDetails.setNom(updateDTO.getNom());
             personneDetails.setPrenom(updateDTO.getPrenom());
             personneDetails.setMail(updateDTO.getMail());
+            personneDetails.setTypePersonne(updateDTO.getTypePersonne());
 
             Personne updated = personneService.update(id, personneDetails);
             return ResponseEntity.ok(dtoMapper.toPersonneDTO(updated));

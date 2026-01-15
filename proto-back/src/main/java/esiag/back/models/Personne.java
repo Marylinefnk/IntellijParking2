@@ -30,6 +30,13 @@ public class Personne {
     @Column(name = "mail")
     private String mail;
 
+    @Column(name = "password")
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type_personne")
+    private TypePersonne typePersonne = TypePersonne.VISITEUR;
+
     @OneToMany(mappedBy = "personne")
     @JsonManagedReference("personne-vehicules")
     private List<Vehicule> vehicules;

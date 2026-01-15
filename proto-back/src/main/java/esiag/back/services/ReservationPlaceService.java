@@ -165,9 +165,8 @@ public class ReservationPlaceService {
         reservation.setVehicule(vehicule);
         reservation.setStatut(StatutReservation.CONFIRMEE);
 
-        // Mise à jour du statut de la place
-        place.setStatut(StatutPlace.RESERVEE);
-        placeRepository.save(place);
+        // NOTE: On ne change plus le statut de la place ici.
+        // Le statut sera calcule dynamiquement en fonction de l'heure actuelle.
 
         return reservationRepository.save(reservation);
     }
@@ -221,7 +220,6 @@ public class ReservationPlaceService {
 
     /**
      * Annule une réservation.
-     * La place redevient libre.
      * @param id Identifiant de la réservation
      */
     public void annuler(Long id) {
@@ -235,15 +233,11 @@ public class ReservationPlaceService {
         reservation.setStatut(StatutReservation.ANNULEE);
         reservationRepository.save(reservation);
 
-        // Libération de la place
-        Place place = reservation.getPlace();
-        place.setStatut(StatutPlace.LIBRE);
-        placeRepository.save(place);
+        // NOTE: Le statut de la place sera recalcule dynamiquement
     }
 
     /**
      * Démarre une réservation (passage en cours).
-     * La place devient occupée.
      * @param id Identifiant de la réservation
      */
     public void commencer(Long id) {
@@ -258,15 +252,11 @@ public class ReservationPlaceService {
         reservation.setStatut(StatutReservation.EN_COURS);
         reservationRepository.save(reservation);
 
-        // Mise à jour du statut de la place
-        Place place = reservation.getPlace();
-        place.setStatut(StatutPlace.OCCUPEE);
-        placeRepository.save(place);
+        // NOTE: Le statut de la place (OCCUPEE) sera calcule dynamiquement
     }
 
     /**
      * Termine une réservation.
-     * La place redevient libre.
      * @param id Identifiant de la réservation
      */
     public void terminer(Long id) {
@@ -276,10 +266,7 @@ public class ReservationPlaceService {
         reservation.setStatut(StatutReservation.TERMINEE);
         reservationRepository.save(reservation);
 
-        // Libération de la place
-        Place place = reservation.getPlace();
-        place.setStatut(StatutPlace.LIBRE);
-        placeRepository.save(place);
+        // NOTE: Le statut de la place sera recalcule dynamiquement
     }
 
     /**
@@ -290,14 +277,7 @@ public class ReservationPlaceService {
         ReservationPlace reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Réservation non trouvée avec l'id: " + id));
 
-        // Si la réservation est active, libérer la place
-        if (reservation.getStatut() == StatutReservation.CONFIRMEE ||
-            reservation.getStatut() == StatutReservation.EN_COURS) {
-            Place place = reservation.getPlace();
-            place.setStatut(StatutPlace.LIBRE);
-            placeRepository.save(place);
-        }
-
+        // NOTE: Le statut de la place sera recalcule dynamiquement apres suppression
         reservationRepository.deleteById(id);
     }
 }

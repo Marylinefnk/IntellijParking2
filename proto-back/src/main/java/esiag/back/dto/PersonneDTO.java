@@ -1,5 +1,6 @@
 package esiag.back.dto;
 
+import esiag.back.models.TypePersonne;
 import lombok.*;
 
 @Data
@@ -11,4 +12,5 @@ public class PersonneDTO {
     private String nom;
     private String prenom;
     private String mail;
+    private TypePersonne typePersonne;
 }

@@ -119,6 +119,9 @@ public class PersonneService {
         personne.setNom(personneDetails.getNom());
         personne.setPrenom(personneDetails.getPrenom());
         personne.setMail(personneDetails.getMail());
+        if (personneDetails.getTypePersonne() != null) {
+            personne.setTypePersonne(personneDetails.getTypePersonne());
+        }
 
         return personneRepository.save(personne);
     }
