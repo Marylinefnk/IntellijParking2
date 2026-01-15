@@ -1,14 +1,19 @@
 package esiag.back.services;
 
+import esiag.back.dto.PlaceAvailabilityDTO;
 import esiag.back.models.Place;
+import esiag.back.models.ReservationPlace;
 import esiag.back.models.StatutPlace;
 import esiag.back.models.TypePlace;
 import esiag.back.repositories.PlaceRepository;
+import esiag.back.repositories.ReservationPlaceRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service métier pour la gestion des places de parking.
@@ -22,9 +27,11 @@ import java.util.Optional;
 public class PlaceService {
 
     private final PlaceRepository placeRepository;
+    private final ReservationPlaceRepository reservationPlaceRepository;
 
-    public PlaceService(PlaceRepository placeRepository) {
+    public PlaceService(PlaceRepository placeRepository, ReservationPlaceRepository reservationPlaceRepository) {
         this.placeRepository = placeRepository;
+        this.reservationPlaceRepository = reservationPlaceRepository;
     }
 
     /**
@@ -188,5 +195,105 @@ public class PlaceService {
         }
 
         placeRepository.deleteById(id);
+    }
+
+    /**
+     * Recupere toutes les places avec leur statut calcule dynamiquement.
+     * Le statut est determine en fonction des reservations en cours a l'instant present.
+     */
+    public List<PlaceAvailabilityDTO> findAllWithAvailability() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Place> places = placeRepository.findAll();
+
+        return places.stream()
+                .map(place -> computeAvailability(place, now))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Recupere une place avec son statut calcule dynamiquement.
+     */
+    public Optional<PlaceAvailabilityDTO> findByIdWithAvailability(Long id) {
+        LocalDateTime now = LocalDateTime.now();
+        return placeRepository.findById(id)
+                .map(place -> computeAvailability(place, now));
+    }
+
+    /**
+     * Calcule la disponibilite d'une place a un instant donne.
+     */
+    private PlaceAvailabilityDTO computeAvailability(Place place, LocalDateTime moment) {
+        // Verifier si la place est HORS_SERVICE (statut manuel)
+        if (place.getStatut() == StatutPlace.HORS_SERVICE) {
+            return buildDTO(place, StatutPlace.HORS_SERVICE, null, List.of(), false);
+        }
+
+        // Chercher les reservations en cours a cet instant
+        List<ReservationPlace> activeNow = reservationPlaceRepository
+                .findActiveReservationsAtMoment(place.getId(), moment);
+
+        // Chercher les reservations futures
+        List<ReservationPlace> futureReservations = reservationPlaceRepository
+                .findFutureReservations(place.getId(), moment);
+
+        // Determiner le statut actuel
+        StatutPlace statutActuel;
+        PlaceAvailabilityDTO.ReservationInfo reservationEnCours = null;
+
+        if (!activeNow.isEmpty()) {
+            ReservationPlace current = activeNow.get(0);
+            // Si la reservation est EN_COURS (quelqu'un est physiquement present)
+            if (current.getStatut().name().equals("EN_COURS")) {
+                statutActuel = StatutPlace.OCCUPEE;
+            } else {
+                // Reservation CONFIRMEE mais pas encore commencee physiquement
+                statutActuel = StatutPlace.RESERVEE;
+            }
+            reservationEnCours = buildReservationInfo(current);
+        } else {
+            statutActuel = StatutPlace.LIBRE;
+        }
+
+        // Convertir les reservations futures
+        List<PlaceAvailabilityDTO.ReservationInfo> prochainesReservations = futureReservations.stream()
+                .limit(5) // Limiter a 5 prochaines reservations
+                .map(this::buildReservationInfo)
+                .collect(Collectors.toList());
+
+        // La place est disponible pour reservation si elle n'est pas HORS_SERVICE
+        boolean disponible = statutActuel != StatutPlace.HORS_SERVICE;
+
+        return buildDTO(place, statutActuel, reservationEnCours, prochainesReservations, disponible);
+    }
+
+    private PlaceAvailabilityDTO buildDTO(Place place, StatutPlace statut,
+                                          PlaceAvailabilityDTO.ReservationInfo reservationEnCours,
+                                          List<PlaceAvailabilityDTO.ReservationInfo> prochainesReservations,
+                                          boolean disponible) {
+        return PlaceAvailabilityDTO.builder()
+                .id(place.getId())
+                .numero(place.getNumero())
+                .type(place.getType())
+                .statutActuel(statut)
+                .positionX(place.getPositionX())
+                .positionY(place.getPositionY())
+                .zoneId(place.getZone() != null ? place.getZone().getId() : null)
+                .zoneNom(place.getZone() != null ? place.getZone().getNom() : null)
+                .reservationEnCours(reservationEnCours)
+                .prochainesReservations(prochainesReservations)
+                .disponiblePourReservation(disponible)
+                .build();
+    }
+
+    private PlaceAvailabilityDTO.ReservationInfo buildReservationInfo(ReservationPlace reservation) {
+        return PlaceAvailabilityDTO.ReservationInfo.builder()
+                .id(reservation.getId())
+                .dateDebut(reservation.getDateDebut())
+                .dateFin(reservation.getDateFin())
+                .personneNom(reservation.getPersonne() != null ?
+                        reservation.getPersonne().getNom() + " " + reservation.getPersonne().getPrenom() : null)
+                .vehiculeImmatriculation(reservation.getVehicule() != null ?
+                        reservation.getVehicule().getImmatriculation() : null)
+                .build();
     }
 }

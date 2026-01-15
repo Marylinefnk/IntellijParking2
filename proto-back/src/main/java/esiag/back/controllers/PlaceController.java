@@ -1,6 +1,7 @@
 package esiag.back.controllers;
 
 import esiag.back.dto.DtoMapper;
+import esiag.back.dto.PlaceAvailabilityDTO;
 import esiag.back.dto.PlaceCreateDTO;
 import esiag.back.dto.PlaceDTO;
 import esiag.back.models.Place;
@@ -47,6 +48,25 @@ public class PlaceController {
         return placeService.findPlacesDisponibles().stream()
                 .map(dtoMapper::toPlaceDTO)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Retourne toutes les places avec leur statut calcule dynamiquement
+     * en fonction des reservations en cours.
+     */
+    @GetMapping("/availability")
+    public List<PlaceAvailabilityDTO> getAllPlacesWithAvailability() {
+        return placeService.findAllWithAvailability();
+    }
+
+    /**
+     * Retourne une place avec son statut calcule dynamiquement.
+     */
+    @GetMapping("/{id}/availability")
+    public ResponseEntity<PlaceAvailabilityDTO> getPlaceAvailability(@PathVariable Long id) {
+        return placeService.findByIdWithAvailability(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/statut/{statut}")

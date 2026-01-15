@@ -88,4 +88,27 @@ public interface ReservationPlaceRepository extends JpaRepository<ReservationPla
     @Query("SELECT COUNT(r) FROM ReservationPlace r WHERE r.personne.id = :personneId " +
            "AND r.statut IN ('CONFIRMEE', 'EN_COURS')")
     long countActiveReservationsByPersonne(@Param("personneId") Long personneId);
+
+    /**
+     * Trouve la reservation active en cours pour une place a un moment donne.
+     * Une reservation est "en cours" si le moment est entre dateDebut et dateFin
+     * et le statut est CONFIRMEE ou EN_COURS.
+     */
+    @Query("SELECT r FROM ReservationPlace r WHERE r.place.id = :placeId " +
+           "AND r.statut IN ('CONFIRMEE', 'EN_COURS') " +
+           "AND r.dateDebut <= :moment AND r.dateFin >= :moment")
+    List<ReservationPlace> findActiveReservationsAtMoment(
+            @Param("placeId") Long placeId,
+            @Param("moment") LocalDateTime moment);
+
+    /**
+     * Trouve toutes les reservations futures pour une place.
+     */
+    @Query("SELECT r FROM ReservationPlace r WHERE r.place.id = :placeId " +
+           "AND r.statut IN ('CONFIRMEE', 'EN_COURS') " +
+           "AND r.dateDebut > :moment " +
+           "ORDER BY r.dateDebut ASC")
+    List<ReservationPlace> findFutureReservations(
+            @Param("placeId") Long placeId,
+            @Param("moment") LocalDateTime moment);
 }

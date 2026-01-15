@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +18,7 @@ public class DataLoader {
 
     @Bean
     CommandLineRunner initDatabase(
+            PasswordEncoder passwordEncoder,
             ZoneRepository zoneRepository,
             PersonneRepository personneRepository,
             VehiculeRepository vehiculeRepository,
@@ -47,17 +49,45 @@ public class DataLoader {
             );
 
             // ================= PERSONNES =================
+            // Admin/Supervisor - password: admin123
             Personne p1 = personneRepository.save(
-                    Personne.builder().nom("Dupont").prenom("Jean").mail("jean.dupont@example.com").build()
+                    Personne.builder()
+                            .nom("Admin")
+                            .prenom("Super")
+                            .mail("admin@parking.com")
+                            .password(passwordEncoder.encode("admin123"))
+                            .typePersonne(TypePersonne.SUPERVISEUR)
+                            .build()
             );
+            // Subscriber - password: abonne123
             Personne p2 = personneRepository.save(
-                    Personne.builder().nom("Martin").prenom("Marie").mail("marie.martin@example.com").build()
+                    Personne.builder()
+                            .nom("Martin")
+                            .prenom("Marie")
+                            .mail("marie@parking.com")
+                            .password(passwordEncoder.encode("abonne123"))
+                            .typePersonne(TypePersonne.ABONNE)
+                            .build()
             );
+            // Visitor - password: visiteur123
             Personne p3 = personneRepository.save(
-                    Personne.builder().nom("Durand").prenom("Pierre").mail("pierre.durand@example.com").build()
+                    Personne.builder()
+                            .nom("Durand")
+                            .prenom("Pierre")
+                            .mail("pierre@parking.com")
+                            .password(passwordEncoder.encode("visiteur123"))
+                            .typePersonne(TypePersonne.VISITEUR)
+                            .build()
             );
+            // Another visitor - password: sophie123
             Personne p4 = personneRepository.save(
-                    Personne.builder().nom("Leroy").prenom("Sophie").mail("sophie.leroy@example.com").build()
+                    Personne.builder()
+                            .nom("Leroy")
+                            .prenom("Sophie")
+                            .mail("sophie@parking.com")
+                            .password(passwordEncoder.encode("sophie123"))
+                            .typePersonne(TypePersonne.VISITEUR)
+                            .build()
             );
 
             // ================= VEHICULES =================
