@@ -1,0 +1,1478 @@
+{
+	"info": {
+		"_postman_id": "60011bc9-33d9-48d7-baf0-3e5e4d2a296c",
+		"name": "SIRIUS ING2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36489980"
+	},
+	"item": [
+		{
+			"name": "Personnes",
+			"item": [
+				{
+					"name": "Get all personnes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/personnes",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "personnes"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get personne by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/personnes/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "personnes", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get personne by email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/personnes/mail/jean.dupont@example.com",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "personnes", "mail", "jean.dupont@example.com"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create personne",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nom\": \"Dupont\",\n  \"prenom\": \"Jean\",\n  \"mail\": \"jean.dupont@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/personnes",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "personnes"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update personne",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nom\": \"Dupont\",\n  \"prenom\": \"Jean-Pierre\",\n  \"mail\": \"jean.dupont@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/personnes/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "personnes", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete personne",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/personnes/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "personnes", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vehicules",
+			"item": [
+				{
+					"name": "Get all vehicules",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/vehicules",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "vehicules"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get vehicule by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/vehicules/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "vehicules", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get vehicules by personne",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/vehicules/personne/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "vehicules", "personne", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get vehicule by immatriculation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/vehicules/immatriculation/AB-123-CD",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "vehicules", "immatriculation", "AB-123-CD"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get vehicules by type VOITURE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/vehicules/type/VOITURE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "vehicules", "type", "VOITURE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get vehicules by type MOTO",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/vehicules/type/MOTO",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "vehicules", "type", "MOTO"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create vehicule",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"immatriculation\": \"XY-456-ZW\",\n  \"typeVehicule\": \"VOITURE\",\n  \"personneId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/vehicules",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "vehicules"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update vehicule",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"immatriculation\": \"XY-456-ZW\",\n  \"typeVehicule\": \"VOITURE\",\n  \"personneId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/vehicules/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "vehicules", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete vehicule",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/vehicules/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "vehicules", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Zones",
+			"item": [
+				{
+					"name": "Get all zones",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/zones",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "zones"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get zone by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/zones/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "zones", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get zone by nom",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/zones/nom/Zone A",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "zones", "nom", "Zone A"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create zone",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nom\": \"Zone D\",\n  \"description\": \"Zone de stationnement D - Niveau 2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/zones",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "zones"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update zone",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nom\": \"Zone D Modifiee\",\n  \"description\": \"Zone de stationnement D - Niveau 2 - Modifiee\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/zones/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "zones", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete zone",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/zones/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "zones", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Places",
+			"item": [
+				{
+					"name": "Get all places",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/places",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get place by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/places/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get places disponibles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/places/disponibles",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "disponibles"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get places by statut LIBRE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/places/statut/LIBRE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "statut", "LIBRE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get places by statut OCCUPEE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/places/statut/OCCUPEE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "statut", "OCCUPEE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get places by statut RESERVEE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/places/statut/RESERVEE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "statut", "RESERVEE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get places by type STANDARD",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/places/type/STANDARD",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "type", "STANDARD"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get places by type PMR",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/places/type/PMR",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "type", "PMR"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get places by type ELECTRIQUE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/places/type/ELECTRIQUE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "type", "ELECTRIQUE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get places by type MOTO",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/places/type/MOTO",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "type", "MOTO"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get places by type FAMILIALE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/places/type/FAMILIALE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "type", "FAMILIALE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get places by zone",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/places/zone/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "zone", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create place",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"numero\": \"A001\",\n  \"type\": \"STANDARD\",\n  \"statut\": \"LIBRE\",\n  \"positionX\": 10.5,\n  \"positionY\": 20.3,\n  \"zoneId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/places",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update place",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"numero\": \"A001-MOD\",\n  \"type\": \"PMR\",\n  \"statut\": \"LIBRE\",\n  \"positionX\": 15.5,\n  \"positionY\": 25.3,\n  \"zoneId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/places/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update place statut",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\"OCCUPEE\"",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/places/1/statut",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "1", "statut"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete place",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/places/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "places", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Services",
+			"item": [
+				{
+					"name": "Get all services",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/services",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "services"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get service by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/services/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "services", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get services by type DEPANNAGE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/services/type/DEPANNAGE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "services", "type", "DEPANNAGE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get services by type LAVERIE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/services/type/LAVERIE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "services", "type", "LAVERIE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create service",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"typeService\": \"DEPANNAGE\",\n  \"description\": \"Service de depannage 24h/24\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/services",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "services"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update service",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"typeService\": \"LAVERIE\",\n  \"description\": \"Service de lavage automobile complet\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/services/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "services", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete service",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/services/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "services", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reservations Place",
+			"item": [
+				{
+					"name": "Get all reservations place",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-place",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservation place by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-place/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservations place by personne",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-place/personne/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place", "personne", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservations place by place",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-place/place/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place", "place", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservations place by statut CONFIRMEE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-place/statut/CONFIRMEE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place", "statut", "CONFIRMEE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservations place by statut EN_COURS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-place/statut/EN_COURS",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place", "statut", "EN_COURS"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservations place by statut TERMINEE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-place/statut/TERMINEE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place", "statut", "TERMINEE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservations place by statut ANNULEE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-place/statut/ANNULEE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place", "statut", "ANNULEE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create reservation place",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"personneId\": 1,\n  \"placeId\": 1,\n  \"vehiculeId\": 1,\n  \"dateDebut\": \"2026-01-15T08:00:00\",\n  \"dateFin\": \"2026-01-15T18:00:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/reservations-place",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update reservation place",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dateDebut\": \"2026-01-15T09:00:00\",\n  \"dateFin\": \"2026-01-15T20:00:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/reservations-place/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Annuler reservation place",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-place/1/annuler",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place", "1", "annuler"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Commencer reservation place",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-place/1/commencer",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place", "1", "commencer"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Terminer reservation place",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-place/1/terminer",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place", "1", "terminer"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete reservation place",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-place/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-place", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reservations Service",
+			"item": [
+				{
+					"name": "Get all reservations service",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-service",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservation service by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-service/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservations service by personne",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-service/personne/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service", "personne", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservations service by service",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-service/service/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service", "service", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservations service by statut CONFIRMEE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-service/statut/CONFIRMEE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service", "statut", "CONFIRMEE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservations service by statut EN_COURS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-service/statut/EN_COURS",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service", "statut", "EN_COURS"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservations service by statut TERMINEE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-service/statut/TERMINEE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service", "statut", "TERMINEE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservations service by statut ANNULEE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-service/statut/ANNULEE",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service", "statut", "ANNULEE"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get reservations service by periode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-service/periode?debut=2026-01-01T00:00:00&fin=2026-12-31T23:59:59",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service", "periode"],
+							"query": [
+								{
+									"key": "debut",
+									"value": "2026-01-01T00:00:00"
+								},
+								{
+									"key": "fin",
+									"value": "2026-12-31T23:59:59"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create reservation service",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"personneId\": 1,\n  \"serviceId\": 1,\n  \"dateDebut\": \"2026-01-15T10:00:00\",\n  \"dateFin\": \"2026-01-15T11:00:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/reservations-service",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update reservation service",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"dateDebut\": \"2026-01-15T14:00:00\",\n  \"dateFin\": \"2026-01-15T15:00:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/reservations-service/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Annuler reservation service",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-service/1/annuler",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service", "1", "annuler"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Commencer reservation service",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-service/1/commencer",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service", "1", "commencer"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Terminer reservation service",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-service/1/terminer",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service", "1", "terminer"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete reservation service",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/reservations-service/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "reservations-service", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Stationnements",
+			"item": [
+				{
+					"name": "Get all stationnements",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/stationnements",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "stationnements"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get stationnement by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/stationnements/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "stationnements", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get stationnements by place",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/stationnements/place/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "stationnements", "place", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get stationnements by vehicule",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/stationnements/vehicule/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "stationnements", "vehicule", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get stationnement actif by vehicule",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/stationnements/actif/vehicule/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "stationnements", "actif", "vehicule", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get stationnement actif by place",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/stationnements/actif/place/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "stationnements", "actif", "place", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get stationnements by periode",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/stationnements/periode?debut=2026-01-01T00:00:00&fin=2026-12-31T23:59:59",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "stationnements", "periode"],
+							"query": [
+								{
+									"key": "debut",
+									"value": "2026-01-01T00:00:00"
+								},
+								{
+									"key": "fin",
+									"value": "2026-12-31T23:59:59"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Entrer (creer stationnement)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vehiculeId\": 1,\n  \"placeId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/stationnements/entrer",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "stationnements", "entrer"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sortir (terminer stationnement)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/stationnements/1/sortir?tarifHoraire=2.5",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "stationnements", "1", "sortir"],
+							"query": [
+								{
+									"key": "tarifHoraire",
+									"value": "2.5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete stationnement",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/stationnements/1",
+							"host": ["localhost"],
+							"port": "8080",
+							"path": ["api", "stationnements", "1"]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

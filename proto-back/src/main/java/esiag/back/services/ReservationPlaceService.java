@@ -7,7 +7,6 @@ import esiag.back.repositories.PersonneRepository;
 import esiag.back.repositories.VehiculeRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import esiag.back.models.ReservationPlace;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -32,9 +31,7 @@ public class ReservationPlaceService {
     private final PersonneRepository personneRepository;
     private final VehiculeRepository vehiculeRepository;
 
-    /**
-     * Nombre maximum de réservations actives par personne
-     */
+    /** Nombre maximum de réservations actives par personne */
     private static final int MAX_RESERVATIONS_ACTIVES = 3;
 
     public ReservationPlaceService(ReservationPlaceRepository reservationRepository,
@@ -49,7 +46,6 @@ public class ReservationPlaceService {
 
     /**
      * Récupère toutes les réservations de places.
-     *
      * @return Liste de toutes les réservations
      */
     public List<ReservationPlace> findAll() {
@@ -58,7 +54,6 @@ public class ReservationPlaceService {
 
     /**
      * Recherche une réservation par son identifiant.
-     *
      * @param id Identifiant de la réservation
      * @return La réservation trouvée ou Optional vide
      */
@@ -68,7 +63,6 @@ public class ReservationPlaceService {
 
     /**
      * Recherche les réservations d'une personne.
-     *
      * @param personneId Identifiant de la personne
      * @return Liste des réservations de la personne
      */
@@ -78,7 +72,6 @@ public class ReservationPlaceService {
 
     /**
      * Recherche les réservations d'une place.
-     *
      * @param placeId Identifiant de la place
      * @return Liste des réservations de la place
      */
@@ -88,7 +81,6 @@ public class ReservationPlaceService {
 
     /**
      * Recherche les réservations par statut.
-     *
      * @param statut Statut recherché
      * @return Liste des réservations correspondantes
      */
@@ -173,9 +165,8 @@ public class ReservationPlaceService {
         reservation.setVehicule(vehicule);
         reservation.setStatut(StatutReservation.CONFIRMEE);
 
-        // Mise à jour du statut de la place
-        place.setStatut(StatutPlace.RESERVEE);
-        placeRepository.save(place);
+        // NOTE: On ne change plus le statut de la place ici.
+        // Le statut sera calcule dynamiquement en fonction de l'heure actuelle.
 
         return reservationRepository.save(reservation);
     }
@@ -187,7 +178,7 @@ public class ReservationPlaceService {
      * - La réservation doit exister
      * - Les nouvelles dates ne doivent pas créer de conflit
      *
-     * @param id                 Identifiant de la réservation
+     * @param id Identifiant de la réservation
      * @param reservationDetails Nouvelles données
      * @return La réservation mise à jour
      */
@@ -229,8 +220,6 @@ public class ReservationPlaceService {
 
     /**
      * Annule une réservation.
-     * La place redevient libre.
-     *
      * @param id Identifiant de la réservation
      */
     public void annuler(Long id) {
@@ -244,16 +233,11 @@ public class ReservationPlaceService {
         reservation.setStatut(StatutReservation.ANNULEE);
         reservationRepository.save(reservation);
 
-        // Libération de la place
-        Place place = reservation.getPlace();
-        place.setStatut(StatutPlace.LIBRE);
-        placeRepository.save(place);
+        // NOTE: Le statut de la place sera recalcule dynamiquement
     }
 
     /**
      * Démarre une réservation (passage en cours).
-     * La place devient occupée.
-     *
      * @param id Identifiant de la réservation
      */
     public void commencer(Long id) {
@@ -268,16 +252,11 @@ public class ReservationPlaceService {
         reservation.setStatut(StatutReservation.EN_COURS);
         reservationRepository.save(reservation);
 
-        // Mise à jour du statut de la place
-        Place place = reservation.getPlace();
-        place.setStatut(StatutPlace.OCCUPEE);
-        placeRepository.save(place);
+        // NOTE: Le statut de la place (OCCUPEE) sera calcule dynamiquement
     }
 
     /**
      * Termine une réservation.
-     * La place redevient libre.
-     *
      * @param id Identifiant de la réservation
      */
     public void terminer(Long id) {
@@ -287,29 +266,18 @@ public class ReservationPlaceService {
         reservation.setStatut(StatutReservation.TERMINEE);
         reservationRepository.save(reservation);
 
-        // Libération de la place
-        Place place = reservation.getPlace();
-        place.setStatut(StatutPlace.LIBRE);
-        placeRepository.save(place);
+        // NOTE: Le statut de la place sera recalcule dynamiquement
     }
 
     /**
      * Supprime une réservation.
-     *
      * @param id Identifiant de la réservation
      */
     public void delete(Long id) {
         ReservationPlace reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Réservation non trouvée avec l'id: " + id));
 
-        // Si la réservation est active, libérer la place
-        if (reservation.getStatut() == StatutReservation.CONFIRMEE ||
-                reservation.getStatut() == StatutReservation.EN_COURS) {
-            Place place = reservation.getPlace();
-            place.setStatut(StatutPlace.LIBRE);
-            placeRepository.save(place);
-        }
-
+        // NOTE: Le statut de la place sera recalcule dynamiquement apres suppression
         reservationRepository.deleteById(id);
     }
 }
