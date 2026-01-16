@@ -7,6 +7,7 @@ import esiag.back.models.Personne;
 import esiag.back.services.PersonneService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,10 +19,12 @@ public class PersonneController {
 
     private final PersonneService personneService;
     private final DtoMapper dtoMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public PersonneController(PersonneService personneService, DtoMapper dtoMapper) {
+    public PersonneController(PersonneService personneService, DtoMapper dtoMapper, PasswordEncoder passwordEncoder) {
         this.personneService = personneService;
         this.dtoMapper = dtoMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -50,10 +53,16 @@ public class PersonneController {
     @PostMapping
     public ResponseEntity<PersonneDTO> createPersonne(@RequestBody PersonneCreateDTO createDTO) {
         try {
+            // Validate password is provided for new users
+            if (createDTO.getPassword() == null || createDTO.getPassword().trim().isEmpty()) {
+                return ResponseEntity.badRequest().build();
+            }
+
             Personne personne = new Personne();
             personne.setNom(createDTO.getNom());
             personne.setPrenom(createDTO.getPrenom());
             personne.setMail(createDTO.getMail());
+            personne.setPassword(passwordEncoder.encode(createDTO.getPassword()));
             personne.setTypePersonne(createDTO.getTypePersonne());
 
             Personne created = personneService.create(personne);

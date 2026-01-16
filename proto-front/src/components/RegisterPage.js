@@ -104,7 +104,7 @@ export default function RegisterPage() {
                         +
                     </div>
                     <h1 style={{ margin: 0, fontSize: "1.8rem", color: "#1e293b" }}>Creer un compte</h1>
-                    <p style={{ color: "#64748b", marginTop: 8 }}>Rejoignez ParkingPro</p>
+                    <p style={{ color: "#64748b", marginTop: 8 }}>Rejoignez Intellij Parking</p>
                 </div>
 
                 <form onSubmit={handleRegister}>

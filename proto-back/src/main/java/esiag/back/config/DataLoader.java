@@ -30,12 +30,15 @@ public class DataLoader {
 
         return args -> {
 
+            // Always ensure admin user exists
+            ensureAdminExists(passwordEncoder, personneRepository);
+
             if (zoneRepository.count() > 0) {
-                logger.info("Database already initialized. Skipping.");
+                logger.info("Database already initialized. Skipping sample data.");
                 return;
             }
 
-            logger.info("Initializing database with builders...");
+            logger.info("Initializing database with sample data...");
 
             // ================= ZONES =================
             Zone zoneA = zoneRepository.save(
@@ -184,5 +187,29 @@ public class DataLoader {
 
             logger.info("Database initialization completed successfully.");
         };
+    }
+
+    /**
+     * Ensures that a default admin user exists in the database.
+     * Creates one if not found.
+     */
+    private void ensureAdminExists(PasswordEncoder passwordEncoder, PersonneRepository personneRepository) {
+        String adminEmail = "admin@parking.com";
+
+        if (personneRepository.findByMail(adminEmail).isEmpty()) {
+            logger.info("Creating default admin user...");
+            personneRepository.save(
+                    Personne.builder()
+                            .nom("Admin")
+                            .prenom("Super")
+                            .mail(adminEmail)
+                            .password(passwordEncoder.encode("admin123"))
+                            .typePersonne(TypePersonne.SUPERVISEUR)
+                            .build()
+            );
+            logger.info("Default admin user created: {} / admin123", adminEmail);
+        } else {
+            logger.info("Admin user already exists.");
+        }
     }
 }

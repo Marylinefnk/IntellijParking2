@@ -31,7 +31,7 @@ export default function PublicLayout() {
                         P
                     </div>
                     <span style={{ fontSize: "1.25rem", fontWeight: 600, color: "#1e293b" }}>
-                        ParkingPro
+                        Intellij Parking
                     </span>
                 </div>
                 <nav style={{ display: "flex", gap: 16, alignItems: "center" }}>

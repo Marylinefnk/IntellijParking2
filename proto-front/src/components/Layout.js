@@ -37,7 +37,7 @@ export default function Layout() {
                 <div className="sidebar-header">
                     <div className="sidebar-logo">
                         <div className="sidebar-logo-icon">P</div>
-                        <span>ParkingPro</span>
+                        <span>Intellij Parking</span>
                     </div>
                 </div>
 
