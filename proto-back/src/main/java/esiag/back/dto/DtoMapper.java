@@ -14,6 +14,7 @@ public class DtoMapper {
                 .nom(personne.getNom())
                 .prenom(personne.getPrenom())
                 .mail(personne.getMail())
+                .typePersonne(personne.getTypePersonne())
                 .build();
     }
 

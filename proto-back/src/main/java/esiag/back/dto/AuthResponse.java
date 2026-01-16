@@ -1,15 +1,20 @@
 package esiag.back.dto;
 
 import esiag.back.models.TypePersonne;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonneCreateDTO {
+public class AuthResponse {
+    private String token;
+    private Long id;
     private String nom;
     private String prenom;
-    private String mail;
+    private String email;
     private TypePersonne typePersonne;
 }
