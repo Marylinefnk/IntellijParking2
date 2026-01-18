@@ -1,13 +1,13 @@
 package esiag.back.services;
 
-import package esiag.back.services.ReservationPlaceService;
-import package esiag.back.models.Noeud;
-import package esiag.back.services.NoeudService;
-import package esiag.back.models.Arete;
-import package esiag.back.services.AreteService;
-import package esiag.back.models.Place;
-import package esiag.back.services.PLaceService;
-import package esiag.back.models.ReservationPlace;
+import esiag.back.services.ReservationPlaceService;
+import esiag.back.models.Noeud;
+import esiag.back.services.NoeudService;
+import esiag.back.models.Arete;
+import esiag.back.services.AreteService;
+import esiag.back.models.Place;
+import esiag.back.services.PLaceService;
+import esiag.back.models.ReservationPlace;
 
 //Créer les services NeoudService, AreteService
 
