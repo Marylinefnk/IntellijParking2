@@ -2,20 +2,27 @@ package esiag.back.services;
 
 import esiag.back.services.ReservationPlaceService;
 import esiag.back.models.Noeud;
-import esiag.back.services.NoeudService;
+//import esiag.back.services.NoeudService;
 import esiag.back.models.Arete;
-import esiag.back.services.AreteService;
+//import esiag.back.services.AreteService;
 import esiag.back.models.Place;
-import esiag.back.services.PLaceService;
+//import esiag.back.services.PLaceService;
 import esiag.back.models.ReservationPlace;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
-//Créer les services NeoudService, AreteService
-
+@Service
+@Transactional
 public class GuidageService {
+    private final ReservationPlaceService reservationPlaceService;
+
+    public GuidageService(ReservationPlaceService reservationPlaceService) {
+        this.reservationPlaceService = reservationPlaceService;
+    }
 
     public void afficherCheminVersPlace(Long idReservation) {
-        //ReservationPlace reservation = findReservationById(idReservation);
-        ReservationPlace reservation = findById(idReservation).orElse(null);
+        ReservationPlace reservation = reservationPlaceService.findById(idReservation).orElse(null);
 
         if (reservation == null) {
             System.out.println("Réservation introuvable avec l'ID : " + idReservation);
@@ -24,10 +31,8 @@ public class GuidageService {
 
         System.out.println("-------CHEMIN VERS LA PLACE RÉSERVÉE------- ");
         System.out.println();
-        System.out.println("Conducteur : " + reservation.getPersonne().getPrenom() + " "
-                + reservation.getPersonne().getNom());
-        System.out.println("Véhicule  : " + reservation.getVehicule().getTypeVehicule()
-                + " (" + reservation.getVehicule().getImmatriculation() + ")");
+        System.out.println("Conducteur : " + reservation.getPersonne().getPrenom() + " " + reservation.getPersonne().getNom());
+        System.out.println("Véhicule  : " + reservation.getVehicule().getTypeVehicule() + " (" + reservation.getVehicule().getImmatriculation() + ")");
         System.out.println("N° de la place réservée : " + reservation.getPlace().getNumero());
         System.out.println("Type de place : " + reservation.getPlace().getType());
         System.out.println("État de la place : " + reservation.getPlace().getStatut());
@@ -38,8 +43,7 @@ public class GuidageService {
         System.out.println("   Position Y   : " + reservation.getPlace().getPositionY());
         System.out.println();
         System.out.println("CHEMIN CALCULÉ:");
-        System.out.println("   Entrée (0, 0) ---> Place (" + reservation.getPlace().getPositionX()
-                + ", " + reservation.getPlace().getPositionY() + ")");
+        System.out.println("   Entrée (0, 0) ---> Place (" + reservation.getPlace().getPositionX() + ", " + reservation.getPlace().getPositionY() + ")");
         System.out.println();
 
         double distance = Math.sqrt(
@@ -50,7 +54,7 @@ public class GuidageService {
     }
 
     public void afficherToutesLesReservations() {
-        List<ReservationPlace> reservations = findAll();
+        List<ReservationPlace> reservations = reservationPlaceService.findAll();
 
         if (reservations.isEmpty()) {
             System.out.println("Aucune réservation trouvée dans la base de données.");

@@ -23,7 +23,7 @@ public class EsiagBackApplication {
             guidageService.afficherToutesLesReservations();
 
             int id = 1;
-            GuidageService.afficherCheminVersPlace(Long.valueOf(id));
+            guidageService.afficherCheminVersPlace(Long.valueOf(id));
 
         };
     }
