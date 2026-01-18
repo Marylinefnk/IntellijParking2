@@ -1,20 +1,60 @@
+# Projet Intellij Parking
+
+## 📌 Description
+Ce projet a été réalisé dans le cadre de SIRIUS.  
+Il s’agit d’un projet collaboratif visant à mettre sur pieds une application de gestion de parking privé.
+
+L’objectif principal est de :
+- travailler en équipe avec Git
+- mettre en pratique les différentes technologies et notions vu en cours
+- produire un projet web, fonctionnel et maintenable
+
+---
+## 👥 Équipe
+Projet réalisé par 3 étudiants :
+
+- Junior FOKOU  / Structuration graphique du parking
+- Maryline FONKOU  / Se garer dans le parking
+- Tatiana Saurelle TCHIELONG  / Etat et réservation des places de parking
+
+---
+
 ## Membres du groupe 
 - Maryline FONKOU
 - Junior FOKOU
 - Tatiana Ndoumbeu
 
-## Branche par défaut (stable)
-- master
+## 🛠️ Technologies utilisées
 
-## US dévelopées
+### Backend
+- Java
+- Maven
+- MySQL
 
-## Maryline 
-US1 : 
+### Frontend
+- HTML
+- CSS
+- JavaScript
+- SVG
 
+### Outils
+- Git & GitHub
+- Jenkins
+- Postman
 
-## Junior 
+---
+## 🌱 Organisation Git (Feature Branches)
 
+Nous utilisons une organisation Git inspirée des pratiques professionnelles.
 
-### Tatiana
-- WI-01 : Modèle de données (Parking)
-    - Branche : feature/tatiana/WI-01-modele-donnees
+### Branches principales
+- `Master`  (Branche par défaut)
+  → version stable du projet (livraison finale)
+
+- `develop`  
+  → branche d’intégration des fonctionnalités
+
+### Branches de fonctionnalités
+Chaque fonctionnalité est développée dans une branche dédiée :
+
+feature/nom-de-la-feature ou nom-etudiant
