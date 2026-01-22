@@ -12,8 +12,9 @@ import lombok.NoArgsConstructor;
 @Table(name = "arete")
 public class Arete {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_arete")
-    private Integer id_arete;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "noeud_source")
@@ -23,9 +24,7 @@ public class Arete {
     @JoinColumn(name = "noeud_destination")
     private Noeud noeudDestination;
 
-    //ajouter poids de l'arete
-
-
-
+    @Column(name = "poids")
+    private Double poids;
 
 }

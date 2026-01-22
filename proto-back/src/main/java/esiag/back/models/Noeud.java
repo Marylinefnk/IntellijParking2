@@ -9,19 +9,18 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "Noeud")
 public class Noeud {
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_noeud")
-    private Integer id_zone;
+    private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type_noeud")
     private NoeudType noeudType;
-
-    @Column(name = "numero_noeud")
-    private int numeroNoeud;
 
     @Column(name = "niveau_noeud")
     private int niveauNoeud;
@@ -31,9 +30,12 @@ public class Noeud {
     private SensNoeud sensNoeud;
 
     @Column(name = "nom")
-    private int nomNoeud;
+    private String nom;
 
-    //ajouter position_x et position_y
-    //id_place;
-    //id_zone;
+    @Column(name = "position_x")
+    private Double positionX;
+
+    @Column(name = "position_y")
+    private Double positionY;
+
 }

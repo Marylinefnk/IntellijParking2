@@ -22,8 +22,10 @@ public class EsiagBackApplication {
 
             guidageService.afficherToutesLesReservations();
 
-            int id = 1;
-            guidageService.afficherCheminVersPlace(Long.valueOf(id));
+            int ida = 16;
+            //int idb = 26;
+            guidageService.afficherCheminVersPlace(Long.valueOf(ida));
+            //guidageService.afficherCheminVersPlace(Long.valueOf(idb));
 
         };
     }
