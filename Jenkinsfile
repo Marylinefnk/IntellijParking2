@@ -31,8 +31,8 @@ pipeline {
             steps {
                 sh """
                     cd proto-front
-                    npm install
-                 npm run build
+                    rm -rf node_modules package-lock.json
+                    npm ci
                 """
             }
         }
