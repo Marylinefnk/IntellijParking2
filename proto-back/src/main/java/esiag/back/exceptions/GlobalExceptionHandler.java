@@ -12,24 +12,6 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Gestionnaire global des exceptions pour toute l'application.
- *
- * ARCHITECTURE:
- * - Centralise la gestion des erreurs
- * - Transforme les exceptions en reponses HTTP appropriees
- * - Log automatiquement toutes les erreurs
- * - Evite les try-catch dans les controllers
- *
- * MAPPING EXCEPTION -> HTTP:
- * - AuthenticationException   -> 401 Unauthorized
- * - ResourceNotFoundException -> 404 Not Found
- * - ValidationException       -> 400 Bad Request
- * - ConflictException        -> 409 Conflict
- * - OperationNotAllowedException -> 400 Bad Request
- * - BusinessException        -> 400 Bad Request
- * - Exception (autres)       -> 500 Internal Server Error
- */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -201,7 +183,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * Construit une reponse d'erreur standardisee.
+     * Construit une reponse d'erreur
      */
     private Map<String, Object> buildErrorResponse(
             HttpStatus status, String code, String message, WebRequest request) {
