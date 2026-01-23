@@ -38,13 +38,7 @@ public interface ReservationPlaceRepository extends JpaRepository<ReservationPla
     /**
      * Recherche les réservations en conflit pour une place donnée.
      * Une réservation est en conflit si elle chevauche la période demandée.
-     * Formule : conflit si (dateDebut1 <= dateFin2) ET (dateFin1 >= dateDebut2)
-     *
-     * @param placeId Identifiant de la place
-     * @param dateDebut Date de début de la période à vérifier
-     * @param dateFin Date de fin de la période à vérifier
-     * @param statut Statut des réservations à considérer (généralement CONFIRMEE ou EN_COURS)
-     * @return Liste des réservations en conflit
+     * Formule : conflit si (dateDebut1 <= dateFin2) ET (dateFin1 >= dateDebut2
      */
     @Query("SELECT r FROM ReservationPlace r WHERE r.place.id = :placeId " +
            "AND r.statut IN (:statuts) " +
@@ -58,13 +52,6 @@ public interface ReservationPlaceRepository extends JpaRepository<ReservationPla
     /**
      * Recherche les réservations en conflit, en excluant une réservation spécifique.
      * Utilisé lors de la modification d'une réservation existante.
-     *
-     * @param placeId Identifiant de la place
-     * @param dateDebut Date de début de la période à vérifier
-     * @param dateFin Date de fin de la période à vérifier
-     * @param statuts Statuts des réservations à considérer
-     * @param excludeId Identifiant de la réservation à exclure
-     * @return Liste des réservations en conflit
      */
     @Query("SELECT r FROM ReservationPlace r WHERE r.place.id = :placeId " +
            "AND r.statut IN (:statuts) " +
