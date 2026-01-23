@@ -9,6 +9,9 @@ import PersonnesPage from "./PersonnesPage";
 import VehiculesPage from "./VehiculesPage";
 import LoginPage from "./LoginPage";
 import RegisterPage from "./RegisterPage";
+//import App from "./App";
+import HomePage from "./HomePage";
+import ParkingPage from "./parking/ParkingPage";
 
 function ProtectedRoute({ children }) {
     const { user, loading } = useUser();
@@ -59,9 +62,16 @@ export default function Router() {
                 <Route path="/places" element={<PublicLayout />}>
                     <Route index element={<PlacesPage />} />
                 </Route>
+                <Route path="/ParkingPage" element={<ParkingPage />}>
+                    <Route index element={<ParkingPage />} />
+                </Route>
+
+                <Route path="/" element={<HomePage />}>
+                    <Route index element={<HomePage />} />
+                </Route>
 
                 {/* Protected routes */}
-                <Route path="/" element={
+                <Route path="/layout" element={
                     <ProtectedRoute>
                         <Layout />
                     </ProtectedRoute>
