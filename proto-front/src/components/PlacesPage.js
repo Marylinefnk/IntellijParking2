@@ -55,7 +55,7 @@ export default function PlacesPage() {
     async function loadPlaces() {
         try {
             setLoading(true);
-            // Use availability endpoint to get real-time status
+            // utiise le endpoint dispo pour recuperer le statut en temps reel de la place
             const res = await fetch(API_PLACES_AVAILABILITY);
             if (res.ok) setPlaces(await res.json());
         } catch (e) {
