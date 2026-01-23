@@ -39,7 +39,7 @@ export function useNotificationWebSocket() {
         }
     }, [success, info, warning, getNotificationType]);
 
-    // Connexion au serveur WebSocket
+    // Connetion au serveur WebSocket
     const connect = useCallback(() => {
         if (clientRef.current?.active) {
             return;
