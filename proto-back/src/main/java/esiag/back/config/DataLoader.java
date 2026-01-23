@@ -51,49 +51,47 @@ public class DataLoader {
                     Zone.builder().nom("Zone C").description("Parking réservé - niveau 2").build()
             );
 
-            // ================= PERSONNES =================
-            // Admin/Supervisor - password: admin123
+            // superviseur/admin
             Personne p1 = personneRepository.save(
                     Personne.builder()
                             .nom("Admin")
-                            .prenom("Super")
-                            .mail("admin@parking.com")
-                            .password(passwordEncoder.encode("admin123"))
+                            .prenom("saurelle")
+                            .mail("adminTNT@parking.com")
+                            .password(passwordEncoder.encode("admin123@"))
                             .typePersonne(TypePersonne.SUPERVISEUR)
                             .build()
             );
-            // Subscriber - password: abonne123
+            //abonné
             Personne p2 = personneRepository.save(
                     Personne.builder()
-                            .nom("Martin")
-                            .prenom("Marie")
-                            .mail("marie@parking.com")
-                            .password(passwordEncoder.encode("abonne123"))
+                            .nom("bouga")
+                            .prenom("milca")
+                            .mail("milca@gmail.com")
+                            .password(passwordEncoder.encode("Milca123"))
                             .typePersonne(TypePersonne.ABONNE)
                             .build()
             );
-            // Visitor - password: visiteur123
+            // visiteur123
             Personne p3 = personneRepository.save(
                     Personne.builder()
                             .nom("Durand")
                             .prenom("Pierre")
-                            .mail("pierre@parking.com")
-                            .password(passwordEncoder.encode("visiteur123"))
+                            .mail("pierre@gmail.com")
+                            .password(passwordEncoder.encode("pierre123"))
                             .typePersonne(TypePersonne.VISITEUR)
                             .build()
             );
-            // Another visitor - password: sophie123
             Personne p4 = personneRepository.save(
                     Personne.builder()
                             .nom("Leroy")
                             .prenom("Sophie")
-                            .mail("sophie@parking.com")
+                            .mail("sophie@gmail.com")
                             .password(passwordEncoder.encode("sophie123"))
                             .typePersonne(TypePersonne.VISITEUR)
                             .build()
             );
 
-            // ================= VEHICULES =================
+            // VEHICULES
             Vehicule v1 = vehiculeRepository.save(
                     Vehicule.builder().immatriculation("AB-123-CD").typeVehicule(TypeVehicule.VOITURE).personne(p1).build()
             );
@@ -107,7 +105,7 @@ public class DataLoader {
                     Vehicule.builder().immatriculation("MN-012-OP").typeVehicule(TypeVehicule.VOITURE).personne(p4).build()
             );
 
-            // ================= PLACES =================
+            // PLACES
             Place place1 = placeRepository.save(
                     Place.builder().numero("A001").type(TypePlace.STANDARD).statut(StatutPlace.LIBRE)
                             .positionX(10.5).positionY(20.3).zone(zoneA).build()
@@ -125,7 +123,7 @@ public class DataLoader {
                             .positionX(13.5).positionY(20.3).zone(zoneA).build()
             );
 
-            // ================= STATIONNEMENTS =================
+            //  STATIONNEMENTS
             stationnementRepository.save(
                     Stationnement.builder()
                             .dateEntree(LocalDateTime.of(2026, 1, 8, 8, 0))
@@ -147,7 +145,7 @@ public class DataLoader {
                             .build()
             );
 
-            // ================= SERVICES =================
+            // SERVICES
             ServiceEntity service1 = serviceRepository.save(
                     ServiceEntity.builder()
                             .typeService(TypeService.DEPANNAGE)
@@ -162,7 +160,7 @@ public class DataLoader {
                             .build()
             );
 
-            // ================= RESERVATION PLACES =================
+            // RESERVATION PLACES
             reservationPlaceRepository.save(
                     ReservationPlace.builder()
                             .personne(p1)
@@ -174,7 +172,7 @@ public class DataLoader {
                             .build()
             );
 
-            // ================= RESERVATION SERVICES =================
+            // RESERVATION SERVICES
             reservationServiceRepository.save(
                     ReservationService.builder()
                             .personne(p1)
@@ -189,27 +187,23 @@ public class DataLoader {
         };
     }
 
-    /**
-     * Ensures that a default admin user exists in the database.
-     * Creates one if not found.
-     */
     private void ensureAdminExists(PasswordEncoder passwordEncoder, PersonneRepository personneRepository) {
-        String adminEmail = "admin@parking.com";
+        String adminEmail = "adminTN@parking.com";
 
         if (personneRepository.findByMail(adminEmail).isEmpty()) {
             logger.info("Creating default admin user...");
             personneRepository.save(
                     Personne.builder()
-                            .nom("Admin")
-                            .prenom("Super")
+                            .nom("Admin2")
+                            .prenom("saurelle2")
                             .mail(adminEmail)
-                            .password(passwordEncoder.encode("admin123"))
+                            .password(passwordEncoder.encode("admin123@"))
                             .typePersonne(TypePersonne.SUPERVISEUR)
                             .build()
             );
-            logger.info("Default admin user created: {} / admin123", adminEmail);
+            logger.info("Default admin user created: {} / admin123@", adminEmail);
         } else {
-            logger.info("Admin user already exists.");
+            logger.info("Admin saurelle already exists.");
         }
     }
 }

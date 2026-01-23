@@ -1,16 +1,24 @@
 import React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
+import { useNotificationWebSocket } from "../WebHooks/useNotificationWebSocket";
 
+/**
+ * Layout principal de l'application pour les utilisateurs connectes.
+ * Inclut la sidebar de navigation et les notifications temps reel.
+ */
 export default function Layout() {
     const { user, logout } = useUser();
     const navigate = useNavigate();
+
+    // Connexion WebSocket pour les notifications
+    useNotificationWebSocket();
 
     const isAdmin = user?.typePersonne === "SUPERVISEUR";
 
     const handleLogout = () => {
         logout();
-        navigate("/login");
+        navigate("/");
     };
 
     const getRoleColor = (type) => {
@@ -77,28 +85,28 @@ export default function Layout() {
                 )}
 
                 <nav className="sidebar-nav">
-                    <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`} end>
+                    <NavLink to="/app" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`} end>
                         <span className="nav-icon">D</span>
                         Tableau de bord
                     </NavLink>
 
-                    <NavLink to="/mes-places" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
+                    <NavLink to="/app/places" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
                         <span className="nav-icon">P</span>
                         {isAdmin ? "Gestion Places" : "Places"}
                     </NavLink>
 
-                    <NavLink to="/reservations" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
+                    <NavLink to="/app/reservations" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
                         <span className="nav-icon">R</span>
                         {isAdmin ? "Reservations" : "Mes Reservations"}
                     </NavLink>
 
-                    <NavLink to="/vehicules" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
+                    <NavLink to="/app/vehicules" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
                         <span className="nav-icon">V</span>
                         {isAdmin ? "Vehicules" : "Mes Vehicules"}
                     </NavLink>
 
                     {isAdmin && (
-                        <NavLink to="/personnes" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
+                        <NavLink to="/app/personnes" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
                             <span className="nav-icon">U</span>
                             Clients
                         </NavLink>

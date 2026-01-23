@@ -18,19 +18,15 @@ public class PlaceAvailabilityDTO {
     private Long id;
     private String numero;
     private TypePlace type;
-    private StatutPlace statutActuel; // Computed status based on current time
+    private StatutPlace statutActuel;
     private Double positionX;
     private Double positionY;
     private Long zoneId;
     private String zoneNom;
 
-    // Current reservation info (if place is reserved NOW)
+
     private ReservationInfo reservationEnCours;
-
-    // Upcoming reservations (so users know when it's booked)
     private List<ReservationInfo> prochainesReservations;
-
-    // Is the place available for reservation (even if it has future bookings)?
     private boolean disponiblePourReservation;
 
     @Data

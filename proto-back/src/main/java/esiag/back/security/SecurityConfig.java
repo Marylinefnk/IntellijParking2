@@ -39,11 +39,15 @@ public class SecurityConfig {
         http
             .cors().and()
             .csrf().disable()
+            .headers().frameOptions().disable()
+            .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
                 // Public endpoints - authentication
                 .antMatchers("/api/auth/**").permitAll()
+                // WebSocket endpoints (including SockJS fallback)
+                .antMatchers("/ws/**", "/ws/info/**", "/ws").permitAll()
                 // Public endpoints - viewing places (visitors can see)
                 .antMatchers(HttpMethod.GET, "/api/places/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/zones/**").permitAll()
@@ -70,7 +74,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000", "http://172.31.253.157:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setExposedHeaders(List.of("Authorization"));

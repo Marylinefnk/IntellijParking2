@@ -64,7 +64,7 @@ export default function RegisterPage() {
             }
 
             login(data);
-            navigate("/");
+            navigate("/app");
         } catch (e) {
             setError("Erreur de connexion. Verifiez que le serveur est en marche.");
         } finally {

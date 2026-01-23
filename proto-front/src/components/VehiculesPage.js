@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { API_VEHICULES, API_PERSONNES } from "../constants/back";
 import { useUser } from "../context/UserContext";
+import { useNotification } from "../context/NotificationContext";
 
 export default function VehiculesPage() {
     const [vehicules, setVehicules] = useState([]);
@@ -12,6 +13,7 @@ export default function VehiculesPage() {
     const [search, setSearch] = useState("");
 
     const { user, authFetch } = useUser();
+    const { success, error } = useNotification();
     const isAdmin = user?.typePersonne === "SUPERVISEUR";
 
     useEffect(() => {
@@ -59,8 +61,12 @@ export default function VehiculesPage() {
             if (!res.ok) throw new Error("Erreur " + res.status);
             closeModal();
             loadVehicules();
-        } catch (e) {
-            alert("Erreur: " + e.message);
+            success(editingVehicule
+                ? `Vehicule ${form.immatriculation} modifie avec succes`
+                : `Vehicule ${form.immatriculation} ajoute avec succes`
+            );
+        } catch (err) {
+            error("Erreur: " + err.message);
         }
     };
 
@@ -79,8 +85,9 @@ export default function VehiculesPage() {
         try {
             await authFetch(`${API_VEHICULES}/${id}`, { method: "DELETE" });
             loadVehicules();
-        } catch (e) {
-            alert("Erreur: " + e.message);
+            success("Vehicule supprime avec succes");
+        } catch (err) {
+            error("Erreur: " + err.message);
         }
     };
 
