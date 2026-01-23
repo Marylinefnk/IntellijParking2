@@ -73,7 +73,7 @@ export default function LoginPage() {
                     }}>
                         P
                     </div>
-                    <h1 style={{ margin: 0, fontSize: "1.8rem", color: "#1e293b" }}>ParkingPro</h1>
+                    <h1 style={{ margin: 0, fontSize: "1.8rem", color: "#1e293b" }}>IntellijParking</h1>
                     <p style={{ color: "#64748b", marginTop: 8 }}>Systeme de gestion de parking</p>
                 </div>
 
