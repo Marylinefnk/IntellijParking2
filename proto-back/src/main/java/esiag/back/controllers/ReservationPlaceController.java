@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/reservations-place")
 public class ReservationPlaceController {
@@ -62,8 +61,6 @@ public class ReservationPlaceController {
                                                           @RequestBody ReservationPlaceCreateDTO updateDTO) {
         return reservationService.updateDTO(id, updateDTO);
     }
-
-    // ==================== ENDPOINTS D'ACTION SUR LE CYCLE DE VIE ====================
 
     @PostMapping("/{id}/annuler")
     public ReservationPlaceResponseDTO annulerReservation(@PathVariable Long id) {
