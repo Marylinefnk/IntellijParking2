@@ -151,22 +151,22 @@ export default function Dashboard() {
                     </div>
 
                     <div className="quick-actions">
-                        <Link to="/places" className="quick-action-card">
+                        <Link to="/app/places" className="quick-action-card">
                             <div className="quick-action-icon stat-icon blue">🅿️</div>
                             <h3>Gérer les Places</h3>
                             <p>Voir et modifier les places</p>
                         </Link>
-                        <Link to="/reservations" className="quick-action-card">
+                        <Link to="/app/reservations" className="quick-action-card">
                             <div className="quick-action-icon stat-icon orange">📅</div>
                             <h3>Réservations</h3>
                             <p>{stats.reservationsActives} actives</p>
                         </Link>
-                        <Link to="/personnes" className="quick-action-card">
+                        <Link to="/app/personnes" className="quick-action-card">
                             <div className="quick-action-icon stat-icon cyan">👥</div>
                             <h3>Clients</h3>
                             <p>{stats.totalPersonnes} enregistrés</p>
                         </Link>
-                        <Link to="/vehicules" className="quick-action-card">
+                        <Link to="/app/vehicules" className="quick-action-card">
                             <div className="quick-action-icon stat-icon green">🚙</div>
                             <h3>Véhicules</h3>
                             <p>{stats.totalVehicules} enregistrés</p>
@@ -202,12 +202,12 @@ export default function Dashboard() {
                     </div>
 
                     <div className="quick-actions">
-                        <Link to="/places" className="quick-action-card">
+                        <Link to="/app/places" className="quick-action-card">
                             <div className="quick-action-icon stat-icon blue">🅿️</div>
                             <h3>Voir les Places</h3>
                             <p>Consultez les places disponibles</p>
                         </Link>
-                        <Link to="/reservations" className="quick-action-card">
+                        <Link to="/app/reservations" className="quick-action-card">
                             <div className="quick-action-icon stat-icon orange">📅</div>
                             <h3>Mes Réservations</h3>
                             <p>Gérer vos réservations</p>
@@ -236,12 +236,12 @@ export default function Dashboard() {
                     </div>
 
                     <div className="quick-actions">
-                        <Link to="/places" className="quick-action-card">
+                        <Link to="/app/places" className="quick-action-card">
                             <div className="quick-action-icon stat-icon green">🅿️</div>
                             <h3>Trouver une Place</h3>
                             <p>{stats.placesLibres} places libres</p>
                         </Link>
-                        <Link to="/reservations" className="quick-action-card">
+                        <Link to="/app/reservations" className="quick-action-card">
                             <div className="quick-action-icon stat-icon orange">📅</div>
                             <h3>Réserver</h3>
                             <p>Réserver une place temporaire</p>
@@ -255,7 +255,7 @@ export default function Dashboard() {
                     <h2 className="card-title">
                         {user?.typePersonne === "SUPERVISEUR" ? "Réservations récentes" : "Mes réservations"}
                     </h2>
-                    <Link to="/reservations" className="btn btn-outline btn-sm">Voir tout</Link>
+                    <Link to="/app/reservations" className="btn btn-outline btn-sm">Voir tout</Link>
                 </div>
                 <div className="card-body" style={{ padding: 0 }}>
                     {recentReservations.length === 0 ? (

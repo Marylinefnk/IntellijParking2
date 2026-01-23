@@ -34,7 +34,7 @@ export default function LoginPage() {
             }
 
             login(data);
-            navigate("/");
+            navigate("/app");
         } catch (e) {
             setError("Erreur de connexion. Verifiez que le serveur est en marche.");
         } finally {
@@ -73,7 +73,7 @@ export default function LoginPage() {
                     }}>
                         P
                     </div>
-                    <h1 style={{ margin: 0, fontSize: "1.8rem", color: "#1e293b" }}>ParkingPro</h1>
+                    <h1 style={{ margin: 0, fontSize: "1.8rem", color: "#1e293b" }}>Intellij Parking</h1>
                     <p style={{ color: "#64748b", marginTop: 8 }}>Systeme de gestion de parking</p>
                 </div>
 
@@ -164,11 +164,9 @@ export default function LoginPage() {
                     fontSize: "0.85rem",
                     color: "#64748b"
                 }}>
-                    <strong>Comptes de test :</strong>
+                    <strong>Compte de test :</strong>
                     <div style={{ marginTop: 8 }}>
-                        <div>Admin: admin@parking.com / admin123</div>
-                        <div>Abonne: marie@parking.com / abonne123</div>
-                        <div>Visiteur: pierre@parking.com / visiteur123</div>
+                        <div>Admin: adminTNT@parking.com / admin123@</div>
                     </div>
                 </div>
             </div>
