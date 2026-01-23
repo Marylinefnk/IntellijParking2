@@ -6,11 +6,7 @@ pipeline {
         VM_IP = "172.31.249.243"
         BACKEND_DIR = "/home/toto/projet/proto-back"
         FRONTEND_DIR = "/home/toto/projet/proto-front"
-        DB_HOST = "172.31.249.207"
-        DB_PORT = "3306"
-        DB_NAME = "test_tatiana_db"
-        DB_USERNAME = "intellijP"
-        DB_PASSWORD = "toto"
+       
     }
 
     stages {
@@ -36,7 +32,7 @@ pipeline {
                 sh """
                     cd proto-front
                     npm install
-                    REACT_APP_API_URL=http://${VM_IP}:8080 npm run build
+                 npm run build
                 """
             }
         }
