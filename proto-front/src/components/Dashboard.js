@@ -268,39 +268,39 @@ export default function Dashboard() {
                         <div className="table-container">
                             <table className="table">
                                 <thead>
-                                    <tr>
-                                        {user?.typePersonne === "SUPERVISEUR" && <th>Client</th>}
-                                        <th>Place</th>
-                                        <th>Véhicule</th>
-                                        <th>Début</th>
-                                        <th>Fin</th>
-                                        <th>Statut</th>
-                                    </tr>
+                                <tr>
+                                    {user?.typePersonne === "SUPERVISEUR" && <th>Client</th>}
+                                    <th>Place</th>
+                                    <th>Véhicule</th>
+                                    <th>Début</th>
+                                    <th>Fin</th>
+                                    <th>Statut</th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    {recentReservations.map(r => (
-                                        <tr key={r.id}>
-                                            {user?.typePersonne === "SUPERVISEUR" && (
-                                                <td>
-                                                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                                                        <div className="user-avatar">
-                                                            {r.personne?.nom?.charAt(0) || "?"}
-                                                        </div>
-                                                        <span>{r.personne?.nom} {r.personne?.prenom}</span>
-                                                    </div>
-                                                </td>
-                                            )}
-                                            <td><strong>{r.place?.numero}</strong></td>
-                                            <td>{r.vehicule?.immatriculation || "-"}</td>
-                                            <td>{formatDate(r.dateDebut)}</td>
-                                            <td>{formatDate(r.dateFin)}</td>
+                                {recentReservations.map(r => (
+                                    <tr key={r.id}>
+                                        {user?.typePersonne === "SUPERVISEUR" && (
                                             <td>
+                                                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                                                    <div className="user-avatar">
+                                                        {r.personne?.nom?.charAt(0) || "?"}
+                                                    </div>
+                                                    <span>{r.personne?.nom} {r.personne?.prenom}</span>
+                                                </div>
+                                            </td>
+                                        )}
+                                        <td><strong>{r.place?.numero}</strong></td>
+                                        <td>{r.vehicule?.immatriculation || "-"}</td>
+                                        <td>{formatDate(r.dateDebut)}</td>
+                                        <td>{formatDate(r.dateFin)}</td>
+                                        <td>
                                                 <span className={`place-status ${getStatusClass(r.statut)}`}>
                                                     {r.statut}
                                                 </span>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                        </td>
+                                    </tr>
+                                ))}
                                 </tbody>
                             </table>
                         </div>
