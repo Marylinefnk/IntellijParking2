@@ -1,117 +1,167 @@
 package esiag.back.services;
 
+import esiag.back.dto.DtoMapper;
+import esiag.back.dto.PersonneCreateDTO;
+import esiag.back.dto.PersonneDTO;
 import esiag.back.models.Personne;
 import esiag.back.repositories.PersonneRepository;
 import esiag.back.repositories.ReservationPlaceRepository;
 import esiag.back.repositories.VehiculeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
- * Service métier pour la gestion des personnes.
- * Implémente les règles métier suivantes :
- * - Unicité de l'adresse email
- * - Validation du format de l'email
- * - Impossibilité de supprimer une personne avec des réservations actives
+ * Service metier pour la gestion des personnes.
+ * Implemente les regles metier et le mapping DTO.
  */
 @Service
 @Transactional
 public class PersonneService {
 
+    private static final Logger logger = LoggerFactory.getLogger(PersonneService.class);
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@(.+)$";
+
     private final PersonneRepository personneRepository;
     private final VehiculeRepository vehiculeRepository;
     private final ReservationPlaceRepository reservationPlaceRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final DtoMapper dtoMapper;
 
     public PersonneService(PersonneRepository personneRepository,
                           VehiculeRepository vehiculeRepository,
-                          ReservationPlaceRepository reservationPlaceRepository) {
+                          ReservationPlaceRepository reservationPlaceRepository,
+                          PasswordEncoder passwordEncoder,
+                          DtoMapper dtoMapper) {
         this.personneRepository = personneRepository;
         this.vehiculeRepository = vehiculeRepository;
         this.reservationPlaceRepository = reservationPlaceRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.dtoMapper = dtoMapper;
+        logger.info("PersonneService initialise");
     }
 
-    /**
-     * Récupère toutes les personnes.
-     * @return Liste de toutes les personnes
-     */
+    // ==================== Methodes DTO ====================
+
+    public List<PersonneDTO> findAllDTO() {
+        logger.debug("Recuperation de toutes les personnes (DTO)");
+        List<PersonneDTO> result = personneRepository.findAll().stream()
+                .map(dtoMapper::toPersonneDTO)
+                .collect(Collectors.toList());
+        logger.info("Nombre de personnes recuperees: {}", result.size());
+        return result;
+    }
+
+    public Optional<PersonneDTO> findByIdDTO(Long id) {
+        logger.debug("Recherche de la personne avec id: {} (DTO)", id);
+        Optional<PersonneDTO> result = personneRepository.findById(id)
+                .map(dtoMapper::toPersonneDTO);
+        if (result.isEmpty()) {
+            logger.warn("Personne non trouvee avec id: {}", id);
+        }
+        return result;
+    }
+
+    public Optional<PersonneDTO> findByMailDTO(String mail) {
+        logger.debug("Recherche de la personne avec email: {} (DTO)", mail);
+        return personneRepository.findByMail(mail)
+                .map(dtoMapper::toPersonneDTO);
+    }
+
+    public PersonneDTO createDTO(PersonneCreateDTO createDTO) {
+        logger.info("Tentative de creation d'une personne: {}", createDTO.getMail());
+
+        validatePassword(createDTO.getPassword());
+
+        Personne personne = new Personne();
+        personne.setNom(createDTO.getNom());
+        personne.setPrenom(createDTO.getPrenom());
+        personne.setMail(createDTO.getMail());
+        personne.setPassword(passwordEncoder.encode(createDTO.getPassword()));
+        personne.setTypePersonne(createDTO.getTypePersonne());
+
+        Personne created = create(personne);
+        logger.info("Personne creee avec succes: id={}", created.getId());
+        return dtoMapper.toPersonneDTO(created);
+    }
+
+    public PersonneDTO updateDTO(Long id, PersonneCreateDTO updateDTO) {
+        logger.info("Tentative de mise a jour de la personne id={}", id);
+
+        Personne personneDetails = new Personne();
+        personneDetails.setNom(updateDTO.getNom());
+        personneDetails.setPrenom(updateDTO.getPrenom());
+        personneDetails.setMail(updateDTO.getMail());
+        personneDetails.setTypePersonne(updateDTO.getTypePersonne());
+
+        Personne updated = update(id, personneDetails);
+        return dtoMapper.toPersonneDTO(updated);
+    }
+
+    // ==================== Methodes internes (entites) ====================
+
     public List<Personne> findAll() {
         return personneRepository.findAll();
     }
 
-    /**
-     * Recherche une personne par son identifiant.
-     * @param id Identifiant de la personne
-     * @return La personne trouvée ou Optional vide
-     */
     public Optional<Personne> findById(Long id) {
         return personneRepository.findById(id);
     }
 
-    /**
-     * Recherche une personne par son adresse email.
-     * @param mail Adresse email recherchée
-     * @return La personne trouvée ou Optional vide
-     */
     public Optional<Personne> findByMail(String mail) {
         return personneRepository.findByMail(mail);
     }
 
-    /**
-     * Crée une nouvelle personne.
-     * Règles métier :
-     * - L'email doit être unique
-     * - L'email doit avoir un format valide
-     * - Le nom et prénom sont obligatoires
-     *
-     * @param personne La personne à créer
-     * @return La personne créée
-     * @throws RuntimeException si l'email existe déjà ou est invalide
-     */
     public Personne create(Personne personne) {
-        // Validation des champs obligatoires
+        logger.info("Creation d'une personne: email={}", personne.getMail());
+
         if (personne.getNom() == null || personne.getNom().trim().isEmpty()) {
+            logger.error("Echec creation: nom manquant");
             throw new RuntimeException("Le nom est obligatoire");
         }
         if (personne.getPrenom() == null || personne.getPrenom().trim().isEmpty()) {
-            throw new RuntimeException("Le prénom est obligatoire");
+            logger.error("Echec creation: prenom manquant");
+            throw new RuntimeException("Le prenom est obligatoire");
         }
         if (personne.getMail() == null || personne.getMail().trim().isEmpty()) {
+            logger.error("Echec creation: email manquant");
             throw new RuntimeException("L'adresse email est obligatoire");
         }
-
-        // Validation du format de l'email
         if (!isValidEmail(personne.getMail())) {
+            logger.error("Echec creation: format email invalide - {}", personne.getMail());
             throw new RuntimeException("Le format de l'adresse email est invalide");
         }
-
-        // Vérification de l'unicité de l'email
         if (personneRepository.existsByMail(personne.getMail())) {
-            throw new RuntimeException("Une personne avec l'email '" + personne.getMail() + "' existe déjà");
+            logger.error("Echec creation: email deja utilise - {}", personne.getMail());
+            throw new RuntimeException("Une personne avec l'email '" + personne.getMail() + "' existe deja");
         }
 
         return personneRepository.save(personne);
     }
 
-    /**
-     * Met à jour une personne existante.
-     * @param id Identifiant de la personne
-     * @param personneDetails Nouvelles données
-     * @return La personne mise à jour
-     */
     public Personne update(Long id, Personne personneDetails) {
-        Personne personne = personneRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Personne non trouvée avec l'id: " + id));
+        logger.info("Mise a jour de la personne id={}", id);
 
-        // Vérification de l'unicité de l'email si modifié
+        Personne personne = personneRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("Echec mise a jour: personne non trouvee avec id={}", id);
+                    return new RuntimeException("Personne non trouvee avec l'id: " + id);
+                });
+
         if (personneDetails.getMail() != null && !personneDetails.getMail().equals(personne.getMail())) {
             if (personneRepository.existsByMail(personneDetails.getMail())) {
+                logger.error("Echec mise a jour: email deja utilise - {}", personneDetails.getMail());
                 throw new RuntimeException("Une autre personne avec l'email '" +
-                        personneDetails.getMail() + "' existe déjà");
+                        personneDetails.getMail() + "' existe deja");
             }
             if (!isValidEmail(personneDetails.getMail())) {
+                logger.error("Echec mise a jour: format email invalide - {}", personneDetails.getMail());
                 throw new RuntimeException("Le format de l'adresse email est invalide");
             }
         }
@@ -119,41 +169,46 @@ public class PersonneService {
         personne.setNom(personneDetails.getNom());
         personne.setPrenom(personneDetails.getPrenom());
         personne.setMail(personneDetails.getMail());
+        if (personneDetails.getTypePersonne() != null) {
+            personne.setTypePersonne(personneDetails.getTypePersonne());
+        }
 
         return personneRepository.save(personne);
     }
 
-    /**
-     * Supprime une personne.
-     * @param id Identifiant de la personne
-     * @throws RuntimeException si la personne a des réservations actives ou des véhicules
-     */
     public void delete(Long id) {
-        Personne personne = personneRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Personne non trouvée avec l'id: " + id));
+        logger.info("Tentative de suppression de la personne id={}", id);
 
-        // Vérification des réservations actives
+        Personne personne = personneRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("Echec suppression: personne non trouvee avec id={}", id);
+                    return new RuntimeException("Personne non trouvee avec l'id: " + id);
+                });
+
         long nbReservationsActives = reservationPlaceRepository.countActiveReservationsByPersonne(id);
         if (nbReservationsActives > 0) {
+            logger.error("Echec suppression: personne {} a {} reservation(s) active(s)",
+                personne.getMail(), nbReservationsActives);
             throw new RuntimeException("Impossible de supprimer cette personne car elle a " +
-                    nbReservationsActives + " réservation(s) active(s)");
+                    nbReservationsActives + " reservation(s) active(s)");
         }
 
-        // Vérification des véhicules associés
         if (!vehiculeRepository.findByPersonneId(id).isEmpty()) {
-            throw new RuntimeException("Impossible de supprimer cette personne car elle possède des véhicules. " +
-                    "Veuillez d'abord supprimer ses véhicules.");
+            logger.error("Echec suppression: personne {} possede des vehicules", personne.getMail());
+            throw new RuntimeException("Impossible de supprimer cette personne car elle possede des vehicules.");
         }
 
         personneRepository.deleteById(id);
+        logger.info("Personne supprimee avec succes: id={}", id);
     }
 
-    /**
-     * Vérifie si une adresse email a un format valide.
-     * @param email Adresse email à vérifier
-     * @return true si le format est valide
-     */
+    private void validatePassword(String password) {
+        if (password == null || password.trim().isEmpty()) {
+            throw new RuntimeException("Le mot de passe est obligatoire");
+        }
+    }
+
     private boolean isValidEmail(String email) {
-        return email != null && email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
+        return email != null && email.matches(EMAIL_REGEX);
     }
 }

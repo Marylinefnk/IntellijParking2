@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DtoMapper {
 
-    // ==================== Personne ====================
+    //  Personne
     public PersonneDTO toPersonneDTO(Personne personne) {
         if (personne == null) return null;
         return PersonneDTO.builder()
@@ -14,10 +14,11 @@ public class DtoMapper {
                 .nom(personne.getNom())
                 .prenom(personne.getPrenom())
                 .mail(personne.getMail())
+                .typePersonne(personne.getTypePersonne())
                 .build();
     }
 
-    // ==================== Zone ====================
+    //  Zone
     public ZoneDTO toZoneDTO(Zone zone) {
         if (zone == null) return null;
         return ZoneDTO.builder()
@@ -27,7 +28,7 @@ public class DtoMapper {
                 .build();
     }
 
-    // ==================== Vehicule ====================
+    // Vehicule
     public VehiculeDTO toVehiculeDTO(Vehicule vehicule) {
         if (vehicule == null) return null;
         return VehiculeDTO.builder()
@@ -38,7 +39,7 @@ public class DtoMapper {
                 .build();
     }
 
-    // ==================== Place ====================
+    // Place
     public PlaceDTO toPlaceDTO(Place place) {
         if (place == null) return null;
         return PlaceDTO.builder()
@@ -52,7 +53,7 @@ public class DtoMapper {
                 .build();
     }
 
-    // ==================== Service ====================
+    // Service
     public ServiceDTO toServiceDTO(ServiceEntity service) {
         if (service == null) return null;
         return ServiceDTO.builder()
@@ -62,7 +63,7 @@ public class DtoMapper {
                 .build();
     }
 
-    // ==================== ReservationPlace ====================
+    //  ReservationPlace
     public ReservationPlaceResponseDTO toReservationPlaceResponseDTO(ReservationPlace reservation) {
         if (reservation == null) return null;
         return ReservationPlaceResponseDTO.builder()
@@ -76,7 +77,7 @@ public class DtoMapper {
                 .build();
     }
 
-    // ==================== ReservationService ====================
+    //  ReservationService
     public ReservationServiceResponseDTO toReservationServiceResponseDTO(ReservationService reservation) {
         if (reservation == null) return null;
         return ReservationServiceResponseDTO.builder()
@@ -89,7 +90,7 @@ public class DtoMapper {
                 .build();
     }
 
-    // ==================== Stationnement ====================
+    //  Stationnement
     public StationnementDTO toStationnementDTO(Stationnement stationnement) {
         if (stationnement == null) return null;
         return StationnementDTO.builder()
