@@ -27,7 +27,7 @@ export default function ReservationsPage() {
         }
     }, [userLoading, user]);
 
-    // Gere la place pre-selectionnee depuis PlacesPage
+    // Gere la place pre-selectionne depuis PlacesPage
     useEffect(() => {
         if (location.state?.placeToReserve) {
             const place = location.state.placeToReserve;
