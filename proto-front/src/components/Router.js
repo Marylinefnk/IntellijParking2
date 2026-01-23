@@ -55,20 +55,20 @@ export default function Router() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
 
-                {/* Public places view */}
-                <Route path="/places" element={<PublicLayout />}>
+                {/* Public places view - Default landing page */}
+                <Route path="/" element={<PublicLayout />}>
                     <Route index element={<PlacesPage />} />
                 </Route>
 
                 {/* Protected routes */}
-                <Route path="/" element={
+                <Route path="/app" element={
                     <ProtectedRoute>
                         <Layout />
                     </ProtectedRoute>
                 }>
                     <Route index element={<Dashboard />} />
                     <Route path="dashboard" element={<Dashboard />} />
-                    <Route path="mes-places" element={<PlacesPage />} />
+                    <Route path="places" element={<PlacesPage />} />
                     <Route path="reservations" element={<ReservationsPage />} />
                     <Route path="personnes" element={
                         <SupervisorRoute>

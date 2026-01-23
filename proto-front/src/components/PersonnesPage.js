@@ -6,7 +6,7 @@ export default function PersonnesPage() {
     const [personnes, setPersonnes] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [editingPersonne, setEditingPersonne] = useState(null);
-    const [form, setForm] = useState({ nom: "", prenom: "", mail: "", typePersonne: "VISITEUR" });
+    const [form, setForm] = useState({ nom: "", prenom: "", mail: "", password: "", typePersonne: "VISITEUR" });
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
 
@@ -30,12 +30,25 @@ export default function PersonnesPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validate password for new users
+        if (!editingPersonne && (!form.password || form.password.length < 6)) {
+            alert("Le mot de passe doit contenir au moins 6 caracteres");
+            return;
+        }
+
         try {
             const url = editingPersonne ? `${API_PERSONNES}/${editingPersonne.id}` : API_PERSONNES;
             const method = editingPersonne ? "PUT" : "POST";
+
+            // Only include password for new users
+            const body = editingPersonne
+                ? { nom: form.nom, prenom: form.prenom, mail: form.mail, typePersonne: form.typePersonne }
+                : form;
+
             const res = await authFetch(url, {
                 method,
-                body: JSON.stringify(form)
+                body: JSON.stringify(body)
             });
             if (!res.ok) {
                 const err = await res.json();
@@ -54,6 +67,7 @@ export default function PersonnesPage() {
             nom: personne.nom || "",
             prenom: personne.prenom || "",
             mail: personne.mail || "",
+            password: "",
             typePersonne: personne.typePersonne || "VISITEUR"
         });
         setShowModal(true);
@@ -76,7 +90,7 @@ export default function PersonnesPage() {
     const closeModal = () => {
         setShowModal(false);
         setEditingPersonne(null);
-        setForm({ nom: "", prenom: "", mail: "", typePersonne: "VISITEUR" });
+        setForm({ nom: "", prenom: "", mail: "", password: "", typePersonne: "VISITEUR" });
     };
 
     const filteredPersonnes = personnes.filter(p =>
@@ -265,6 +279,20 @@ export default function PersonnesPage() {
                                         required
                                     />
                                 </div>
+                                {!editingPersonne && (
+                                    <div className="form-group">
+                                        <label className="form-label">Mot de passe</label>
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            value={form.password}
+                                            onChange={e => setForm({...form, password: e.target.value})}
+                                            placeholder="Minimum 6 caracteres"
+                                            required
+                                            minLength={6}
+                                        />
+                                    </div>
+                                )}
                                 <div className="form-group">
                                     <label className="form-label">Role</label>
                                     <select

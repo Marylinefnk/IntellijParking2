@@ -31,17 +31,17 @@ export default function PublicLayout() {
                         P
                     </div>
                     <span style={{ fontSize: "1.25rem", fontWeight: 600, color: "#1e293b" }}>
-                        ParkingPro
+                        Intellij Parking
                     </span>
                 </div>
                 <nav style={{ display: "flex", gap: 16, alignItems: "center" }}>
-                    <Link to="/places" style={{ color: "#3b82f6", textDecoration: "none", fontWeight: 500 }}>
+                    <Link to="/" style={{ color: "#3b82f6", textDecoration: "none", fontWeight: 500 }}>
                         Voir les places
                     </Link>
                     {user ? (
                         <button
                             className="btn btn-primary"
-                            onClick={() => navigate("/")}
+                            onClick={() => navigate("/app")}
                         >
                             Mon espace
                         </button>
