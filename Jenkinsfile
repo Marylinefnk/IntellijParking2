@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         VM_USER = "toto"
-        VM_IP = "172.31.249.243"
+        VM_IP = "172.31.250.88"
         BACKEND_DIR = "/home/toto/projet/proto-back"
         FRONTEND_DIR = "/home/toto/projet/proto-front"
        
