@@ -40,16 +40,16 @@ pipeline {
         stage('Deploy to VM') {
             steps {
                 sshagent(['SshVmBackFrontend']) {
-                       sh 'scp -o StrictHostKeyChecking=no proto-back/target/proto-back-1.0-SNAPSHOT.jar toto@172.31.249.243:/home/toto/projet/proto-back/'
-                       sh 'scp -o StrictHostKeyChecking=no proto-front/package.json proto-front/package-lock.json toto@172.31.249.243:/home/toto/projet/proto-front/'
-                       sh 'scp -o StrictHostKeyChecking=no -r proto-front/public toto@172.31.249.243:/home/toto/projet/proto-front/'
-                       sh 'scp -o StrictHostKeyChecking=no -r proto-front/build toto@172.31.249.243:/home/toto/projet/proto-front/'
-                       sh 'scp -o StrictHostKeyChecking=no -r proto-front/src toto@172.31.249.243:/home/toto/projet/proto-front/'
-                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.249.243 killall java 2>/dev/null || true'
-                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.249.243 pkill -f "npm" || true'
-                       sh """ssh -o StrictHostKeyChecking=no -f toto@172.31.249.243 "cd /home/toto/projet/proto-back && nohup java -DDB_HOST=${DB_HOST} -DDB_PORT=${DB_PORT} -DDB_NAME=${DB_NAME} -DDB_USERNAME=${DB_USERNAME} -DDB_PASSWORD=${DB_PASSWORD} -jar proto-back-1.0-SNAPSHOT.jar > backend.log 2>&1 &" """
-                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.249.243 "cd /home/toto/projet/proto-front && npm install"'
-                       sh 'ssh -f -o StrictHostKeyChecking=no toto@172.31.249.243 "cd /home/toto/projet/proto-front && nohup npm start > frontend.log 2>&1 &"'
+                       sh 'scp -o StrictHostKeyChecking=no proto-back/target/proto-back-1.0-SNAPSHOT.jar toto@172.31.250.88:/home/toto/projet/proto-back/'
+                       sh 'scp -o StrictHostKeyChecking=no proto-front/package.json proto-front/package-lock.json toto@172.31.250.88:/home/toto/projet/proto-front/'
+                       sh 'scp -o StrictHostKeyChecking=no -r proto-front/public toto@172.31.250.88:/home/toto/projet/proto-front/'
+                       sh 'scp -o StrictHostKeyChecking=no -r proto-front/build toto@172.31.250.88:/home/toto/projet/proto-front/'
+                       sh 'scp -o StrictHostKeyChecking=no -r proto-front/src toto@172.31.250.88:/home/toto/projet/proto-front/'
+                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.250.88 killall java 2>/dev/null || true'
+                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.250.88 pkill -f "npm" || true'
+                       sh """ssh -o StrictHostKeyChecking=no -f toto@172.31.250.88 "cd /home/toto/projet/proto-back && nohup java -DDB_HOST=${DB_HOST} -DDB_PORT=${DB_PORT} -DDB_NAME=${DB_NAME} -DDB_USERNAME=${DB_USERNAME} -DDB_PASSWORD=${DB_PASSWORD} -jar proto-back-1.0-SNAPSHOT.jar > backend.log 2>&1 &" """
+                       sh 'ssh -o StrictHostKeyChecking=no toto@172.31.250.88 "cd /home/toto/projet/proto-front && npm install"'
+                       sh 'ssh -f -o StrictHostKeyChecking=no toto@172.31.250.88 "cd /home/toto/projet/proto-front && nohup npm start > frontend.log 2>&1 &"'
                 }
             }
         }
