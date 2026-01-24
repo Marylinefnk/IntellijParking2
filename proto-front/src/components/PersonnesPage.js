@@ -31,7 +31,6 @@ export default function PersonnesPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate password for new users
         if (!editingPersonne && (!form.password || form.password.length < 6)) {
             alert("Le mot de passe doit contenir au moins 6 caracteres");
             return;
@@ -41,7 +40,7 @@ export default function PersonnesPage() {
             const url = editingPersonne ? `${API_PERSONNES}/${editingPersonne.id}` : API_PERSONNES;
             const method = editingPersonne ? "PUT" : "POST";
 
-            // Only include password for new users
+            // inclu uniquement le password pour les users
             const body = editingPersonne
                 ? { nom: form.nom, prenom: form.prenom, mail: form.mail, typePersonne: form.typePersonne }
                 : form;

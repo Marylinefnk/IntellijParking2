@@ -2,7 +2,7 @@ package esiag.back;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-//import esiag.back.services.ReservationPlaceService;
+import esiag.back.services.ReservationPlaceService;
 import esiag.back.services.GuidageService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

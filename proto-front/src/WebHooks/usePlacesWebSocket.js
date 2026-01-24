@@ -5,7 +5,7 @@ import SockJS from 'sockjs-client';
 const WS_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8080') + '/ws';
 
 /**
- * Hook pour la mise a jour des places en temps reel via WebSocket.
+ * webHook pour la mise a jour des places en temps reel via WebSocket.
  * @param {Function} onPlacesUpdate - Callback lors de la maj de toutes les places
  * @param {Function} onPlaceUpdate - Callback lors de la maj d'une place
  * @param {Function} onPlaceDeleted - Callback lors de la suppression d'une place

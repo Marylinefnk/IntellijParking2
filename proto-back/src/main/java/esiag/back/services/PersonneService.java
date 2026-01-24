@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Service metier pour la gestion des personnes.
- * Implemente les regles metier et le mapping DTO.
- */
+
+ //Service metier pour la gestion des personnes.
+ //Implemente les regles metier et le mapping DTO que les les repositories vont utiliser
+ 
 @Service
 @Transactional
 public class PersonneService {
@@ -47,7 +47,7 @@ public class PersonneService {
         logger.info("PersonneService initialise");
     }
 
-    // ==================== Methodes DTO ====================
+    // Methodes DTO 
 
     public List<PersonneDTO> findAllDTO() {
         logger.debug("Recuperation de toutes les personnes (DTO)");
@@ -104,7 +104,7 @@ public class PersonneService {
         return dtoMapper.toPersonneDTO(updated);
     }
 
-    // ==================== Methodes internes (entites) ====================
+    //  Methodes internes (entites) 
 
     public List<Personne> findAll() {
         return personneRepository.findAll();

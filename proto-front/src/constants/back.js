@@ -1,7 +1,7 @@
-export const LOCAL_HOST = process.env.REACT_APP_API_URL || 'http://localhost:8080';
-export const LOCAL_HOST_SAMPLE = LOCAL_HOST + '/sample/';
-export const GET_SAMPLES = LOCAL_HOST_SAMPLE + 'all';
-export const UPDATE_SAMPLES = LOCAL_HOST_SAMPLE + 'update';
+export const LOCAL_HOST = 'http://172.31.249.183:3000';
+//export const LOCAL_HOST_SAMPLE = LOCAL_HOST + '/sample/';
+//export const GET_SAMPLES = LOCAL_HOST_SAMPLE + 'all';
+//export const UPDATE_SAMPLES = LOCAL_HOST_SAMPLE + 'update';
 
 export const API_PLACES = LOCAL_HOST + '/api/places';
 export const API_PLACES_DISPONIBLES = LOCAL_HOST + '/api/places/disponibles';

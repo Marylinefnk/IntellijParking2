@@ -27,13 +27,11 @@ export default function RegisterPage() {
         e.preventDefault();
         setError("");
 
-        // Validate passwords match
         if (formData.password !== formData.confirmPassword) {
             setError("Les mots de passe ne correspondent pas");
             return;
         }
 
-        // Validate password length
         if (formData.password.length < 6) {
             setError("Le mot de passe doit contenir au moins 6 caracteres");
             return;

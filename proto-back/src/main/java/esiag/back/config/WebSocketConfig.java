@@ -8,7 +8,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 /**
  * Configuration WebSocket pour la communication temps reel.
- * Utilise STOMP comme protocole de messagerie.
+ * j'Utilise STOMP comme protocole de messagerie.
  */
 @Configuration
 @EnableWebSocketMessageBroker

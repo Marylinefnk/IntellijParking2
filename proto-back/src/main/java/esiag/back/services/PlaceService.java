@@ -29,15 +29,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * Service metier pour la gestion des places de parking.
- *
- * ARCHITECTURE MVC:
- * - Contient TOUTE la logique metier (validation, regles de gestion)
- * - Gere le mapping DTO <-> Entite
- * - Publie des evenements (WebSocket decouple via listeners)
- * - Le Controller ne fait que deleguer et retourner la reponse HTTP
- */
 @Service
 @Transactional
 public class PlaceService {
@@ -65,7 +56,7 @@ public class PlaceService {
         this.notificationService = notificationService;
     }
 
-    // ==================== Methodes DTO ====================
+    //  Methodes DTO 
 
     public List<PlaceDTO> findAllDTO() {
         logger.debug("Recuperation de toutes les places (DTO)");
@@ -162,7 +153,7 @@ public class PlaceService {
         return result;
     }
 
-    // ==================== Methodes internes (entites) ====================
+    // Methodes internes (entites) 
 
     public List<Place> findAll() {
         return placeRepository.findAll();
@@ -274,7 +265,7 @@ public class PlaceService {
         notificationService.notifyPlaceDeleted(id);
     }
 
-    // ==================== Methodes disponibilite ====================
+    //  Methodes disponibilite 
 
     public List<PlaceAvailabilityDTO> findAllWithAvailability() {
         LocalDateTime now = LocalDateTime.now();

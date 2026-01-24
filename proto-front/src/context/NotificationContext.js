@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 
 /**
- * Contexte pour la gestion des notifications pop up dans l'application.
+ * Contexte pour la gestion des notifications pop up(toast) dans l'application.
  * Fournit des methodes pour afficher des messages de succes, erreur, warning et info.
  */
 const NotificationContext = createContext(null);
