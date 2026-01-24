@@ -30,7 +30,6 @@ public class DataLoader {
 
         return args -> {
 
-            // Always ensure admin user exists
             ensureAdminExists(passwordEncoder, personneRepository);
 
             if (zoneRepository.count() > 0) {
@@ -40,7 +39,7 @@ public class DataLoader {
 
             logger.info("Initializing database with sample data...");
 
-            // ================= ZONES =================
+            // ZONES
             Zone zoneA = zoneRepository.save(
                     Zone.builder().nom("Zone A").description("Parking principal - niveau 1").build()
             );
