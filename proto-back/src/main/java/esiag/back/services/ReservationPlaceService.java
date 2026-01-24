@@ -26,13 +26,6 @@ import java.util.stream.Collectors;
 
 /**
  * Service metier pour la gestion des reservations de places.
- *
- * ARCHITECTURE MVC:
- * - Contient TOUTE la logique metier (validation, regles de gestion)
- * - Gere le mapping DTO <-> Entite
- * - Gere les notifications WebSocket
- * - Le Controller ne fait que deleguer et retourner la reponse HTTP
- *
  * Regles metier implementees :
  * - Pas de reservation sur un creneau deja reserve
  * - La place doit exister et ne pas etre occupee
