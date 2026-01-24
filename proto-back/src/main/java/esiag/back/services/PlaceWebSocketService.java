@@ -32,8 +32,6 @@ public class PlaceWebSocketService {
         this.placeService = placeService;
     }
 
-    // ---- Event listeners (AFTER COMMIT) ----
-
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onPlaceCreated(PlaceCreatedEvent e) {
         // Au besoin, tu peux aussi faire broadcastPlaceUpdate(e.placeId())
