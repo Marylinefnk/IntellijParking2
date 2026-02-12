@@ -17,4 +17,11 @@ public interface CapteurRepository extends JpaRepository<Capteur, Long> {
 
     List<Capteur> findByEtatCapteur(EtatCapteur etat);
 
+    // on filtre par zone - utile pour la simulation par niveau
+    @Query("SELECT c FROM Capteur c WHERE c.place.zone.nom = :nomZone AND c.etatCapteur = 'ACTIF'")
+    List<Capteur> findActifsByZoneNom(@Param("nomZone") String nomZone);
+
+    @Query("SELECT c FROM Capteur c WHERE c.etatCapteur = 'ACTIF'")
+    List<Capteur> findAllActifs();
+
 }
