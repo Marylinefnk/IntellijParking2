@@ -6,6 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/simulation")
 public class SimulationController {
@@ -28,6 +32,37 @@ public class SimulationController {
 
         InitialisationResultatDTO resultat = simulationService.initialiser(nbPersonnes, vehiculesParPersonneMax, seed);
         return ResponseEntity.ok(resultat);
+    }
+
+    @PostMapping("/reservations/journee")
+    @PreAuthorize("hasRole('SUPERVISEUR')")
+    public ResponseEntity<Map<String, Object>> genererReservations(
+            @RequestParam String date,
+            @RequestParam(defaultValue = "5") int pasGenerationSecondes,
+            @RequestParam(required = false) String niveau,
+            @RequestParam(required = false) Double tauxCible) {
+
+        LocalDate dateJournee;
+        try {
+            dateJournee = LocalDate.parse(date);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (pasGenerationSecondes < 1 || pasGenerationSecondes > 10) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // on lance en async et on répond direct
+        simulationService.genererReservationsJournee(dateJournee, pasGenerationSecondes, niveau, tauxCible);
+
+        Map<String, Object> reponse = new HashMap<>();
+        reponse.put("message", "Génération des réservations lancée en arrière-plan");
+        reponse.put("date", date);
+        reponse.put("niveau", niveau != null ? niveau : "tous");
+        reponse.put("pasGenerationSecondes", pasGenerationSecondes);
+
+        return ResponseEntity.accepted().body(reponse);
     }
 
 }
