@@ -11,8 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Random;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 
 @Service
 public class SimulationService {
@@ -89,8 +90,76 @@ public class SimulationService {
     @Async
     @Transactional
     public void genererReservationsJournee(LocalDate date, int pasSecondes, String niveau, Double tauxCible) {
-        logger.info("Génération réservations journée {} - niveau={}", date, niveau);
-        // TODO: implement
+        logger.info("Génération réservations journée {} - niveau={}, pas={}s", date, niveau, pasSecondes);
+
+        List<Place> places;
+        if (niveau != null && !niveau.isBlank()) {
+            places = placeRepository.findByZoneNom(niveau);
+        } else {
+            places = placeRepository.findAll();
+        }
+
+        if (places.isEmpty()) {
+            logger.warn("Aucune place trouvée pour la génération - niveau={}", niveau);
+            return;
+        }
+
+        List<Vehicule> tousVehicules = vehiculeRepository.findAll();
+        if (tousVehicules.isEmpty()) {
+            logger.warn("Aucun vehicule en base - lancer d'abord /simulation/initialiser");
+            return;
+        }
+
+        Random rng = new Random();
+        int compteur = 0;
+
+        // on génère des créneaux entre 6h et 22h
+        for (Place place : places) {
+            LocalDateTime curseur = LocalDateTime.of(date, LocalTime.of(6, 0));
+            LocalDateTime finJournee = LocalDateTime.of(date, LocalTime.of(22, 0));
+
+            while (curseur.isBefore(finJournee)) {
+                // durée aléatoire entre 30min et 3h
+                int dureeMin = 30 + rng.nextInt(150);
+                LocalDateTime debut = curseur.plusMinutes(rng.nextInt(30));
+                LocalDateTime fin = debut.plusMinutes(dureeMin);
+
+                if (fin.isAfter(finJournee)) break;
+
+                // on vérifie pas de conflit
+                List<ReservationPlace> conflits = reservationPlaceRepository.findConflictingReservations(
+                        place.getId(), debut, fin,
+                        Arrays.asList(StatutReservation.CONFIRMEE, StatutReservation.EN_COURS));
+
+                if (conflits.isEmpty()) {
+                    Vehicule v = tousVehicules.get(rng.nextInt(tousVehicules.size()));
+
+                    ReservationPlace resa = ReservationPlace.builder()
+                            .place(place)
+                            .vehicule(v)
+                            .personne(v.getPersonne())
+                            .dateDebut(debut)
+                            .dateFin(fin)
+                            .statut(StatutReservation.CONFIRMEE)
+                            .build();
+                    reservationPlaceRepository.save(resa);
+                    compteur++;
+                }
+
+                curseur = fin.plusMinutes(5 + rng.nextInt(20));
+
+                // pause entre chaque batch pour l'effet progressif en démo
+                try {
+                    Thread.sleep(pasSecondes * 1000L);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    logger.warn("Génération interrompue");
+                    return;
+                }
+            }
+        }
+
+        logger.info("Génération terminée: {} réservations créées pour le {}", compteur, date);
     }
 
     private String genererImmatriculation(Random rng) {
