@@ -26,10 +26,8 @@ public class SimulationController {
             @RequestParam(defaultValue = "20") int nbPersonnes,
             @RequestParam(defaultValue = "2") int vehiculesParPersonneMax,
             @RequestParam(required = false) Long seed) {
-
         if (nbPersonnes < 1) return ResponseEntity.badRequest().build();
         if (vehiculesParPersonneMax < 1 || vehiculesParPersonneMax > 3) return ResponseEntity.badRequest().build();
-
         InitialisationResultatDTO resultat = simulationService.initialiser(nbPersonnes, vehiculesParPersonneMax, seed);
         return ResponseEntity.ok(resultat);
     }
@@ -41,28 +39,46 @@ public class SimulationController {
             @RequestParam(defaultValue = "5") int pasGenerationSecondes,
             @RequestParam(required = false) String niveau,
             @RequestParam(required = false) Double tauxCible) {
-
         LocalDate dateJournee;
-        try {
-            dateJournee = LocalDate.parse(date);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        if (pasGenerationSecondes < 1 || pasGenerationSecondes > 10) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        // on lance en async et on répond direct
+        try { dateJournee = LocalDate.parse(date); } catch (Exception e) { return ResponseEntity.badRequest().build(); }
+        if (pasGenerationSecondes < 1 || pasGenerationSecondes > 10) return ResponseEntity.badRequest().build();
         simulationService.genererReservationsJournee(dateJournee, pasGenerationSecondes, niveau, tauxCible);
-
         Map<String, Object> reponse = new HashMap<>();
         reponse.put("message", "Génération des réservations lancée en arrière-plan");
-        reponse.put("date", date);
-        reponse.put("niveau", niveau != null ? niveau : "tous");
-        reponse.put("pasGenerationSecondes", pasGenerationSecondes);
-
+        reponse.put("date", date); reponse.put("niveau", niveau != null ? niveau : "tous");
         return ResponseEntity.accepted().body(reponse);
+    }
+
+    @PostMapping("/capteurs/demarrer")
+    @PreAuthorize("hasRole('SUPERVISEUR')")
+    public ResponseEntity<Map<String, Object>> demarrer(
+            @RequestParam(defaultValue = "2") int intervalleSecondes,
+            @RequestParam(required = false) String niveau,
+            @RequestParam(defaultValue = "0.5") double probabilitePresence) {
+        if (simulationService.isSimulationActive()) {
+            Map<String, Object> rep = new HashMap<>(); rep.put("message", "Simulation déjà en cours"); return ResponseEntity.ok(rep);
+        }
+        simulationService.demarrerSimulation(intervalleSecondes, niveau, probabilitePresence);
+        Map<String, Object> reponse = new HashMap<>();
+        reponse.put("message", "Simulation capteurs démarrée"); reponse.put("intervalleSecondes", intervalleSecondes);
+        return ResponseEntity.accepted().body(reponse);
+    }
+
+    @PostMapping("/capteurs/arreter")
+    @PreAuthorize("hasRole('SUPERVISEUR')")
+    public ResponseEntity<Map<String, String>> arreter() {
+        simulationService.arreterSimulation();
+        Map<String, String> rep = new HashMap<>(); rep.put("message", "Arrêt de la simulation demandé");
+        return ResponseEntity.ok(rep);
+    }
+
+    @GetMapping("/statut")
+    @PreAuthorize("hasRole('SUPERVISEUR')")
+    public ResponseEntity<Map<String, Object>> statut() {
+        Map<String, Object> rep = new HashMap<>();
+        rep.put("simulationActive", simulationService.isSimulationActive());
+        rep.put("nbClientsSSE", 0); // TODO: brancher sur le service SSE
+        return ResponseEntity.ok(rep);
     }
 
 }
