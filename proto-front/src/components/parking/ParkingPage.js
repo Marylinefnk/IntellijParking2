@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Niveau1 from "./Niveau1";
+import Niveau2 from "./Niveau2";
+import Niveau3 from "./Niveau3";
 
 
 export default function ParkingPage() {
@@ -11,16 +13,16 @@ export default function ParkingPage() {
             <h2>Niveaux du parking</h2>
 
             {/* Boutons niveaux */}
-            <div style={{ marginBottom: 20 }}>
+            <div style={{ marginBottom: 20 ,}}>
                 <button onClick={() => setLevel(0)}>RDC</button>
-                <button onClick={() => setLevel(1)}>Niveau -1</button>
-                <button onClick={() => setLevel(2)}>Niveau -2</button>
+                <button onClick={() => setLevel(1)}>Niveau 1</button>
+                <button onClick={() => setLevel(2)}>Niveau 2</button>
             </div>
 
             {/* Affichage du niveau */}
             {level === 0 && <Niveau1 />}
-            {level === 1 && <Niveau1 />}
-            {level === 2 && <Niveau1 />}
+            {level === 1 && <Niveau2 />}
+            {level === 2 && <Niveau3 />}
 
         </div>
     );
