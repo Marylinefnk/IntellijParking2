@@ -129,7 +129,7 @@ public class SimulationService {
                 }
                 Thread.sleep(intervalleSecondes*1000L);
             } catch (InterruptedException e) { Thread.currentThread().interrupt(); break; }
-              catch (Exception e) { logger.error("Erreur dans la boucle simulation: {}", e.getMessage()); e.printStackTrace(); }
+              catch (Exception e) { logger.error("Erreur dans la boucle simulation: {}", e.getMessage(), e); }
         }
         logger.info("Simulation arrêtée");
     }
