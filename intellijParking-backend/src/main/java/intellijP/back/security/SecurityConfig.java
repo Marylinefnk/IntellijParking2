@@ -59,6 +59,10 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.DELETE, "/api/places/**").hasRole("SUPERVISEUR")
                 .antMatchers("/api/personnes/**").hasRole("SUPERVISEUR")
                 .antMatchers("/api/services/**").hasRole("SUPERVISEUR")
+                // endpoints simulation R2 - superviseur uniquement
+                .antMatchers("/simulation/**").hasRole("SUPERVISEUR")
+                // flux SSE R2 - public
+                .antMatchers("/flux/**").permitAll()
                 // Authenticated users can access reservations and vehicles
                 .antMatchers("/api/reservations-place/**").authenticated()
                 .antMatchers("/api/reservations-service/**").authenticated()
