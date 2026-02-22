@@ -1,7 +1,7 @@
 import React from 'react';
 import parkingBg from './parkingVF.png';
 
-export default function Level0() {
+export default function Level1() {
     return (
         <div style={{ position: 'relative', width: '1350px', height: '600px' }}>
 
@@ -100,7 +100,7 @@ export default function Level0() {
                             font-family: Arial, sans-serif;
                             pointer-events: none;
                         }
-                        .delivery-local {
+                        .vip-local {
                             fill: #ffa500;
                             stroke: #333;
                             stroke-width: 3;
@@ -131,7 +131,7 @@ export default function Level0() {
                 <line x1="1280" y1="310" x2="1280" y2="235" className="arrow" markerEnd="url(#arrow)" />
                 <rect x="1115" y="359" width="160" height="40" className="lane" />
 
-                {/* entree centre com (pietons)*/}
+                {/* entree centre com */}
                 <g id="entree-centre-commercial">
                     <rect x="0" y="220" width="20" height="80"
                           fill="#3498db" stroke="#2980b9" strokeWidth="3" />
@@ -202,7 +202,7 @@ export default function Level0() {
                 ))}
 
 
-                {/* RANGÉE MILIEU HAUT - électrique */}
+                {/* RANGÉE MILIEU HAUT - électriqu */}
                 {[
                     { id: 'A47', x: 234 }, { id: 'A48', x: 274 }, { id: 'A49', x: 314 },
                     { id: 'A50', x: 354 }, { id: 'A51', x: 392 },
@@ -213,7 +213,7 @@ export default function Level0() {
                     </g>
                 ))}
 
-                {/* RANGÉE MILIEU HAUT - normales */}
+                {/* RANGÉE MILIEU HAUT - v normales */}
                 {[
                     { id: 'A52', x: 432 }, { id: 'A54', x: 475 }, { id: 'A55', x: 515 },
                     { id: 'A56', x: 555 }, { id: 'A57', x: 595 }, { id: 'A58', x: 635 },
@@ -238,7 +238,7 @@ export default function Level0() {
                     </g>
                 ))}
 
-                {/* RANGÉE MILIEU BAS - normales */}
+                {/* RANGÉE MILIEU BAS - voiture normales */}
                 {[
                     { id: 'A71', x: 432 }, { id: 'A75', x: 555 }, { id: 'A76', x: 595 },
                     { id: 'A77', x: 635 }, { id: 'A78', x: 675 }, { id: 'A79', x: 722 },
@@ -255,8 +255,8 @@ export default function Level0() {
                 {/* Local 1 */}
                 <g id="local-vip1">
                     <rect x="130" y="223" width="80" height="50"
-                          className="delivery-local" rx="10" ry="10" />
-                    <text x="136" y="252" fontSize="11" fontWeight="bold" fill="#333">LIVRAISON 1</text>
+                          className="vip-local" rx="10" ry="10" />
+                    <text x="136" y="252" fontSize="11" fontWeight="bold" fill="#333">VIP 1</text>
                     <rect id="status-vip1" x="164" y="225" width="12" height="12"
                           fill="#28a745" stroke="#2f2f2f" strokeWidth="1" rx="3" ry="3" />
                 </g>
@@ -264,12 +264,11 @@ export default function Level0() {
                 {/* Local 2 */}
                 <g id="local-vip2">
                     <rect x="980" y="223" width="80" height="50"
-                          className="delivery-local" rx="10" ry="10" />
-                    <text x="983" y="252" fontSize="11" fontWeight="bold" fill="#333">LIVRAISON 2</text>
+                          className="vip-local" rx="10" ry="10" />
+                    <text x="993" y="252" fontSize="11" fontWeight="bold" fill="#333">VIP 2</text>
                     <rect id="status-vip2" x="1014" y="225" width="12" height="12"
                           fill="#dc3545" stroke="#2f2f2f" strokeWidth="1" rx="3" ry="3" />
                 </g>
-
             </svg>
         </div>
     );

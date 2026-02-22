@@ -1,7 +1,7 @@
 import React from 'react';
 import parkingBg from './parkingVF.png';
 
-export default function Level0() {
+export default function Level2() {
     return (
         <div style={{ position: 'relative', width: '1350px', height: '600px' }}>
 
@@ -100,7 +100,7 @@ export default function Level0() {
                             font-family: Arial, sans-serif;
                             pointer-events: none;
                         }
-                        .delivery-local {
+                        .local {
                             fill: #ffa500;
                             stroke: #333;
                             stroke-width: 3;
@@ -131,7 +131,7 @@ export default function Level0() {
                 <line x1="1280" y1="310" x2="1280" y2="235" className="arrow" markerEnd="url(#arrow)" />
                 <rect x="1115" y="359" width="160" height="40" className="lane" />
 
-                {/* entree centre com (pietons)*/}
+                {/* entree centre com */}
                 <g id="entree-centre-commercial">
                     <rect x="0" y="220" width="20" height="80"
                           fill="#3498db" stroke="#2980b9" strokeWidth="3" />
@@ -253,23 +253,22 @@ export default function Level0() {
 
                 {/* Locaux */}
                 {/* Local 1 */}
-                <g id="local-vip1">
+                <g id="local-laverie">
                     <rect x="130" y="223" width="80" height="50"
-                          className="delivery-local" rx="10" ry="10" />
-                    <text x="136" y="252" fontSize="11" fontWeight="bold" fill="#333">LIVRAISON 1</text>
+                          className="local" rx="10" ry="10" />
+                    <text x="136" y="252" fontSize="11" fontWeight="bold" fill="#333">VIP 1</text>
                     <rect id="status-vip1" x="164" y="225" width="12" height="12"
                           fill="#28a745" stroke="#2f2f2f" strokeWidth="1" rx="3" ry="3" />
                 </g>
 
                 {/* Local 2 */}
-                <g id="local-vip2">
+                <g id="local-technique">
                     <rect x="980" y="223" width="80" height="50"
-                          className="delivery-local" rx="10" ry="10" />
-                    <text x="983" y="252" fontSize="11" fontWeight="bold" fill="#333">LIVRAISON 2</text>
+                          className="local" rx="10" ry="10" />
+                    <text x="993" y="252" fontSize="11" fontWeight="bold" fill="#333">VIP 2</text>
                     <rect id="status-vip2" x="1014" y="225" width="12" height="12"
                           fill="#dc3545" stroke="#2f2f2f" strokeWidth="1" rx="3" ry="3" />
                 </g>
-
             </svg>
         </div>
     );
