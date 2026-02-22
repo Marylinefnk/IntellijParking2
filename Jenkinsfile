@@ -41,7 +41,6 @@ pipeline {
                 sshagent(['SshVmBackFrontend']) {
                        sh 'scp -o StrictHostKeyChecking=no intellijParking-backend/target/intellijParking-backend-1.0.0.jar toto@172.31.253.157:/home/toto/projet/intellijParking-backend/'
                        sh 'scp -o StrictHostKeyChecking=no intellijParking-frontend/package.json intellijParking-frontend/package-lock.json toto@172.31.253.157:/home/toto/projet/intellijParking-frontend/'
-                       //sh 'scp -o StrictHostKeyChecking=no -r intellijParking-frontend/public toto@172.31.253.157:/home/toto/projet/intellijParking-frontend/'
                        sh 'scp -o StrictHostKeyChecking=no -r intellijParking-frontend/build toto@172.31.253.157:/home/toto/projet/intellijParking-frontend/'
                        //sh 'scp -o StrictHostKeyChecking=no -r intellijParking-frontend/src toto@172.31.253.157:/home/toto/projet/intellijParking-frontend/'
                        sh 'ssh -o StrictHostKeyChecking=no toto@172.31.253.157 killall java 2>/dev/null || true'
