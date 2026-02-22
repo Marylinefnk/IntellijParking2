@@ -2,16 +2,16 @@ package intellijP.back;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import esiag.back.services.ReservationPlaceService;
-import esiag.back.services.GuidageService;
+import intellijP.back.services.ReservationPlaceService;
+import intellijP.back.services.GuidageService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class EsiagBackApplication {
+public class intellijPBackApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EsiagBackApplication.class, args);
+		SpringApplication.run(intellijPBackApplication.class, args);
 	}
     @Bean
     public CommandLineRunner demo(GuidageService guidageService) {

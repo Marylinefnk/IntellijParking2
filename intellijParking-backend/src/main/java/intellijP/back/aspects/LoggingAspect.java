@@ -1,4 +1,4 @@
-package esiag.back.aspects;
+package intellijP.back.aspects;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;

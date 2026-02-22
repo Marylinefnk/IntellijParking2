@@ -1,4 +1,4 @@
-package esiag.back.exceptions;
+package intellijP.back.exceptions;
 
 /**
  * Exception pour les erreurs d'authentification (401 Unauthorized).

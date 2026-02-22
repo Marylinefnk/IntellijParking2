@@ -1,4 +1,4 @@
-package esiag.back.exceptions;
+package intellijP.back.exceptions;
 
 /**
  * Exception levee en cas de conflit (doublon, creneau deja reserve, etc.).

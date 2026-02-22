@@ -1,4 +1,4 @@
-package esiag.back.exceptions;
+package intellijP.back.exceptions;
 
 /**
  * Exception levee quand les donnees fournies sont invalides.

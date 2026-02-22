@@ -1,4 +1,4 @@
-package esiag.back.exceptions;
+package intellijP.back.exceptions;
 
 /**
  * Exception de base pour toutes les erreurs metier.

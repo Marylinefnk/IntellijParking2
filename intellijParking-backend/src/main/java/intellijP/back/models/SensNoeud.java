@@ -1,4 +1,4 @@
-package esiag.back.models;
+package intellijP.back.models;
 
 
 public enum SensNoeud {

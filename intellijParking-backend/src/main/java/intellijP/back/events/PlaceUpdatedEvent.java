@@ -1,4 +1,4 @@
-package esiag.back.events;
+package intellijP.back.events;
 
 
 public record PlaceUpdatedEvent(Long placeId) {}
