@@ -1,0 +1,5 @@
+package intellijP.back.models;
+
+public enum StatutReservation {
+    CONFIRMEE, EN_COURS, TERMINEE, ANNULEE
+}
