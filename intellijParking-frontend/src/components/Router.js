@@ -9,7 +9,7 @@ import PersonnesPage from "./PersonnesPage";
 import VehiculesPage from "./VehiculesPage";
 import LoginPage from "./LoginPage";
 import RegisterPage from "./RegisterPage";
-//import App from "./App";
+import App from "./App";
 import HomePage from "./HomePage";
 import ParkingPage from "./parking/ParkingPage";
 
@@ -58,8 +58,8 @@ export default function Router() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
 
-                {/* Public places view */}
-                <Route path="/places" element={<PublicLayout />}>
+                {/* Public places view - Default landing page */}
+                <Route path="/" element={<PublicLayout />}>
                     <Route index element={<PlacesPage />} />
                 </Route>
                 <Route path="/ParkingPage" element={<ParkingPage />}>
@@ -71,14 +71,14 @@ export default function Router() {
                 </Route>
 
                 {/* Protected routes */}
-                <Route path="/layout" element={
+                <Route path="/app" element={
                     <ProtectedRoute>
                         <Layout />
                     </ProtectedRoute>
                 }>
                     <Route index element={<Dashboard />} />
                     <Route path="dashboard" element={<Dashboard />} />
-                    <Route path="mes-places" element={<PlacesPage />} />
+                    <Route path="places" element={<PlacesPage />} />
                     <Route path="reservations" element={<ReservationsPage />} />
                     <Route path="personnes" element={
                         <SupervisorRoute>

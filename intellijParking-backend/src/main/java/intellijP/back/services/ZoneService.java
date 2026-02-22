@@ -3,6 +3,8 @@ package intellijP.back.services;
 import intellijP.back.models.Zone;
 import intellijP.back.repositories.PlaceRepository;
 import intellijP.back.repositories.ZoneRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,14 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service métier pour la gestion des zones de parking.
- * Implémente les règles métier suivantes :
- * - Unicité du nom de zone
- * - Impossibilité de supprimer une zone contenant des places
+ * Service metier pour la gestion des zones de parking.
  */
 @Service
 @Transactional
 public class ZoneService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ZoneService.class);
 
     private final ZoneRepository zoneRepository;
     private final PlaceRepository placeRepository;
@@ -25,80 +26,103 @@ public class ZoneService {
     public ZoneService(ZoneRepository zoneRepository, PlaceRepository placeRepository) {
         this.zoneRepository = zoneRepository;
         this.placeRepository = placeRepository;
+        logger.info("ZoneService initialise");
     }
 
     /**
-     * Récupère toutes les zones.
+     * Recupere toutes les zones.
      * @return Liste de toutes les zones
      */
     public List<Zone> findAll() {
-        return zoneRepository.findAll();
+        logger.debug("Recuperation de toutes les zones");
+        List<Zone> zones = zoneRepository.findAll();
+        logger.info("Nombre de zones recuperees: {}", zones.size());
+        return zones;
     }
 
     /**
      * Recherche une zone par son identifiant.
      * @param id Identifiant de la zone
-     * @return La zone trouvée ou Optional vide
+     * @return La zone trouvee ou Optional vide
      */
     public Optional<Zone> findById(Long id) {
-        return zoneRepository.findById(id);
+        logger.debug("Recherche de la zone avec id: {}", id);
+        Optional<Zone> zone = zoneRepository.findById(id);
+        if (zone.isPresent()) {
+            logger.debug("Zone trouvee: {} (id={})", zone.get().getNom(), id);
+        } else {
+            logger.warn("Zone non trouvee avec id: {}", id);
+        }
+        return zone;
     }
 
     /**
      * Recherche une zone par son nom.
      * @param nom Nom de la zone
-     * @return La zone trouvée ou Optional vide
+     * @return La zone trouvee ou Optional vide
      */
     public Optional<Zone> findByNom(String nom) {
+        logger.debug("Recherche de la zone avec nom: {}", nom);
         return zoneRepository.findByNom(nom);
     }
 
     /**
-     * Crée une nouvelle zone.
-     * Règles métier :
-     * - Le nom de la zone doit être unique
-     * - Le nom est obligatoire
-     *
-     * @param zone La zone à créer
-     * @return La zone créée
-     * @throws RuntimeException si le nom existe déjà
+     * @param zone La zone a creer
+     * @return La zone creee
+     * @throws RuntimeException si le nom existe deja
      */
     public Zone create(Zone zone) {
+        logger.info("Tentative de creation d'une zone: nom={}", zone.getNom());
+
         // Validation du nom
         if (zone.getNom() == null || zone.getNom().trim().isEmpty()) {
+            logger.error("Echec creation: nom de zone manquant");
             throw new RuntimeException("Le nom de la zone est obligatoire");
         }
 
-        // Vérification de l'unicité du nom
+        // Verification de l'unicite du nom
         if (zoneRepository.findByNom(zone.getNom()).isPresent()) {
-            throw new RuntimeException("Une zone avec le nom '" + zone.getNom() + "' existe déjà");
+            logger.error("Echec creation: nom '{}' deja utilise", zone.getNom());
+            throw new RuntimeException("Une zone avec le nom '" + zone.getNom() + "' existe deja");
         }
 
-        return zoneRepository.save(zone);
+        Zone created = zoneRepository.save(zone);
+        logger.info("Zone creee avec succes: id={}, nom={}", created.getId(), created.getNom());
+        return created;
     }
 
     /**
-     * Met à jour une zone existante.
+     * Met a jour une zone existante.
      * @param id Identifiant de la zone
-     * @param zoneDetails Nouvelles données
-     * @return La zone mise à jour
+     * @param zoneDetails Nouvelles donnees
+     * @return La zone mise a jour
      */
     public Zone update(Long id, Zone zoneDetails) {
-        Zone zone = zoneRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Zone non trouvée avec l'id: " + id));
+        logger.info("Tentative de mise a jour de la zone id={}", id);
 
-        // Vérification de l'unicité du nom si modifié
+        Zone zone = zoneRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("Echec mise a jour: zone non trouvee avec id={}", id);
+                    return new RuntimeException("Zone non trouvee avec l'id: " + id);
+                });
+
+        // Verification de l'unicite du nom si modifie
         if (zoneDetails.getNom() != null && !zoneDetails.getNom().equals(zone.getNom())) {
             if (zoneRepository.findByNom(zoneDetails.getNom()).isPresent()) {
+                logger.error("Echec mise a jour: nom '{}' deja utilise", zoneDetails.getNom());
                 throw new RuntimeException("Une autre zone avec le nom '" +
-                        zoneDetails.getNom() + "' existe déjà");
+                        zoneDetails.getNom() + "' existe deja");
             }
         }
 
+        String ancienNom = zone.getNom();
         zone.setNom(zoneDetails.getNom());
         zone.setDescription(zoneDetails.getDescription());
 
-        return zoneRepository.save(zone);
+        Zone updated = zoneRepository.save(zone);
+        logger.info("Zone mise a jour avec succes: id={}, ancien_nom={}, nouveau_nom={}",
+            id, ancienNom, updated.getNom());
+        return updated;
     }
 
     /**
@@ -107,15 +131,23 @@ public class ZoneService {
      * @throws RuntimeException si la zone contient des places
      */
     public void delete(Long id) {
-        Zone zone = zoneRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Zone non trouvée avec l'id: " + id));
+        logger.info("Tentative de suppression de la zone id={}", id);
 
-        // Vérification que la zone ne contient pas de places
+        Zone zone = zoneRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error("Echec suppression: zone non trouvee avec id={}", id);
+                    return new RuntimeException("Zone non trouvee avec l'id: " + id);
+                });
+
+        // Verification que la zone ne contient pas de places
         if (!placeRepository.findByZoneId(id).isEmpty()) {
+            logger.error("Echec suppression: zone {} contient des places", zone.getNom());
             throw new RuntimeException("Impossible de supprimer cette zone car elle contient des places. " +
-                    "Veuillez d'abord supprimer ou déplacer les places de cette zone.");
+                    "Veuillez d'abord supprimer ou deplacer les places de cette zone.");
         }
 
+        String nom = zone.getNom();
         zoneRepository.deleteById(id);
+        logger.info("Zone supprimee avec succes: id={}, nom={}", id, nom);
     }
 }

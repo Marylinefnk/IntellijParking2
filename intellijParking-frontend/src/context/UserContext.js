@@ -16,7 +16,7 @@ export function UserProvider({ children }) {
             setToken(savedToken);
             setUser(JSON.parse(savedUser));
 
-            // Verify token is still valid
+            // on Verifit si le token est valide
             verifyToken(savedToken).then(valid => {
                 if (!valid) {
                     logout();

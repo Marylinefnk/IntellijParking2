@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { API_RESERVATIONS_PLACE, API_PLACES_DISPONIBLES, API_PERSONNES, API_VEHICULES } from "../constants/back";
+import { API_RESERVATIONS_PLACE, API_PLACES_AVAILABILITY, API_PERSONNES, API_VEHICULES } from "../constants/back";
 import { useUser } from "../context/UserContext";
+import { useNotification } from "../context/NotificationContext";
 
 export default function ReservationsPage() {
     const [reservations, setReservations] = useState([]);
@@ -13,16 +14,20 @@ export default function ReservationsPage() {
     const [form, setForm] = useState({ personneId: "", placeId: "", vehiculeId: "", dateDebut: "", dateFin: "" });
     const [loading, setLoading] = useState(true);
 
-    const { user, authFetch } = useUser();
+    const { user, authFetch, loading: userLoading } = useUser();
+    const { success, error, warning } = useNotification();
     const location = useLocation();
     const isAdmin = user?.typePersonne === "SUPERVISEUR";
 
     useEffect(() => {
-        loadReservations();
-        loadData();
-    }, []);
+        // Attend que le contexte utilisateur soit pret
+        if (!userLoading && user) {
+            loadReservations();
+            loadData();
+        }
+    }, [userLoading, user]);
 
-    // Handle pre-selected place from PlacesPage
+    // Gere la place pre-selectionne depuis PlacesPage
     useEffect(() => {
         if (location.state?.placeToReserve) {
             const place = location.state.placeToReserve;
@@ -38,7 +43,7 @@ export default function ReservationsPage() {
     async function loadReservations() {
         try {
             setLoading(true);
-            // Admin sees all, users see only their own
+            // Admin voit tout, utilisateur voit ses propres reservations
             const url = isAdmin
                 ? API_RESERVATIONS_PLACE
                 : `${API_RESERVATIONS_PLACE}/personne/${user?.id}`;
@@ -54,11 +59,11 @@ export default function ReservationsPage() {
     async function loadData() {
         try {
             const requests = [
-                fetch(API_PLACES_DISPONIBLES),
+                fetch(API_PLACES_AVAILABILITY),
                 authFetch(`${API_VEHICULES}/personne/${user?.id}`)
             ];
 
-            // Admin can see all persons and vehicles
+            // Admin peut voir toutes les personnes et vehicules
             if (isAdmin) {
                 requests.push(authFetch(API_PERSONNES));
                 requests.push(authFetch(API_VEHICULES));
@@ -66,13 +71,21 @@ export default function ReservationsPage() {
 
             const results = await Promise.all(requests);
 
-            if (results[0].ok) setPlaces(await results[0].json());
+            if (results[0].ok) {
+                const allPlaces = await results[0].json();
+                // Filtre pour ne montrer que les places disponibles (LIBRE)
+                // mais garde aussi la place pre-selectionnee si elle existe
+                const selectedPlaceId = location.state?.placeToReserve?.id;
+                const availablePlaces = allPlaces.filter(p =>
+                    p.statutActuel === "LIBRE" || p.id === selectedPlaceId
+                );
+                setPlaces(availablePlaces);
+            }
 
             if (isAdmin) {
                 if (results[2]?.ok) setPersonnes(await results[2].json());
                 if (results[3]?.ok) setVehicules(await results[3].json());
             } else {
-                // For regular users, only show their vehicles
                 if (results[1]?.ok) setVehicules(await results[1].json());
                 setPersonnes([user]);
             }
@@ -96,14 +109,21 @@ export default function ReservationsPage() {
                 body: JSON.stringify(body)
             });
             if (!res.ok) {
-                const err = await res.json();
-                throw new Error(err.message || "Erreur " + res.status);
+                let errorMsg = "Erreur " + res.status;
+                try {
+                    const err = await res.json();
+                    errorMsg = err.message || err.error || errorMsg;
+                } catch {
+                    // Response has no JSON body
+                }
+                throw new Error(errorMsg);
             }
             closeModal();
             loadReservations();
             loadData();
-        } catch (e) {
-            alert("Erreur: " + e.message);
+            success("Reservation creee avec succes");
+        } catch (err) {
+            error("Erreur: " + err.message);
         }
     };
 
@@ -113,8 +133,18 @@ export default function ReservationsPage() {
             if (!res.ok) throw new Error("Erreur " + res.status);
             loadReservations();
             loadData();
-        } catch (e) {
-            alert("Erreur: " + e.message);
+            const actionMessages = {
+                commencer: "Reservation demarree",
+                terminer: "Reservation terminee",
+                annuler: "Reservation annulee"
+            };
+            if (action === "annuler") {
+                warning(actionMessages[action]);
+            } else {
+                success(actionMessages[action] || "Action effectuee");
+            }
+        } catch (err) {
+            error("Erreur: " + err.message);
         }
     };
 
@@ -124,8 +154,9 @@ export default function ReservationsPage() {
             await authFetch(`${API_RESERVATIONS_PLACE}/${id}`, { method: "DELETE" });
             loadReservations();
             loadData();
-        } catch (e) {
-            alert("Erreur: " + e.message);
+            success("Reservation supprimee avec succes");
+        } catch (err) {
+            error("Erreur: " + err.message);
         }
     };
 
@@ -340,9 +371,16 @@ export default function ReservationsPage() {
                                     >
                                         <option value="">-- Selectionner une place --</option>
                                         {places.map(p => (
-                                            <option key={p.id} value={p.id}>{p.numero} ({p.type})</option>
+                                            <option key={p.id} value={p.id}>
+                                                {p.numero} - {p.type} ({p.statutActuel || p.statut})
+                                            </option>
                                         ))}
                                     </select>
+                                    {places.length === 0 && (
+                                        <p style={{ color: "#64748b", fontSize: "0.85rem", marginTop: 8 }}>
+                                            Aucune place disponible pour le moment.
+                                        </p>
+                                    )}
                                 </div>
                                 <div className="form-group">
                                     <label className="form-label">Vehicule</label>

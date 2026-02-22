@@ -7,107 +7,72 @@ import intellijP.back.models.Personne;
 import intellijP.back.models.TypeVehicule;
 import intellijP.back.models.Vehicule;
 import intellijP.back.services.VehiculeService;
+import intellijP.back.dto.VehiculeCreateDTO;
+import intellijP.back.dto.VehiculeDTO;
+import intellijP.back.exceptions.ResourceNotFoundException;
+import intellijP.back.models.TypeVehicule;
+import intellijP.back.services.VehiculeService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/vehicules")
 public class VehiculeController {
 
     private final VehiculeService vehiculeService;
-    private final DtoMapper dtoMapper;
 
-    public VehiculeController(VehiculeService vehiculeService, DtoMapper dtoMapper) {
+    public VehiculeController(VehiculeService vehiculeService) {
         this.vehiculeService = vehiculeService;
-        this.dtoMapper = dtoMapper;
     }
+
+    //  ENDPOINTS DE LECTURE
 
     @GetMapping
     public List<VehiculeDTO> getAllVehicules() {
-        return vehiculeService.findAll().stream()
-                .map(dtoMapper::toVehiculeDTO)
-                .collect(Collectors.toList());
+        return vehiculeService.findAllDTO();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VehiculeDTO> getVehiculeById(@PathVariable Long id) {
-        return vehiculeService.findById(id)
-                .map(dtoMapper::toVehiculeDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public VehiculeDTO getVehiculeById(@PathVariable Long id) {
+        return vehiculeService.findByIdDTO(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicule", id));
     }
 
     @GetMapping("/personne/{personneId}")
     public List<VehiculeDTO> getVehiculesByPersonne(@PathVariable Long personneId) {
-        return vehiculeService.findByPersonne(personneId).stream()
-                .map(dtoMapper::toVehiculeDTO)
-                .collect(Collectors.toList());
+        return vehiculeService.findByPersonneDTO(personneId);
     }
 
     @GetMapping("/immatriculation/{immatriculation}")
-    public ResponseEntity<VehiculeDTO> getVehiculeByImmatriculation(@PathVariable String immatriculation) {
-        return vehiculeService.findByImmatriculation(immatriculation)
-                .map(dtoMapper::toVehiculeDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public VehiculeDTO getVehiculeByImmatriculation(@PathVariable String immatriculation) {
+        return vehiculeService.findByImmatriculationDTO(immatriculation)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                    "Vehicule avec immatriculation '" + immatriculation + "' non trouve"));
     }
 
     @GetMapping("/type/{type}")
     public List<VehiculeDTO> getVehiculesByType(@PathVariable TypeVehicule type) {
-        return vehiculeService.findByType(type).stream()
-                .map(dtoMapper::toVehiculeDTO)
-                .collect(Collectors.toList());
+        return vehiculeService.findByTypeDTO(type);
     }
 
+    //  ENDPOINTS DE MODIFICATION
+
     @PostMapping
-    public ResponseEntity<VehiculeDTO> createVehicule(@RequestBody VehiculeCreateDTO createDTO) {
-        try {
-            Vehicule vehicule = new Vehicule();
-            vehicule.setImmatriculation(createDTO.getImmatriculation());
-            vehicule.setTypeVehicule(createDTO.getTypeVehicule());
-
-            if (createDTO.getPersonneId() != null) {
-                Personne personne = new Personne();
-                personne.setId(createDTO.getPersonneId());
-                vehicule.setPersonne(personne);
-            }
-
-            Vehicule created = vehiculeService.create(vehicule);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(dtoMapper.toVehiculeDTO(created));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    @ResponseStatus(HttpStatus.CREATED)
+    public VehiculeDTO createVehicule(@RequestBody VehiculeCreateDTO createDTO) {
+        return vehiculeService.createDTO(createDTO);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VehiculeDTO> updateVehicule(@PathVariable Long id,
-                                                       @RequestBody VehiculeCreateDTO updateDTO) {
-        try {
-            Vehicule vehiculeDetails = new Vehicule();
-            vehiculeDetails.setImmatriculation(updateDTO.getImmatriculation());
-            vehiculeDetails.setTypeVehicule(updateDTO.getTypeVehicule());
-
-            if (updateDTO.getPersonneId() != null) {
-                Personne personne = new Personne();
-                personne.setId(updateDTO.getPersonneId());
-                vehiculeDetails.setPersonne(personne);
-            }
-
-            Vehicule updated = vehiculeService.update(id, vehiculeDetails);
-            return ResponseEntity.ok(dtoMapper.toVehiculeDTO(updated));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public VehiculeDTO updateVehicule(@PathVariable Long id, @RequestBody VehiculeCreateDTO updateDTO) {
+        return vehiculeService.updateDTO(id, updateDTO);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteVehicule(@PathVariable Long id) {
-        vehiculeService.delete(id);
-        return ResponseEntity.noContent().build();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteVehicule(@PathVariable Long id) {
+        vehiculeService.deleteDTO(id);
     }
 }

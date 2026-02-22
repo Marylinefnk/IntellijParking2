@@ -11,5 +11,6 @@ public class PersonneCreateDTO {
     private String nom;
     private String prenom;
     private String mail;
+    private String password;
     private TypePersonne typePersonne;
 }
