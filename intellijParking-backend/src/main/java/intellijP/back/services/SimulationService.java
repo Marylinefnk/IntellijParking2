@@ -145,7 +145,7 @@ public class SimulationService {
         logger.debug("Traitement changement présence: place={}, presence={}", place.getNumero(), nouvellePresence);
         if (nouvellePresence) {
             Vehicule vehiculeTrouve = trouverOuChoisirVehicule(place);
-            if (vehiculeTrouve == null) { logger.warn("Pas de vehicule dispo pour place {}", place.getNumero()); return; }
+            if (vehiculeTrouve == null) { logger.warn("Pas de vehicule dispo pour place {}, on skip", place.getNumero()); return; }
             List<ReservationPlace> resasActives = reservationPlaceRepository.findActiveReservationsAtMoment(place.getId(), LocalDateTime.now());
             ReservationPlace resa = null; String typeResa = "CREE_A_LA_VOLEE"; String statutResaAvant = null;
             for (ReservationPlace r : resasActives) {
