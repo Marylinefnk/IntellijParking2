@@ -20,6 +20,7 @@ public class Capteur {
     @Column(name = "id_capteur")
     private Long id;
 
+    // une place = un seul capteur
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_place", unique = true)
     @JsonBackReference("place-capteur")
@@ -34,5 +35,11 @@ public class Capteur {
 
     @Column(name = "date_dernier_signal")
     private LocalDateTime dateDernierSignal;
+
+    // le vehicule dont on a lu la plaque, null si aucun vehicule present
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_vehicule_detecte")
+    @JsonBackReference("vehicule-capteurs")
+    private Vehicule vehiculeDetecte;
 
 }
