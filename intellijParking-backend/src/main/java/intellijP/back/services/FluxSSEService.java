@@ -81,7 +81,7 @@ public class FluxSSEService {
             } catch (IOException e) {
                 // le client s'est déco, on l'enlève
                 emittersASupprimer.add(emitter);
-                logger.debug("Client SSE tombé pendant diffusion, supprimé");
+                logger.debug("Client SSE tombé pendant diffusion - supprimé de la liste");
             }
         }
 
