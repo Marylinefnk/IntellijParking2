@@ -43,7 +43,7 @@ public class FluxSSEService {
 
         emitter.onTimeout(() -> {
             placesEmitters.remove(emitter);
-            logger.debug("Timeout SSE client - reste: {}", placesEmitters.size());
+            logger.debug("Timeout SSE - client retiré, reste: {}", placesEmitters.size());
         });
 
         emitter.onError(e -> {
