@@ -36,7 +36,7 @@ public class Capteur {
     @Column(name = "date_dernier_signal")
     private LocalDateTime dateDernierSignal;
 
-    // le vehicule dont on a lu la plaque, null si aucun vehicule present
+    // vehicule identifié par lecture de plaque, null si place vide
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_vehicule_detecte")
     @JsonBackReference("vehicule-capteurs")
