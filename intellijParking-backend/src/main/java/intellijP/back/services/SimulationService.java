@@ -246,7 +246,7 @@ public class SimulationService {
                 Thread.currentThread().interrupt();
                 break;
             } catch (Exception e) {
-                // FIXME: pas propre mais ça évite que toute la simulation tombe sur une erreur
+                // FIXME: à améliorer - ça évite que toute la simulation tombe sur une erreur
                 logger.error("Erreur dans la boucle simulation: {}", e.getMessage());
                 e.printStackTrace();
             }
@@ -366,7 +366,7 @@ public class SimulationService {
             }
 
             // on clôture le stationnement actif
-            Optional<Stationnement> statActif = stationnementRepository.findActiveStationnementByPlace(place.getId());
+            Optional<Stationnement> statActif = stationnementRepository.findActiveStationnementsByPlace(place.getId()).stream().findFirst();
             if (statActif.isPresent()) {
                 Stationnement s = statActif.get();
                 s.setDateSortie(LocalDateTime.now());
@@ -453,7 +453,7 @@ public class SimulationService {
         List<Vehicule> tousVehicules = vehiculeRepository.findAll();
         Collections.shuffle(tousVehicules);
         for (Vehicule v : tousVehicules) {
-            Optional<Stationnement> statActif = stationnementRepository.findActiveStationnementByVehicule(v.getId());
+            Optional<Stationnement> statActif = stationnementRepository.findActiveStationnementsByVehicule(v.getId()).stream().findFirst();
             if (statActif.isEmpty()) {
                 return v;
             }

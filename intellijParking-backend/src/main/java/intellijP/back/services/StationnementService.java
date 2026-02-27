@@ -96,7 +96,7 @@ public class StationnementService {
      */
     public Optional<Stationnement> findActiveByVehicule(Long vehiculeId) {
         logger.debug("Recherche du stationnement actif pour le vehicule id: {}", vehiculeId);
-        return stationnementRepository.findActiveStationnementByVehicule(vehiculeId);
+        return stationnementRepository.findActiveStationnementsByVehicule(vehiculeId).stream().findFirst();
     }
 
     /**
@@ -106,7 +106,7 @@ public class StationnementService {
      */
     public Optional<Stationnement> findActiveByPlace(Long placeId) {
         logger.debug("Recherche du stationnement actif pour la place id: {}", placeId);
-        return stationnementRepository.findActiveStationnementByPlace(placeId);
+        return stationnementRepository.findActiveStationnementsByPlace(placeId).stream().findFirst();
     }
 
     /**
@@ -157,7 +157,7 @@ public class StationnementService {
 
         // Verification que le vehicule n'est pas deja stationne
         Optional<Stationnement> stationnementActif = stationnementRepository
-                .findActiveStationnementByVehicule(vehicule.getId());
+                .findActiveStationnementsByVehicule(vehicule.getId()).stream().findFirst();
         if (stationnementActif.isPresent()) {
             logger.error("Echec entree: vehicule {} deja stationne sur place {}",
                 vehicule.getImmatriculation(), stationnementActif.get().getPlace().getNumero());
@@ -167,7 +167,7 @@ public class StationnementService {
 
         // Verification que la place n'a pas deja un vehicule
         Optional<Stationnement> placeOccupee = stationnementRepository
-                .findActiveStationnementByPlace(place.getId());
+                .findActiveStationnementsByPlace(place.getId()).stream().findFirst();
         if (placeOccupee.isPresent()) {
             logger.error("Echec entree: place {} deja occupee par vehicule {}",
                 place.getNumero(), placeOccupee.get().getVehicule().getImmatriculation());
