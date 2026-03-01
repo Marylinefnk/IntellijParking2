@@ -246,7 +246,7 @@ public class SimulationService {
                 Thread.currentThread().interrupt();
                 break;
             } catch (Exception e) {
-                // FIXME: pas propre mais ça évite que toute la simulation tombe sur une erreur
+                // FIXME: à améliorer - ça évite que toute la simulation tombe sur une erreur
                 logger.error("Erreur dans la boucle simulation: {}", e.getMessage());
                 e.printStackTrace();
             }
