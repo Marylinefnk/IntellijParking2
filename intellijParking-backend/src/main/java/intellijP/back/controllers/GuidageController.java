@@ -1,9 +1,9 @@
 package esiag.back.controllers;
 
-import esiag.back.models.Noeud;
-import esiag.back.models.ReservationPlace;
-import esiag.back.services.GuidageService;
-import esiag.back.services.ReservationPlaceService;
+import intellijP.back.models.Noeud;
+import intellijP.back.models.ReservationPlace;
+import intellijP.back.services.GuidageService;
+import intellijP.back.services.ReservationPlaceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
