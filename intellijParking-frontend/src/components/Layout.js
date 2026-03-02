@@ -111,6 +111,13 @@ export default function Layout() {
                             Clients
                         </NavLink>
                     )}
+
+                    {isAdmin && (
+                        <NavLink to="/app/simulation" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
+                            <span className="nav-icon">S</span>
+                            Simulation
+                        </NavLink>
+                    )}
                 </nav>
 
                 <div style={{ padding: "16px 24px", marginTop: "auto" }}>

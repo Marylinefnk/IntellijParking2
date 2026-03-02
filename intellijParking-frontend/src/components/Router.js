@@ -12,6 +12,7 @@ import RegisterPage from "./RegisterPage";
 import App from "./App";
 import HomePage from "./HomePage";
 import ParkingPage from "./parking/ParkingPage";
+import SimulationPanel from "./SimulationPanel";
 
 function ProtectedRoute({ children }) {
     const { user, loading } = useUser();
@@ -86,6 +87,11 @@ export default function Router() {
                         </SupervisorRoute>
                     } />
                     <Route path="vehicules" element={<VehiculesPage />} />
+                    <Route path="simulation" element={
+                        <SupervisorRoute>
+                            <SimulationPanel />
+                        </SupervisorRoute>
+                    } />
                 </Route>
             </Routes>
         </BrowserRouter>
