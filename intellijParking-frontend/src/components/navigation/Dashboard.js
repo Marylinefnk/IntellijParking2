@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useUser } from "../../context/UserContext";
-import { API_PLACES, API_RESERVATIONS_PLACE, API_PERSONNES, API_VEHICULES } from "../../constants/back";
+import { useUser } from "../context/UserContext";
+import Itineraire from "./guidage/Itineraire";
+import { API_PLACES, API_RESERVATIONS_PLACE, API_PERSONNES, API_VEHICULES } from "../constants/back";
 
 export default function Dashboard() {
     const { user } = useUser();
+    const [afficherItineraire, setafficherItineraire] = useState(false);
+
     const [stats, setStats] = useState({
         totalPlaces: 0,
         placesLibres: 0,
@@ -249,6 +252,15 @@ export default function Dashboard() {
                     </div>
                 </>
             )}
+
+            <div>
+                <button onClick={() => setafficherItineraire(true)}>
+                    {"Voir l'itinéraire vers ma place"}
+                </button>
+
+                {afficherItineraire && <Itineraire />}
+            </div>
+
 
             <div className="card" style={{ marginTop: 24 }}>
                 <div className="card-header">
