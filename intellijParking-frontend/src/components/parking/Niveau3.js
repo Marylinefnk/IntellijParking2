@@ -1,7 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import parkingBg from './parkingVF.png';
 
 export default function Level2() {
+    const [tooltip, setTooltip] = useState({
+        visible: false,
+        x: 0,
+        y: 0,
+        content: ""
+    });
+    const handleMouseEnter = (event, id, type) => {
+        setTooltip({
+            visible: true,
+            x: event.clientX,
+            y: event.clientY,
+            id,
+            type
+        });
+    };
+
+    const handleMouseMove = (event) => {
+        setTooltip(prev => ({
+            ...prev,
+            x: event.clientX,
+            y: event.clientY
+        }));
+    };
+
+    const handleMouseLeave = () => {
+        setTooltip(prev => ({
+            ...prev,
+            visible: false
+        }));
+    };
     return (
         <div style={{ position: 'relative', width: '1350px', height: '600px' }}>
 
@@ -168,7 +198,10 @@ export default function Level2() {
                         { id: 'A19', x: 800 }, { id: 'A20', x: 840 }, { id: 'A21', x: 880 },
                         { id: 'A22', x: 920 },
                     ].map(({ id, x }) => (
-                        <g className="slot" id={id} key={id}>
+                        <g className="slot" id={id} key={id} type = {"NORMAL"}
+                           onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE')}
+                           onMouseMove={handleMouseMove}
+                           onMouseLeave={handleMouseLeave}>
                             <rect className="rect-slot" x={x} y="95" />
                             <text className="slot-text" x={x + 15} y="117.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                         </g>
@@ -180,7 +213,10 @@ export default function Level2() {
                     { id: 'A23', x: 0 }, { id: 'A24', x: 30 }, { id: 'A25', x: 68 },
                     { id: 'A26', x: 110 }, { id: 'A27', x: 150 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={`M${id}`} key={id}>
+                    <g className="slot" id={`M${id}`} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id)}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="moto-rect" x={x} y="365" />
                         <text className="slot-text" x={x + 15} y="387.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -195,7 +231,10 @@ export default function Level2() {
                     { id: 'A40', x: 675 }, { id: 'A41', x: 722 }, { id: 'A42', x: 758 },
                     { id: 'A43', x: 800 }, { id: 'A44', x: 840 },{ id: 'A45', x: 880 }, { id: 'A46', x: 920 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id)}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="365" />
                         <text className="slot-text" x={x + 15} y="387.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -207,7 +246,10 @@ export default function Level2() {
                     { id: 'A47', x: 234 }, { id: 'A48', x: 274 }, { id: 'A49', x: 314 },
                     { id: 'A50', x: 354 }, { id: 'A51', x: 392 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id)}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="elec-rect" x={x} y="190" />
                         <text className="slot-text" x={x + 15} y="212.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -221,7 +263,10 @@ export default function Level2() {
                     { id: 'A62', x: 800 }, { id: 'A63', x: 840 }, { id: 'A64', x: 880 },
                     { id: 'A65', x: 920 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id)}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="190" />
                         <text className="slot-text" x={x + 15} y="212.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -232,7 +277,10 @@ export default function Level2() {
                     { id: 'A66', x: 234 }, { id: 'A67', x: 274 }, { id: 'A68', x: 314 },
                     { id: 'A69', x: 354 }, { id: 'A70', x: 392 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id)}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="elec-rect" x={x} y="270" />
                         <text className="slot-text" x={x + 15} y="292.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -245,7 +293,10 @@ export default function Level2() {
                     { id: 'A80', x: 758 }, { id: 'A81', x: 800 }, { id: 'A82', x: 840 },
                     { id: 'A83', x: 880 }, { id: 'A84', x: 920 },{ id: 'A73', x: 475 }, { id: 'A74', x: 515 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id)}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="270" />
                         <text className="slot-text" x={x + 15} y="292.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -270,6 +321,25 @@ export default function Level2() {
                           fill="#dc3545" stroke="#2f2f2f" strokeWidth="1" rx="3" ry="3" />
                 </g>
             </svg>
+            {tooltip.visible && (
+                <div
+                    style={{
+                        position: "fixed",
+                        top: tooltip.y + 10,
+                        left: tooltip.x + 10,
+                        backgroundColor: "white",
+                        padding: "6px 10px",
+                        borderRadius: "6px",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                        fontSize: "12px",
+                        pointerEvents: "none",
+                        zIndex: 1000
+                    }}
+                >
+                    <strong>{tooltip.id}</strong><br/>
+                    <span>Type : {tooltip.type}</span>
+                </div>
+            )}
         </div>
     );
 }
