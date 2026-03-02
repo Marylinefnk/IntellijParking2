@@ -8,16 +8,16 @@ export default function Level2() {
         y: 0,
         content: ""
     });
-    const handleMouseEnter = (event, id, type) => {
+    const handleMouseEnter = (event, id, type, statut) => {
         setTooltip({
             visible: true,
             x: event.clientX,
             y: event.clientY,
             id,
-            type
+            type,
+            statut
         });
     };
-
     const handleMouseMove = (event) => {
         setTooltip(prev => ({
             ...prev,
@@ -25,13 +25,28 @@ export default function Level2() {
             y: event.clientY
         }));
     };
-
     const handleMouseLeave = () => {
         setTooltip(prev => ({
             ...prev,
             visible: false
         }));
     };
+
+
+
+    const [tooltip2, setTooltip2] = useState({ visible: false, x: 0, y: 0, content: '' });
+    const handleMouseEnter2 = (event, content) => {
+        setTooltip2({ visible: true, x: event.clientX, y: event.clientY, content });
+    };
+    const handleMouseMove2 = (event) => {
+        setTooltip2(prev => ({ ...prev, x: event.clientX, y: event.clientY }));
+    };
+    const handleMouseLeave2 = () => {
+        setTooltip2(prev => ({ ...prev, visible: false }));
+    };
+
+
+
     return (
         <div style={{ position: 'relative', width: '1350px', height: '600px' }}>
 
@@ -152,17 +167,32 @@ export default function Level2() {
                 <line x1="75" y1="170" x2="75" y2="330" className="lane-line" />
 
                 {/* voie entrée */}
-                <rect x="1192" y="106" width="50" height="210" className="lane" />
+                <rect x="1192" y="106" width="50" height="210" className="lane"
+                      onMouseEnter={(e) => handleMouseEnter2(e, 'ENTREE VOITURES')}
+                      onMouseMove={handleMouseMove2}
+                      onMouseLeave={handleMouseLeave2}/>
                 <line x1="1212" y1="215" x2="1212" y2="150" className="arrow" markerEnd="url(#arrow)" />
-                <rect x="1115" y="106" width="80" height="40" className="lane" />
+                <rect x="1115" y="106" width="80" height="40" className="lane"
+                      onMouseEnter={(e) => handleMouseEnter2(e, 'ENTREE VOITURES')}
+                      onMouseMove={handleMouseMove2}
+                      onMouseLeave={handleMouseLeave2}/>
 
                 {/* voie sortie */}
-                <rect x="1260" y="190" width="40" height="209" className="lane" />
+                <rect x="1260" y="190" width="40" height="209" className="lane"
+                      onMouseEnter={(e) => handleMouseEnter2(e, 'SORTIE VOITURES')}
+                      onMouseMove={handleMouseMove2}
+                      onMouseLeave={handleMouseLeave2}/>
                 <line x1="1280" y1="310" x2="1280" y2="235" className="arrow" markerEnd="url(#arrow)" />
-                <rect x="1115" y="359" width="160" height="40" className="lane" />
+                <rect x="1115" y="359" width="160" height="40" className="lane"
+                      onMouseEnter={(e) => handleMouseEnter2(e, 'SORTIE VOITURES')}
+                      onMouseMove={handleMouseMove2}
+                      onMouseLeave={handleMouseLeave2}/>
 
                 {/* entree centre com */}
-                <g id="entree-centre-commercial">
+                <g id="entree-centre-commercial"
+                   onMouseEnter={(e) => handleMouseEnter2(e, 'ENTREE PIETONS')}
+                   onMouseMove={handleMouseMove2}
+                   onMouseLeave={handleMouseLeave2}>
                     <rect x="0" y="220" width="20" height="80"
                           fill="#3498db" stroke="#2980b9" strokeWidth="3" />
                     <text x="10" y="260" fontSize="12" fill="white"
@@ -179,11 +209,17 @@ export default function Level2() {
                 {/* RANGÉE HAUT */}
                 <g id="row-top">
                     {/* PMR */}
-                    <g id="PMR01">
+                    <g id="PMR01"
+                       onMouseEnter={(e) => handleMouseEnter(e, 'PMR01', 'PMR', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="pmr-rect" x="0" y="95" />
                         <text className="slot-text" x="15" y="117.5" textAnchor="middle" dominantBaseline="middle">PMR1</text>
                     </g>
-                    <g id="PMR02">
+                    <g id="PMR02"
+                       onMouseEnter={(e) => handleMouseEnter(e, 'PMR02', 'PMR', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>>
                         <rect className="pmr-rect" x="32" y="95" />
                         <text className="slot-text" x="47" y="117.5" textAnchor="middle" dominantBaseline="middle">PMR2</text>
                     </g>
@@ -198,8 +234,8 @@ export default function Level2() {
                         { id: 'A19', x: 800 }, { id: 'A20', x: 840 }, { id: 'A21', x: 880 },
                         { id: 'A22', x: 920 },
                     ].map(({ id, x }) => (
-                        <g className="slot" id={id} key={id} type = {"NORMAL"}
-                           onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE')}
+                        <g className="slot" id={id} key={id}
+                           onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE', '')}
                            onMouseMove={handleMouseMove}
                            onMouseLeave={handleMouseLeave}>
                             <rect className="rect-slot" x={x} y="95" />
@@ -214,7 +250,7 @@ export default function Level2() {
                     { id: 'A26', x: 110 }, { id: 'A27', x: 150 },
                 ].map(({ id, x }) => (
                     <g className="slot" id={`M${id}`} key={id}
-                       onMouseEnter={(e) => handleMouseEnter(e, id)}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'MOTO', '')}
                        onMouseMove={handleMouseMove}
                        onMouseLeave={handleMouseLeave}>
                         <rect className="moto-rect" x={x} y="365" />
@@ -232,7 +268,7 @@ export default function Level2() {
                     { id: 'A43', x: 800 }, { id: 'A44', x: 840 },{ id: 'A45', x: 880 }, { id: 'A46', x: 920 },
                 ].map(({ id, x }) => (
                     <g className="slot" id={id} key={id}
-                       onMouseEnter={(e) => handleMouseEnter(e, id)}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE', '')}
                        onMouseMove={handleMouseMove}
                        onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="365" />
@@ -247,7 +283,7 @@ export default function Level2() {
                     { id: 'A50', x: 354 }, { id: 'A51', x: 392 },
                 ].map(({ id, x }) => (
                     <g className="slot" id={id} key={id}
-                       onMouseEnter={(e) => handleMouseEnter(e, id)}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'ELECTRIQUE', '')}
                        onMouseMove={handleMouseMove}
                        onMouseLeave={handleMouseLeave}>
                         <rect className="elec-rect" x={x} y="190" />
@@ -264,7 +300,7 @@ export default function Level2() {
                     { id: 'A65', x: 920 },
                 ].map(({ id, x }) => (
                     <g className="slot" id={id} key={id}
-                       onMouseEnter={(e) => handleMouseEnter(e, id)}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE', '')}
                        onMouseMove={handleMouseMove}
                        onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="190" />
@@ -278,7 +314,7 @@ export default function Level2() {
                     { id: 'A69', x: 354 }, { id: 'A70', x: 392 },
                 ].map(({ id, x }) => (
                     <g className="slot" id={id} key={id}
-                       onMouseEnter={(e) => handleMouseEnter(e, id)}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'ELECTRIQUE', '')}
                        onMouseMove={handleMouseMove}
                        onMouseLeave={handleMouseLeave}>
                         <rect className="elec-rect" x={x} y="270" />
@@ -294,7 +330,7 @@ export default function Level2() {
                     { id: 'A83', x: 880 }, { id: 'A84', x: 920 },{ id: 'A73', x: 475 }, { id: 'A74', x: 515 },
                 ].map(({ id, x }) => (
                     <g className="slot" id={id} key={id}
-                       onMouseEnter={(e) => handleMouseEnter(e, id)}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE', '')}
                        onMouseMove={handleMouseMove}
                        onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="270" />
@@ -304,7 +340,9 @@ export default function Level2() {
 
                 {/* Locaux */}
                 {/* Local 1 */}
-                <g id="local-laverie">
+                <g id="local-laverie" onMouseEnter={(e) => handleMouseEnter2(e, 'LAVERIE')}
+                   onMouseMove={handleMouseMove2}
+                   onMouseLeave={handleMouseLeave2}>
                     <rect x="130" y="223" width="80" height="50"
                           className="local" rx="10" ry="10" />
                     <text x="136" y="252" fontSize="11" fontWeight="bold" fill="#333">LAVERIE</text>
@@ -313,7 +351,10 @@ export default function Level2() {
                 </g>
 
                 {/* Local 2 */}
-                <g id="local-technique">
+                <g id="local-technique"
+                   onMouseEnter={(e) => handleMouseEnter2(e, 'LOCAL TECHNIQUE')}
+                   onMouseMove={handleMouseMove2}
+                   onMouseLeave={handleMouseLeave2}>
                     <rect x="980" y="223" width="80" height="50"
                           className="local" rx="10" ry="10" />
                     <text x="993" y="252" fontSize="11" fontWeight="bold" fill="#333">TECHNIQUE</text>
@@ -337,7 +378,25 @@ export default function Level2() {
                     }}
                 >
                     <strong>{tooltip.id}</strong><br/>
-                    <span>Type : {tooltip.type}</span>
+                    <span>Type : {tooltip.type}</span><br/>
+                    <span>Statut : {tooltip.statut}</span>
+
+                </div>
+            )}
+            {tooltip2.visible && (
+                <div style={{
+                    position: "fixed",
+                    top: tooltip2.y + 10,
+                    left: tooltip2.x + 10,
+                    backgroundColor: "white",
+                    padding: "6px 10px",
+                    borderRadius: "6px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                    fontSize: "12px",
+                    pointerEvents: "none",
+                    zIndex: 1000
+                }}>
+                    <strong>{tooltip2.content}</strong><br/>
                 </div>
             )}
         </div>
