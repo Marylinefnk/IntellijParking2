@@ -4,6 +4,7 @@ import { API_PLACES, API_PLACES_AVAILABILITY, API_ZONES } from "../constants/bac
 import { useUser } from "../context/UserContext";
 import { useNotification } from "../context/NotificationContext";
 import { usePlacesWebSocket } from "../WebHooks/usePlacesWebSocket";
+import { useSSEPlaces } from "../hooks/useSSEPlaces";
 
 export default function PlacesPage() {
     const [places, setPlaces] = useState([]);
@@ -46,6 +47,21 @@ export default function PlacesPage() {
         handlePlaceUpdate,
         handlePlaceDeleted
     );
+
+    // Connexion SSE pour les mises a jour capteurs temps reel
+    const ssePlaces = useSSEPlaces();
+
+    useEffect(() => {
+        if (!ssePlaces.lastEvent) return;
+        const evt = ssePlaces.lastEvent;
+        setPlaces(prev => prev.map(p => {
+            if (p.id === evt.idPlace && p.statutActuel !== evt.nouveauStatut) {
+                info(`Place ${evt.numero}: ${evt.ancienStatut} → ${evt.nouveauStatut}`);
+                return { ...p, statutActuel: evt.nouveauStatut };
+            }
+            return p;
+        }));
+    }, [ssePlaces.lastEvent]);
 
     useEffect(() => {
         loadPlaces();
@@ -201,16 +217,16 @@ export default function PlacesPage() {
                         borderRadius: 20,
                         fontSize: "0.75rem",
                         fontWeight: 500,
-                        background: wsConnected ? "#dcfce7" : "#fef2f2",
-                        color: wsConnected ? "#166534" : "#dc2626"
+                        background: ssePlaces.connected ? "#dcfce7" : "#fef2f2",
+                        color: ssePlaces.connected ? "#166534" : "#dc2626"
                     }}>
                         <span style={{
                             width: 8,
                             height: 8,
                             borderRadius: "50%",
-                            background: wsConnected ? "#22c55e" : "#ef4444"
+                            background: ssePlaces.connected ? "#22c55e" : "#ef4444"
                         }}></span>
-                        {wsConnected ? "Temps reel" : "Hors ligne"}
+                        {ssePlaces.connected ? "Temps reel" : "Hors ligne"}
                     </span>
                 </div>
                 <p className="page-subtitle">{stats.total} places au total - {stats.libre} disponibles maintenant</p>
