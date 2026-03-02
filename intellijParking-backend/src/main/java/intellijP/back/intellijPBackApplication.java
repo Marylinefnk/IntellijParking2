@@ -16,17 +16,16 @@ public class intellijPBackApplication {
     @Bean
     public CommandLineRunner demo(GuidageService guidageService) {
         return args -> {
-            System.out.println("\n\n");
-            System.out.println("DÉMARRAGE DE LA DÉMONSTRATION");
+            try {
+                System.out.println("\n\n");
+                System.out.println("DÉMARRAGE DE LA DÉMONSTRATION");
+                guidageService.afficherToutesLesReservations();
 
-
-            guidageService.afficherToutesLesReservations();
-
-            int ida = 16;
-            //int idb = 26;
-            guidageService.afficherCheminVersPlace(Long.valueOf(ida));
-            //guidageService.afficherCheminVersPlace(Long.valueOf(idb));
-
+                int ida = 16;
+                guidageService.afficherCheminVersPlace(Long.valueOf(ida));
+            } catch (Exception e) {
+                System.out.println("[DEMO] Skipped: " + e.getMessage());
+            }
         };
     }
 }

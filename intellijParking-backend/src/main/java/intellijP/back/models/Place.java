@@ -46,7 +46,5 @@ public class Place {
     @OneToMany(mappedBy = "place")
     @JsonManagedReference("place-reservations")
     private List<ReservationPlace> reservations;
-
-
 }
 

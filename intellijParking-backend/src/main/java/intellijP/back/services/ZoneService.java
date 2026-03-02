@@ -74,13 +74,11 @@ public class ZoneService {
     public Zone create(Zone zone) {
         logger.info("Tentative de creation d'une zone: nom={}", zone.getNom());
 
-        // Validation du nom
         if (zone.getNom() == null || zone.getNom().trim().isEmpty()) {
             logger.error("Echec creation: nom de zone manquant");
             throw new RuntimeException("Le nom de la zone est obligatoire");
         }
 
-        // Verification de l'unicite du nom
         if (zoneRepository.findByNom(zone.getNom()).isPresent()) {
             logger.error("Echec creation: nom '{}' deja utilise", zone.getNom());
             throw new RuntimeException("Une zone avec le nom '" + zone.getNom() + "' existe deja");
@@ -106,7 +104,6 @@ public class ZoneService {
                     return new RuntimeException("Zone non trouvee avec l'id: " + id);
                 });
 
-        // Verification de l'unicite du nom si modifie
         if (zoneDetails.getNom() != null && !zoneDetails.getNom().equals(zone.getNom())) {
             if (zoneRepository.findByNom(zoneDetails.getNom()).isPresent()) {
                 logger.error("Echec mise a jour: nom '{}' deja utilise", zoneDetails.getNom());
@@ -139,7 +136,6 @@ public class ZoneService {
                     return new RuntimeException("Zone non trouvee avec l'id: " + id);
                 });
 
-        // Verification que la zone ne contient pas de places
         if (!placeRepository.findByZoneId(id).isEmpty()) {
             logger.error("Echec suppression: zone {} contient des places", zone.getNom());
             throw new RuntimeException("Impossible de supprimer cette zone car elle contient des places. " +

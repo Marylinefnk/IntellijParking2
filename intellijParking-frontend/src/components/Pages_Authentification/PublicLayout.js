@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext";
+import { useUser } from "../../context/UserContext";
 
 export default function PublicLayout() {
     const { user } = useUser();

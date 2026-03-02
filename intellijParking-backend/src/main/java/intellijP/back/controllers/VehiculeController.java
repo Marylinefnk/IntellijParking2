@@ -26,9 +26,6 @@ public class VehiculeController {
     public VehiculeController(VehiculeService vehiculeService) {
         this.vehiculeService = vehiculeService;
     }
-
-    //  ENDPOINTS DE LECTURE
-
     @GetMapping
     public List<VehiculeDTO> getAllVehicules() {
         return vehiculeService.findAllDTO();
@@ -56,9 +53,6 @@ public class VehiculeController {
     public List<VehiculeDTO> getVehiculesByType(@PathVariable TypeVehicule type) {
         return vehiculeService.findByTypeDTO(type);
     }
-
-    //  ENDPOINTS DE MODIFICATION
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public VehiculeDTO createVehicule(@RequestBody VehiculeCreateDTO createDTO) {

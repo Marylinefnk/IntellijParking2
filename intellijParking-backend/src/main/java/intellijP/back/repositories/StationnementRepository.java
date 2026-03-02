@@ -11,11 +11,11 @@ public interface StationnementRepository extends JpaRepository<Stationnement, Lo
     List<Stationnement> findByPlaceId(Long placeId);
     List<Stationnement> findByVehiculeId(Long vehiculeId);
     
-    @Query("SELECT s FROM Stationnement s WHERE s.dateSortie IS NULL AND s.vehicule.id = :vehiculeId")
-    Optional<Stationnement> findActiveStationnementByVehicule(Long vehiculeId);
-    
-    @Query("SELECT s FROM Stationnement s WHERE s.dateSortie IS NULL AND s.place.id = :placeId")
-    Optional<Stationnement> findActiveStationnementByPlace(Long placeId);
+    @Query("SELECT s FROM Stationnement s WHERE s.dateSortie IS NULL AND s.vehicule.id = :vehiculeId ORDER BY s.dateEntree DESC")
+    List<Stationnement> findActiveStationnementsByVehicule(Long vehiculeId);
+
+    @Query("SELECT s FROM Stationnement s WHERE s.dateSortie IS NULL AND s.place.id = :placeId ORDER BY s.dateEntree DESC")
+    List<Stationnement> findActiveStationnementsByPlace(Long placeId);
     
     List<Stationnement> findByDateEntreeBetween(LocalDateTime debut, LocalDateTime fin);
 }

@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_PLACES, API_PLACES_AVAILABILITY, API_ZONES } from "../constants/back";
-import { useUser } from "../context/UserContext";
-import { useNotification } from "../context/NotificationContext";
-import { usePlacesWebSocket } from "../WebHooks/usePlacesWebSocket";
+import { API_PLACES, API_PLACES_AVAILABILITY, API_ZONES } from "../../constants/back";
+import { useUser } from "../../context/UserContext";
+import { useNotification } from "../../context/NotificationContext";
+import { useSSEPlaces } from "../../hooks/useSSEPlaces";
 
 export default function PlacesPage() {
     const [places, setPlaces] = useState([]);
@@ -20,32 +20,19 @@ export default function PlacesPage() {
     const navigate = useNavigate();
     const isAdmin = user?.typePersonne === "SUPERVISEUR";
 
-    // Callbacks WebSocket pour les mises a jour temps reel
-    const handlePlacesUpdate = useCallback((updatedPlaces) => {
-        setPlaces(updatedPlaces);
-    }, []);
+    const ssePlaces = useSSEPlaces();
 
-    const handlePlaceUpdate = useCallback((updatedPlace) => {
-        setPlaces(prev => {
-            const existingPlace = prev.find(p => p.id === updatedPlace.id);
-            // Notifie si le statut a change
-            if (existingPlace && existingPlace.statutActuel !== updatedPlace.statutActuel) {
-                info(`Place ${updatedPlace.numero}: ${updatedPlace.statutActuel}`);
+    useEffect(() => {
+        if (!ssePlaces.lastEvent) return;
+        const evt = ssePlaces.lastEvent;
+        setPlaces(prev => prev.map(p => {
+            if (p.id === evt.idPlace && p.statutActuel !== evt.nouveauStatut) {
+                info(`Place ${evt.numero}: ${evt.ancienStatut} → ${evt.nouveauStatut}`);
+                return { ...p, statutActuel: evt.nouveauStatut };
             }
-            return prev.map(p => p.id === updatedPlace.id ? updatedPlace : p);
-        });
-    }, [info]);
-
-    const handlePlaceDeleted = useCallback((deletedId) => {
-        setPlaces(prev => prev.filter(p => p.id !== deletedId));
-    }, []);
-
-    // Connexion WebSocket pour le temps reel
-    const { connected: wsConnected } = usePlacesWebSocket(
-        handlePlacesUpdate,
-        handlePlaceUpdate,
-        handlePlaceDeleted
-    );
+            return p;
+        }));
+    }, [ssePlaces.lastEvent]);
 
     useEffect(() => {
         loadPlaces();
@@ -55,7 +42,6 @@ export default function PlacesPage() {
     async function loadPlaces() {
         try {
             setLoading(true);
-            // utiise le endpoint dispo pour recuperer le statut en temps reel de la place
             const res = await fetch(API_PLACES_AVAILABILITY);
             if (res.ok) setPlaces(await res.json());
         } catch (e) {
@@ -201,16 +187,16 @@ export default function PlacesPage() {
                         borderRadius: 20,
                         fontSize: "0.75rem",
                         fontWeight: 500,
-                        background: wsConnected ? "#dcfce7" : "#fef2f2",
-                        color: wsConnected ? "#166534" : "#dc2626"
+                        background: ssePlaces.connected ? "#dcfce7" : "#fef2f2",
+                        color: ssePlaces.connected ? "#166534" : "#dc2626"
                     }}>
                         <span style={{
                             width: 8,
                             height: 8,
                             borderRadius: "50%",
-                            background: wsConnected ? "#22c55e" : "#ef4444"
+                            background: ssePlaces.connected ? "#22c55e" : "#ef4444"
                         }}></span>
-                        {wsConnected ? "Temps reel" : "Hors ligne"}
+                        {ssePlaces.connected ? "Temps reel" : "Hors ligne"}
                     </span>
                 </div>
                 <p className="page-subtitle">{stats.total} places au total - {stats.libre} disponibles maintenant</p>
@@ -291,7 +277,6 @@ export default function PlacesPage() {
                                         </div>
                                     )}
 
-                                    {/* Show current reservation if occupied/reserved */}
                                     {place.reservationEnCours && (
                                         <div style={{
                                             marginTop: 8,
@@ -305,7 +290,6 @@ export default function PlacesPage() {
                                         </div>
                                     )}
 
-                                    {/* Show next reservation if any */}
                                     {place.prochainesReservations?.length > 0 && !place.reservationEnCours && (
                                         <div style={{
                                             marginTop: 8,
@@ -320,7 +304,6 @@ export default function PlacesPage() {
                                         </div>
                                     )}
 
-                                    {/* Reserve button for available places */}
                                     {!isAdmin && place.disponiblePourReservation && place.statutActuel !== "HORS_SERVICE" && (
                                         <button
                                             className="btn btn-primary"
@@ -358,7 +341,6 @@ export default function PlacesPage() {
                 </div>
             )}
 
-            {/* Place details modal (for non-admin users) */}
             {selectedPlace && !isAdmin && (
                 <div className="modal-overlay" onClick={() => setSelectedPlace(null)}>
                     <div className="modal" onClick={e => e.stopPropagation()}>
@@ -442,7 +424,6 @@ export default function PlacesPage() {
                 </div>
             )}
 
-            {/* Admin edit modal */}
             {showModal && isAdmin && (
                 <div className="modal-overlay" onClick={closeModal}>
                     <div className="modal" onClick={e => e.stopPropagation()}>

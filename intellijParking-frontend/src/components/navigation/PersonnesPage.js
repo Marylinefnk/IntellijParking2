@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { API_PERSONNES } from "../constants/back";
-import { useUser } from "../context/UserContext";
+import { API_PERSONNES } from "../../constants/back";
+import { useUser } from "../../context/UserContext";
 
 export default function PersonnesPage() {
     const [personnes, setPersonnes] = useState([]);
@@ -40,7 +40,6 @@ export default function PersonnesPage() {
             const url = editingPersonne ? `${API_PERSONNES}/${editingPersonne.id}` : API_PERSONNES;
             const method = editingPersonne ? "PUT" : "POST";
 
-            // inclu uniquement le password pour les users
             const body = editingPersonne
                 ? { nom: form.nom, prenom: form.prenom, mail: form.mail, typePersonne: form.typePersonne }
                 : form;

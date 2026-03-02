@@ -77,7 +77,6 @@ public class ServiceEntityService {
     public ServiceEntity create(ServiceEntity service) {
         logger.info("Tentative de creation d'un service: type={}", service.getTypeService());
 
-        // Validation du type de service
         if (service.getTypeService() == null) {
             logger.error("Echec creation: type de service manquant");
             throw new RuntimeException("Le type de service est obligatoire");
@@ -127,7 +126,6 @@ public class ServiceEntityService {
                     return new RuntimeException("Service non trouve avec l'id: " + id);
                 });
 
-        // Verification des reservations actives
         if (!reservationServiceRepository.findByServiceId(id).isEmpty()) {
             logger.error("Echec suppression: service {} a des reservations associees", service.getTypeService());
             throw new RuntimeException("Impossible de supprimer ce service car il a des reservations associees");

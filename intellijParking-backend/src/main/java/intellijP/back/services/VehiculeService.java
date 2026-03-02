@@ -48,9 +48,6 @@ public class VehiculeService {
         this.notificationService = notificationService;
         logger.info("VehiculeService initialise");
     }
-
-    // Methodes DTO
-
     public List<VehiculeDTO> findAllDTO() {
         logger.debug("Recuperation de tous les vehicules (DTO)");
         List<VehiculeDTO> result = vehiculeRepository.findAll().stream()
@@ -106,7 +103,6 @@ public class VehiculeService {
         Vehicule created = create(vehicule);
         VehiculeDTO result = dtoMapper.toVehiculeDTO(created);
 
-        // Notification temps reel
         notificationService.notifyVehiculeCreated(result.getImmatriculation(), result.getId());
 
         return result;
@@ -128,14 +124,10 @@ public class VehiculeService {
         Vehicule updated = update(id, vehiculeDetails);
         VehiculeDTO result = dtoMapper.toVehiculeDTO(updated);
 
-        // Notification temps reel
         notificationService.notifyVehiculeUpdated(result.getImmatriculation(), result.getId());
 
         return result;
     }
-
-    // Methodes internes (entites)
-
     public List<Vehicule> findAll() {
         return vehiculeRepository.findAll();
     }
@@ -231,7 +223,6 @@ public class VehiculeService {
         vehiculeRepository.deleteById(id);
         logger.info("Vehicule supprime avec succes: id={}", id);
 
-        // Notification temps reel
         notificationService.notifyVehiculeDeleted(id);
     }
 

@@ -62,9 +62,6 @@ public class PlaceService {
         this.eventPublisher = eventPublisher;
         this.notificationService = notificationService;
     }
-
-    //  Methodes DTO
-
     public List<PlaceDTO> findAllDTO() {
         logger.debug("Recuperation de toutes les places (DTO)");
         List<PlaceDTO> result = placeRepository.findAll().stream()
@@ -129,7 +126,6 @@ public class PlaceService {
         Place created = create(place);
         PlaceDTO result = dtoMapper.toPlaceDTO(created);
 
-        // Notifications temps reel (decouplees)
         eventPublisher.publishEvent(new PlaceCreatedEvent(result.getId()));
         notificationService.notifyPlaceCreated(result.getNumero(), result.getId());
 
@@ -153,15 +149,11 @@ public class PlaceService {
         Place updated = update(id, placeDetails);
         PlaceDTO result = dtoMapper.toPlaceDTO(updated);
 
-        // Notifications temps reel (decouplees)
         eventPublisher.publishEvent(new PlaceUpdatedEvent(id));
         notificationService.notifyPlaceUpdated(result.getNumero(), result.getId());
 
         return result;
     }
-
-    // Methodes internes (entites)
-
     public List<Place> findAll() {
         return placeRepository.findAll();
     }
@@ -248,7 +240,6 @@ public class PlaceService {
         place.setStatut(statut);
         placeRepository.save(place);
 
-        // Notification temps reel (decouplee)
         eventPublisher.publishEvent(new PlaceUpdatedEvent(id));
 
         return dtoMapper.toPlaceDTO(place);
@@ -267,13 +258,9 @@ public class PlaceService {
 
         placeRepository.deleteById(id);
 
-        // Notifications temps reel (decouplees)
         eventPublisher.publishEvent(new PlaceDeletedEvent(id));
         notificationService.notifyPlaceDeleted(id);
     }
-
-    //  Methodes disponibilite
-
     public List<PlaceAvailabilityDTO> findAllWithAvailability() {
         LocalDateTime now = LocalDateTime.now();
         List<Place> places = placeRepository.findAll();

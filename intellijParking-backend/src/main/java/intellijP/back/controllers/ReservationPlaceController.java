@@ -1,10 +1,5 @@
 package intellijP.back.controllers;
 
-import intellijP.back.dto.DtoMapper;
-import intellijP.back.dto.ReservationPlaceCreateDTO;
-import intellijP.back.dto.ReservationPlaceResponseDTO;
-import intellijP.back.models.*;
-import intellijP.back.services.ReservationPlaceService;
 import intellijP.back.dto.ReservationPlaceCreateDTO;
 import intellijP.back.dto.ReservationPlaceResponseDTO;
 import intellijP.back.exceptions.ResourceNotFoundException;
@@ -24,9 +19,6 @@ public class ReservationPlaceController {
     public ReservationPlaceController(ReservationPlaceService reservationService) {
         this.reservationService = reservationService;
     }
-
-    // ENDPOINTS DE LECTURE
-
     @GetMapping
     public List<ReservationPlaceResponseDTO> getAllReservations() {
         return reservationService.findAllDTO();
@@ -52,9 +44,6 @@ public class ReservationPlaceController {
     public List<ReservationPlaceResponseDTO> getReservationsByStatut(@PathVariable StatutReservation statut) {
         return reservationService.findByStatutDTO(statut);
     }
-
-    // ENDPOINTS DE CREATION/MODIFICATION
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ReservationPlaceResponseDTO createReservation(@RequestBody ReservationPlaceCreateDTO createDTO) {

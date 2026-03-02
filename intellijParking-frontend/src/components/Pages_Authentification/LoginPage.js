@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useUser } from "../context/UserContext";
-import { API_AUTH } from "../constants/back";
+import { useUser } from "../../context/UserContext";
+import { API_AUTH } from "../../constants/back";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");

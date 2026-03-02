@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { API_VEHICULES, API_PERSONNES } from "../constants/back";
-import { useUser } from "../context/UserContext";
-import { useNotification } from "../context/NotificationContext";
+import { API_VEHICULES, API_PERSONNES } from "../../constants/back";
+import { useUser } from "../../context/UserContext";
+import { useNotification } from "../../context/NotificationContext";
 
 export default function VehiculesPage() {
     const [vehicules, setVehicules] = useState([]);
@@ -26,7 +26,6 @@ export default function VehiculesPage() {
     async function loadVehicules() {
         try {
             setLoading(true);
-            // Admin sees all vehicles, users see only their own
             const url = isAdmin ? API_VEHICULES : `${API_VEHICULES}/personne/${user?.id}`;
             const res = await authFetch(url);
             if (res.ok) setVehicules(await res.json());

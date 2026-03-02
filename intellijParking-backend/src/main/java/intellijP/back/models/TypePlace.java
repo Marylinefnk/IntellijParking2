@@ -6,8 +6,8 @@ public enum TypePlace {
     PMR("pmr"),
     ELECTRIQUE("Électrique"),
     MOTO("Moto"),
-    FAMILIALE("Familiale");
-
+    FAMILIALE("Familiale"),
+    NORMAL("Normal");
     private final String label;
 
     TypePlace(String label) {

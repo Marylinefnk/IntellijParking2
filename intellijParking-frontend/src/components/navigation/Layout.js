@@ -1,17 +1,12 @@
 import React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { useUser } from "../context/UserContext";
-import { useNotificationWebSocket } from "../WebHooks/useNotificationWebSocket";
+import { useUser } from "../../context/UserContext";
+import { useNotificationWebSocket } from "../../WebHooks/useNotificationWebSocket";
 
-/**
- * Layout principal de l'application pour les utilisateurs connectes.
- * Inclut la sidebar de navigation et les notifications temps reel.
- */
 export default function Layout() {
     const { user, logout } = useUser();
     const navigate = useNavigate();
 
-    // Connexion WebSocket pour les notifications
     useNotificationWebSocket();
 
     const isAdmin = user?.typePersonne === "SUPERVISEUR";
@@ -109,6 +104,13 @@ export default function Layout() {
                         <NavLink to="/app/personnes" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
                             <span className="nav-icon">U</span>
                             Clients
+                        </NavLink>
+                    )}
+
+                    {isAdmin && (
+                        <NavLink to="/app/simulation" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
+                            <span className="nav-icon">S</span>
+                            Simulation
                         </NavLink>
                     )}
                 </nav>

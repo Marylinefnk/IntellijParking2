@@ -10,8 +10,6 @@ import intellijP.back.security.JwtUtil;
 import intellijP.back.services.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = {"http://localhost:3000", "http://127.0.0.1:3000"})
