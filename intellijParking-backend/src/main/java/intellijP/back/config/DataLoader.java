@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
@@ -26,11 +27,13 @@ public class DataLoader {
             StationnementRepository stationnementRepository,
             ServiceRepository serviceRepository,
             ReservationPlaceRepository reservationPlaceRepository,
-            ReservationServiceRepository reservationServiceRepository) {
+            ReservationServiceRepository reservationServiceRepository,
+            JdbcTemplate jdbcTemplate) {
 
         return args -> {
 
             ensureAdminExists(passwordEncoder, personneRepository);
+            ensurePlacesExist(placeRepository, zoneRepository, jdbcTemplate);
 
             if (zoneRepository.count() > 0) {
                 logger.info("Database already initialized. Skipping sample data.");
@@ -175,6 +178,50 @@ public class DataLoader {
 
             logger.info("Database initialization completed successfully.");
         };
+    }
+
+    private void ensurePlacesExist(PlaceRepository placeRepository, ZoneRepository zoneRepository, JdbcTemplate jdbcTemplate) {
+        if (placeRepository.count() > 0) {
+            logger.info("Places already exist. Skipping place initialization.");
+            return;
+        }
+
+        logger.info("No places found. Creating default places...");
+
+        try {
+            jdbcTemplate.execute("ALTER TABLE place MODIFY COLUMN id_place BIGINT NOT NULL AUTO_INCREMENT");
+            logger.info("Altered id_place column to BIGINT AUTO_INCREMENT.");
+        } catch (Exception e) {
+            logger.warn("Could not alter id_place column (may already be correct): {}", e.getMessage());
+        }
+        try {
+            jdbcTemplate.execute("ALTER TABLE place MODIFY COLUMN type_place VARCHAR(50)");
+            logger.info("Altered type_place column to VARCHAR(50).");
+        } catch (Exception e) {
+            logger.warn("Could not alter type_place column (may already be VARCHAR): {}", e.getMessage());
+        }
+        try {
+            jdbcTemplate.execute("ALTER TABLE place MODIFY COLUMN statut VARCHAR(50)");
+            logger.info("Altered statut column to VARCHAR(50).");
+        } catch (Exception e) {
+            logger.warn("Could not alter statut column (may already be VARCHAR): {}", e.getMessage());
+        }
+
+        Zone zoneA = zoneRepository.findAll().stream()
+                .filter(z -> z.getNom().equals("Zone A"))
+                .findFirst()
+                .orElseGet(() -> zoneRepository.save(
+                        Zone.builder().nom("Zone A").description("Parking principal - niveau 1").build()
+                ));
+
+        placeRepository.save(Place.builder().numero("A001").type(TypePlace.STANDARD).statut(StatutPlace.LIBRE).positionX(10.5).positionY(20.3).zone(zoneA).build());
+        placeRepository.save(Place.builder().numero("A002").type(TypePlace.STANDARD).statut(StatutPlace.LIBRE).positionX(11.5).positionY(20.3).zone(zoneA).build());
+        placeRepository.save(Place.builder().numero("A003").type(TypePlace.PMR).statut(StatutPlace.LIBRE).positionX(12.5).positionY(20.3).zone(zoneA).build());
+        placeRepository.save(Place.builder().numero("A004").type(TypePlace.ELECTRIQUE).statut(StatutPlace.LIBRE).positionX(13.5).positionY(20.3).zone(zoneA).build());
+        placeRepository.save(Place.builder().numero("A005").type(TypePlace.STANDARD).statut(StatutPlace.LIBRE).positionX(14.5).positionY(20.3).zone(zoneA).build());
+        placeRepository.save(Place.builder().numero("A006").type(TypePlace.STANDARD).statut(StatutPlace.LIBRE).positionX(15.5).positionY(20.3).zone(zoneA).build());
+
+        logger.info("Default places created successfully.");
     }
 
     private void ensureAdminExists(PasswordEncoder passwordEncoder, PersonneRepository personneRepository) {
