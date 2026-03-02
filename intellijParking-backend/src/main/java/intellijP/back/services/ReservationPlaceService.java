@@ -13,11 +13,6 @@ import intellijP.back.exceptions.ConflictException;
 import intellijP.back.exceptions.OperationNotAllowedException;
 import intellijP.back.exceptions.ResourceNotFoundException;
 import intellijP.back.exceptions.ValidationException;
-import intellijP.back.models.*;
-import intellijP.back.repositories.ReservationPlaceRepository;
-import intellijP.back.repositories.PlaceRepository;
-import intellijP.back.repositories.PersonneRepository;
-import intellijP.back.repositories.VehiculeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -61,7 +56,7 @@ public class ReservationPlaceService {
     }
     public List<ReservationPlaceResponseDTO> findAllDTO() {
         logger.debug("Recuperation de toutes les reservations de places (DTO)");
-        List<ReservationPlaceResponseDTO> result = reservationRepository.findAll().stream()
+        List<ReservationPlaceResponseDTO> result = reservationRepository.findAllWithRelations().stream()
                 .map(dtoMapper::toReservationPlaceResponseDTO)
                 .collect(Collectors.toList());
         logger.info("Nombre de reservations de places recuperees: {}", result.size());
@@ -80,7 +75,7 @@ public class ReservationPlaceService {
 
     public List<ReservationPlaceResponseDTO> findByPersonneDTO(Long personneId) {
         logger.debug("Recherche des reservations pour la personne id: {} (DTO)", personneId);
-        return reservationRepository.findByPersonneId(personneId).stream()
+        return reservationRepository.findByPersonneIdWithRelations(personneId).stream()
                 .map(dtoMapper::toReservationPlaceResponseDTO)
                 .collect(Collectors.toList());
     }
