@@ -104,19 +104,19 @@ public class DataLoader {
             );
 
             Place place1 = placeRepository.save(
-                    Place.builder().numero("A001").type(TypePlace.STANDARD).statut(StatutPlace.LIBRE)
+                    Place.builder().numero("A01").type(TypePlace.STANDARD).statut(StatutPlace.LIBRE)
                             .positionX(10.5).positionY(20.3).zone(zoneA).build()
             );
             Place place2 = placeRepository.save(
-                    Place.builder().numero("A002").type(TypePlace.STANDARD).statut(StatutPlace.OCCUPEE)
+                    Place.builder().numero("A02").type(TypePlace.STANDARD).statut(StatutPlace.OCCUPEE)
                             .positionX(11.5).positionY( 20.3).zone(zoneA).build()
             );
             Place place3 = placeRepository.save(
-                    Place.builder().numero("A003").type(TypePlace.PMR).statut(StatutPlace.LIBRE)
+                    Place.builder().numero("A03").type(TypePlace.PMR).statut(StatutPlace.LIBRE)
                             .positionX(12.5).positionY( 20.3).zone(zoneA).build()
             );
             Place place4 = placeRepository.save(
-                    Place.builder().numero("A004").type(TypePlace.ELECTRIQUE).statut(StatutPlace.RESERVEE)
+                    Place.builder().numero("A04").type(TypePlace.ELECTRIQUE).statut(StatutPlace.RESERVEE)
                             .positionX(13.5).positionY(20.3).zone(zoneA).build()
             );
 
