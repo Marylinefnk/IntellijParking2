@@ -2,6 +2,7 @@ package intellijP.back.services;
 
 import intellijP.back.dto.ChangementPlaceSSEDTO;
 import intellijP.back.dto.InitialisationResultatDTO;
+import intellijP.back.dto.ReservationSSEDTO;
 import intellijP.back.models.*;
 import intellijP.back.repositories.*;
 import org.slf4j.Logger;
@@ -177,6 +178,26 @@ public class SimulationService {
                             .build();
                     reservationPlaceRepository.save(resa);
                     compteur++;
+                    logger.info("  [Resa #{}] Place={} | Vehicule={} ({}) | {} -> {} | {}",
+                            compteur, place.getNumero(), v.getImmatriculation(),
+                            v.getPersonne().getNom(), debut, fin,
+                            v.getTypeVehicule());
+
+                    fluxSSEService.diffuserReservation(ReservationSSEDTO.builder()
+                            .type("nouvelle_reservation")
+                            .dateEvenement(LocalDateTime.now())
+                            .idReservation(resa.getId())
+                            .numeroPlace(place.getNumero())
+                            .niveauPlace(place.getZone() != null ? place.getZone().getNom() : null)
+                            .immatriculation(v.getImmatriculation())
+                            .typeVehicule(v.getTypeVehicule() != null ? v.getTypeVehicule().name() : null)
+                            .nomPersonne(v.getPersonne().getNom())
+                            .prenomPersonne(v.getPersonne().getPrenom())
+                            .dateDebut(debut)
+                            .dateFin(fin)
+                            .statut(StatutReservation.CONFIRMEE.name())
+                            .compteur(compteur)
+                            .build());
                 }
 
                 curseur = fin.plusMinutes(5 + rng.nextInt(20));
@@ -202,11 +223,15 @@ public class SimulationService {
         }
 
         simulationActive = true;
-        logger.info("Simulation démarrée - intervalle={}s, niveau={}, proba={}", intervalleSecondes, niveau, probaPresence);
+        logger.info("========================================");
+        logger.info("SIMULATION DEMARREE - intervalle={}s, niveau={}, proba={}", intervalleSecondes, niveau, probaPresence);
+        logger.info("========================================");
 
         Random rng = new Random();
+        int cycle = 0;
 
         while (simulationActive) {
+            cycle++;
             try {
                 List<Capteur> capteurs;
                 if (niveau != null && !niveau.isBlank()) {
@@ -216,13 +241,19 @@ public class SimulationService {
                 }
 
                 if (capteurs.isEmpty()) {
-                    logger.warn("Aucun capteur actif trouvé - simulation en attente");
+                    logger.warn("[Cycle {}] Aucun capteur actif trouve - simulation en attente", cycle);
                 } else {
                     Capteur capteur = capteurs.get(rng.nextInt(capteurs.size()));
                     boolean nouvellePresence = rng.nextDouble() < probaPresence;
 
                     if (nouvellePresence != capteur.isPresenceDetectee()) {
+                        logger.info("[Cycle {}] Changement detecte place={} : {} -> {}",
+                                cycle, capteur.getPlace().getNumero(),
+                                capteur.isPresenceDetectee() ? "PRESENT" : "ABSENT",
+                                nouvellePresence ? "PRESENT" : "ABSENT");
                         traiterChangementPresence(capteur, nouvellePresence);
+                    } else {
+                        logger.debug("[Cycle {}] Pas de changement pour place={}", cycle, capteur.getPlace().getNumero());
                     }
                 }
 
@@ -237,7 +268,9 @@ public class SimulationService {
             }
         }
 
-        logger.info("Simulation arrêtée");
+        logger.info("========================================");
+        logger.info("SIMULATION ARRETEE apres {} cycles", cycle);
+        logger.info("========================================");
     }
 
     public void arreterSimulation() {
@@ -252,7 +285,7 @@ public class SimulationService {
     @Transactional
     public void traiterChangementPresence(Capteur capteur, boolean nouvellePresence) {
         Place place = capteur.getPlace();
-        logger.debug("Traitement changement présence: place={}, presence={}", place.getNumero(), nouvellePresence);
+        logger.info("=== Changement presence : place={}, nouvelle_presence={} ===", place.getNumero(), nouvellePresence);
 
         if (nouvellePresence) {
 
@@ -261,6 +294,9 @@ public class SimulationService {
                 logger.warn("Pas de vehicule dispo pour place {}, on skip", place.getNumero());
                 return;
             }
+            logger.info(">>> ARRIVEE place={} | Vehicule {} ({})",
+                    place.getNumero(), vehiculeTrouve.getImmatriculation(),
+                    vehiculeTrouve.getTypeVehicule());
 
             List<ReservationPlace> resasActives = reservationPlaceRepository.findActiveReservationsAtMoment(
                     place.getId(), LocalDateTime.now());
@@ -281,7 +317,8 @@ public class SimulationService {
                 statutResaAvant = resa.getStatut().name();
                 resa.setStatut(StatutReservation.EN_COURS);
                 reservationPlaceRepository.save(resa);
-                logger.debug("Resa {} passée EN_COURS pour vehicule {}", resa.getId(), vehiculeTrouve.getImmatriculation());
+                logger.info("    Reservation id={} PREEXISTANTE ({} -> EN_COURS) pour vehicule {}",
+                        resa.getId(), statutResaAvant, vehiculeTrouve.getImmatriculation());
             } else {
                 statutResaAvant = null;
                 resa = ReservationPlace.builder()
@@ -293,7 +330,8 @@ public class SimulationService {
                         .statut(StatutReservation.EN_COURS)
                         .build();
                 reservationPlaceRepository.save(resa);
-                logger.debug("Resa créée à la volée pour vehicule {} sur place {}", vehiculeTrouve.getImmatriculation(), place.getNumero());
+                logger.info("    Reservation id={} CREEE A LA VOLEE pour vehicule {} sur place {}",
+                        resa.getId(), vehiculeTrouve.getImmatriculation(), place.getNumero());
             }
 
             Stationnement stationn = Stationnement.builder()
@@ -302,6 +340,8 @@ public class SimulationService {
                     .dateEntree(LocalDateTime.now())
                     .build();
             stationnementRepository.save(stationn);
+            logger.info("    Stationnement cree id={} | entree={}",
+                    stationn.getId(), stationn.getDateEntree());
 
             capteur.setPresenceDetectee(true);
             capteur.setVehiculeDetecte(vehiculeTrouve);
@@ -322,10 +362,13 @@ public class SimulationService {
             StatutPlace ancienStatut = place.getStatut();
             place.setStatut(StatutPlace.OCCUPEE);
             placeRepository.save(place);
+            logger.info("    Place {} : {} -> OCCUPEE", place.getNumero(), ancienStatut);
 
             ChangementPlaceSSEDTO dto = construireDTO(place, ancienStatut, StatutPlace.OCCUPEE,
                     "CAPTEUR", vehiculeTrouve, resa, typeResa, statutResaAvant, "EN_COURS");
             fluxSSEService.diffuserChangementPlace(dto);
+            logger.info("    SSE diffuse : place={} {} -> OCCUPEE | vehicule={}",
+                    place.getNumero(), ancienStatut, vehiculeTrouve.getImmatriculation());
 
         } else {
 
@@ -334,6 +377,8 @@ public class SimulationService {
                 logger.warn("Départ détecté mais pas de vehicule connu sur place {}", place.getNumero());
                 return;
             }
+            logger.info("<<< DEPART place={} | Vehicule {}",
+                    place.getNumero(), vehiculePartant.getImmatriculation());
 
             Optional<Stationnement> statActif = stationnementRepository.findActiveStationnementsByPlace(place.getId()).stream().findFirst();
             if (statActif.isPresent()) {
@@ -343,6 +388,10 @@ public class SimulationService {
                 s.setDureeMin((int) dureeMin);
                 s.setTarif(Math.round((dureeMin / 60.0) * 2.0 * 100.0) / 100.0);
                 stationnementRepository.save(s);
+                logger.info("    Stationnement clos id={} | duree={}min | tarif={}EUR",
+                        s.getId(), s.getDureeMin(), s.getTarif());
+            } else {
+                logger.warn("    Aucun stationnement actif trouve pour place {}", place.getNumero());
             }
 
             ReservationPlace resaActive = null;
@@ -358,6 +407,9 @@ public class SimulationService {
             if (resaActive != null) {
                 resaActive.setStatut(StatutReservation.TERMINEE);
                 reservationPlaceRepository.save(resaActive);
+                logger.info("    Reservation id={} terminee (EN_COURS -> TERMINEE)", resaActive.getId());
+            } else {
+                logger.info("    Aucune reservation EN_COURS a terminer pour place {}", place.getNumero());
             }
 
             capteur.setPresenceDetectee(false);
@@ -390,12 +442,15 @@ public class SimulationService {
 
             place.setStatut(nouveauStatut);
             placeRepository.save(place);
+            logger.info("    Place {} : {} -> {}", place.getNumero(), ancienStatut, nouveauStatut);
 
             ChangementPlaceSSEDTO dto = construireDTO(place, ancienStatut, nouveauStatut,
                     "CAPTEUR", vehiculePartant, resaActive,
                     resaActive != null ? "PREEXISTANTE" : null,
                     "EN_COURS", resaActive != null ? "TERMINEE" : null);
             fluxSSEService.diffuserChangementPlace(dto);
+            logger.info("    SSE diffuse : place={} {} -> {} | vehicule={}",
+                    place.getNumero(), ancienStatut, nouveauStatut, vehiculePartant.getImmatriculation());
         }
     }
 
