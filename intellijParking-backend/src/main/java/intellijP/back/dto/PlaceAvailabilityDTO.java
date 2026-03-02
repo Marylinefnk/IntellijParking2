@@ -23,8 +23,6 @@ public class PlaceAvailabilityDTO {
     private Double positionY;
     private Long zoneId;
     private String zoneNom;
-
-
     private ReservationInfo reservationEnCours;
     private List<ReservationInfo> prochainesReservations;
     private boolean disponiblePourReservation;

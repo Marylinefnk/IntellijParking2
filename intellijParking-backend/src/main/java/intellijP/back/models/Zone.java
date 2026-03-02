@@ -33,6 +33,4 @@ public class Zone {
     @OneToMany(mappedBy = "zone")
     @JsonManagedReference("zone-intersections")
     private List<Intersection> intersections;
-
-
 }

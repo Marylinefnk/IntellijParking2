@@ -44,30 +44,21 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-                // Public endpoints - authentication
                 .antMatchers("/api/auth/**").permitAll()
-                // WebSocket endpoints (including SockJS fallback)
                 .antMatchers("/ws/**", "/ws/info/**", "/ws").permitAll()
-                // Public endpoints - viewing places (visitors can see)
                 .antMatchers(HttpMethod.GET, "/api/places/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/zones/**").permitAll()
-                // Swagger/OpenAPI
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                // Admin only endpoints
                 .antMatchers(HttpMethod.POST, "/api/places/**").hasRole("SUPERVISEUR")
                 .antMatchers(HttpMethod.PUT, "/api/places/**").hasRole("SUPERVISEUR")
                 .antMatchers(HttpMethod.DELETE, "/api/places/**").hasRole("SUPERVISEUR")
                 .antMatchers("/api/personnes/**").hasRole("SUPERVISEUR")
                 .antMatchers("/api/services/**").hasRole("SUPERVISEUR")
-                // endpoints simulation R2 - superviseur uniquement
                 .antMatchers("/simulation/**").hasRole("SUPERVISEUR")
-                // flux SSE R2 - public
                 .antMatchers("/flux/**").permitAll()
-                // Authenticated users can access reservations and vehicles
                 .antMatchers("/api/reservations-place/**").authenticated()
                 .antMatchers("/api/reservations-service/**").authenticated()
                 .antMatchers("/api/vehicules/**").authenticated()
-                // All other requests need authentication
                 .anyRequest().authenticated()
             .and()
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

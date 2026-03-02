@@ -30,14 +30,11 @@ public class EvenementCapteur {
     @JsonBackReference("place-evenements")
     private Place place;
 
-    // le vehicule detecte par la plaque - peut etre null dans certains cas limites
-    // TODO: gérer le cas où la plaque n'est pas reconnue
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_vehicule")
     @JsonBackReference("vehicule-evenements")
     private Vehicule vehicule;
 
-    // la reservation liée - null si le vehicule n'avait pas de reservation (créée à la volée)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_reservation")
     @JsonBackReference("reservation-evenements")

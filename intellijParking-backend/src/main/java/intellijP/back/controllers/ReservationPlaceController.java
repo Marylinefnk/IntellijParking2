@@ -24,9 +24,6 @@ public class ReservationPlaceController {
     public ReservationPlaceController(ReservationPlaceService reservationService) {
         this.reservationService = reservationService;
     }
-
-    // ENDPOINTS DE LECTURE
-
     @GetMapping
     public List<ReservationPlaceResponseDTO> getAllReservations() {
         return reservationService.findAllDTO();
@@ -52,9 +49,6 @@ public class ReservationPlaceController {
     public List<ReservationPlaceResponseDTO> getReservationsByStatut(@PathVariable StatutReservation statut) {
         return reservationService.findByStatutDTO(statut);
     }
-
-    // ENDPOINTS DE CREATION/MODIFICATION
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ReservationPlaceResponseDTO createReservation(@RequestBody ReservationPlaceCreateDTO createDTO) {

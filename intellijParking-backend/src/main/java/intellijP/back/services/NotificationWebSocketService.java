@@ -36,7 +36,6 @@ public class NotificationWebSocketService {
         }
     }
 
-    // Notifications pour les vehicules
     public void notifyVehiculeCreated(String immatriculation, Long vehiculeId) {
         broadcastNotification("VEHICULE_CREE",
                 "Nouveau vehicule ajoute: " + immatriculation,
@@ -55,7 +54,6 @@ public class NotificationWebSocketService {
                 "VEHICULE", vehiculeId);
     }
 
-    // Notifications pour les places
     public void notifyPlaceCreated(String numero, Long placeId) {
         broadcastNotification("PLACE_CREE",
                 "Nouvelle place ajoutee: " + numero,
@@ -74,7 +72,6 @@ public class NotificationWebSocketService {
                 "PLACE", placeId);
     }
 
-    // Notifications pour les reservations
     public void notifyReservationCreated(Long reservationId, String placeNumero) {
         broadcastNotification("RESERVATION_CREE",
                 "Nouvelle reservation pour la place " + placeNumero,
@@ -129,7 +126,6 @@ public class NotificationWebSocketService {
             this.timestamp = LocalDateTime.now().toString();
         }
 
-        // Getters et Setters
         public String getType() { return type; }
         public void setType(String type) { this.type = type; }
         public String getMessage() { return message; }

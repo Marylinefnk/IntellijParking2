@@ -23,17 +23,13 @@ public class ChangementPlaceSSEDTO {
     private String ancienStatut;
     private String nouveauStatut;
 
-    // CAPTEUR, RESERVATION ou STATIONNEMENT
     private String cause;
 
-    // infos vehicule - null si pas de vehicule identifié
     private Long idVehicule;
     private String immatriculation;
     private String typeVehicule;
 
-    // infos reservation - null si pas de resa liee
     private Long idReservation;
-    // PREEXISTANTE ou CREE_A_LA_VOLEE
     private String typeReservation;
     private String statutResaAvant;
     private String statutResaApres;

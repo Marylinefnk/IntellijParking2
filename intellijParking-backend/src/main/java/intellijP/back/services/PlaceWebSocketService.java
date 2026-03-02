@@ -34,7 +34,6 @@ public class PlaceWebSocketService {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onPlaceCreated(PlaceCreatedEvent e) {
-        // Au besoin, tu peux aussi faire broadcastPlaceUpdate(e.placeId())
         broadcastAllPlaces();
     }
 

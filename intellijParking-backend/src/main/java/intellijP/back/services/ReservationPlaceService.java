@@ -28,8 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-
 @Service
 @Transactional
 public class ReservationPlaceService {
@@ -43,8 +41,6 @@ public class ReservationPlaceService {
     private final DtoMapper dtoMapper;
     private final PlaceWebSocketService placeWebSocketService;
     private final NotificationWebSocketService notificationService;
-
-
     private static final int MAX_RESERVATIONS_ACTIVES = 3;
 
     public ReservationPlaceService(ReservationPlaceRepository reservationRepository,
@@ -63,8 +59,6 @@ public class ReservationPlaceService {
         this.notificationService = notificationService;
         logger.info("ReservationPlaceService initialise");
     }
-
-
     public List<ReservationPlaceResponseDTO> findAllDTO() {
         logger.debug("Recuperation de toutes les reservations de places (DTO)");
         List<ReservationPlaceResponseDTO> result = reservationRepository.findAll().stream()
@@ -129,7 +123,6 @@ public class ReservationPlaceService {
         ReservationPlace created = create(reservation);
         ReservationPlaceResponseDTO result = dtoMapper.toReservationPlaceResponseDTO(created);
 
-        // Notifications temps reel
         placeWebSocketService.broadcastPlaceUpdate(createDTO.getPlaceId());
         notificationService.notifyReservationCreated(result.getId(), result.getPlace().getNumero());
 
@@ -146,7 +139,6 @@ public class ReservationPlaceService {
         ReservationPlace updated = update(id, reservationDetails);
         ReservationPlaceResponseDTO result = dtoMapper.toReservationPlaceResponseDTO(updated);
 
-        // Notifications temps reel
         placeWebSocketService.broadcastPlaceUpdate(updated.getPlace().getId());
         notificationService.notifyReservationUpdated(result.getId(), result.getPlace().getNumero());
 
@@ -162,7 +154,6 @@ public class ReservationPlaceService {
         annuler(id);
         ReservationPlaceResponseDTO result = findByIdDTO(id).orElse(null);
 
-        // Notifications temps reel
         placeWebSocketService.broadcastPlaceUpdate(placeId);
         notificationService.notifyReservationCancelled(id, placeNumero);
 
@@ -178,7 +169,6 @@ public class ReservationPlaceService {
         commencer(id);
         ReservationPlaceResponseDTO result = findByIdDTO(id).orElse(null);
 
-        // Notifications temps reel
         placeWebSocketService.broadcastPlaceUpdate(placeId);
         notificationService.notifyReservationStarted(id, placeNumero);
 
@@ -194,7 +184,6 @@ public class ReservationPlaceService {
         terminer(id);
         ReservationPlaceResponseDTO result = findByIdDTO(id).orElse(null);
 
-        // Notifications temps reel
         placeWebSocketService.broadcastPlaceUpdate(placeId);
         notificationService.notifyReservationEnded(id, placeNumero);
 
@@ -257,30 +246,23 @@ public class ReservationPlaceService {
         logger.debug("Recherche des reservations avec statut: {}", statut);
         return reservationRepository.findByStatut(statut);
     }
-
-
     public ReservationPlace create(ReservationPlace reservation) {
         logger.info("Tentative de creation d'une reservation - place={}, personne={}, vehicule={}",
             reservation.getPlace().getId(), reservation.getPersonne().getId(), reservation.getVehicule().getId());
 
-        // Validation de la place
         Place place = placeRepository.findById(reservation.getPlace().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Place", reservation.getPlace().getId()));
 
-        // Validation de la personne
         Personne personne = personneRepository.findById(reservation.getPersonne().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Personne", reservation.getPersonne().getId()));
 
-        // Validation du vehicule
         Vehicule vehicule = vehiculeRepository.findById(reservation.getVehicule().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicule", reservation.getVehicule().getId()));
 
-        // Verification que le vehicule appartient a la personne
         if (!vehicule.getPersonne().getId().equals(personne.getId())) {
             throw new ValidationException("Le vehicule n'appartient pas a cette personne");
         }
 
-        // Verification des dates
         if (reservation.getDateDebut() == null || reservation.getDateFin() == null) {
             throw new ValidationException("Les dates de debut et de fin sont obligatoires");
         }
@@ -291,12 +273,10 @@ public class ReservationPlaceService {
             throw new ValidationException("La date de debut ne peut pas etre dans le passe");
         }
 
-        // Verification que la place n'est pas occupee
         if (place.getStatut() == StatutPlace.OCCUPEE) {
             throw new OperationNotAllowedException("Cette place est actuellement occupee");
         }
 
-        // Verification des conflits de creneaux
         List<StatutReservation> statutsActifs = Arrays.asList(
                 StatutReservation.CONFIRMEE, StatutReservation.EN_COURS);
         List<ReservationPlace> conflits = reservationRepository.findConflictingReservations(
@@ -310,14 +290,12 @@ public class ReservationPlaceService {
                     "Conflit avec " + conflits.size() + " reservation(s) existante(s).");
         }
 
-        // Verification de la limite de reservations actives
         long nbReservationsActives = reservationRepository.countActiveReservationsByPersonne(personne.getId());
         if (nbReservationsActives >= MAX_RESERVATIONS_ACTIVES) {
             throw new BusinessException("LIMIT_REACHED", "Limite de " + MAX_RESERVATIONS_ACTIVES +
                     " reservations actives atteinte pour cette personne");
         }
 
-        // Configuration de la reservation
         reservation.setPersonne(personne);
         reservation.setPlace(place);
         reservation.setVehicule(vehicule);
@@ -337,13 +315,11 @@ public class ReservationPlaceService {
         ReservationPlace reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Reservation", id));
 
-        // Verification des nouvelles dates
         if (reservationDetails.getDateDebut() != null && reservationDetails.getDateFin() != null) {
             if (reservationDetails.getDateFin().isBefore(reservationDetails.getDateDebut())) {
                 throw new ValidationException("La date de fin doit etre posterieure a la date de debut");
             }
 
-            // Verification des conflits (en excluant cette reservation)
             List<StatutReservation> statutsActifs = Arrays.asList(
                     StatutReservation.CONFIRMEE, StatutReservation.EN_COURS);
             List<ReservationPlace> conflits = reservationRepository.findConflictingReservationsExcluding(
@@ -437,7 +413,6 @@ public class ReservationPlaceService {
         reservationRepository.deleteById(id);
         logger.info("Reservation supprimee avec succes: id={}", id);
 
-        // Notifications temps reel
         placeWebSocketService.broadcastPlaceUpdate(placeId);
         notificationService.notifyReservationDeleted(id);
     }

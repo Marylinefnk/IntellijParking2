@@ -39,7 +39,6 @@ public class DataLoader {
 
             logger.info("Initializing database with sample data...");
 
-            // ZONES
             Zone zoneA = zoneRepository.save(
                     Zone.builder().nom("Zone A").description("Parking principal - niveau 1").build()
             );
@@ -50,7 +49,6 @@ public class DataLoader {
                     Zone.builder().nom("Zone C").description("Parking réservé - niveau 2").build()
             );
 
-            // superviseur/admin
             Personne p1 = personneRepository.save(
                     Personne.builder()
                             .nom("Admin")
@@ -60,7 +58,6 @@ public class DataLoader {
                             .typePersonne(TypePersonne.SUPERVISEUR)
                             .build()
             );
-            //abonné
             Personne p2 = personneRepository.save(
                     Personne.builder()
                             .nom("bouga")
@@ -70,7 +67,6 @@ public class DataLoader {
                             .typePersonne(TypePersonne.ABONNE)
                             .build()
             );
-            // visiteur123
             Personne p3 = personneRepository.save(
                     Personne.builder()
                             .nom("Durand")
@@ -90,7 +86,6 @@ public class DataLoader {
                             .build()
             );
 
-            // VEHICULES
             Vehicule v1 = vehiculeRepository.save(
                     Vehicule.builder().immatriculation("AB-123-CD").typeVehicule(TypeVehicule.VOITURE).personne(p1).build()
             );
@@ -104,7 +99,6 @@ public class DataLoader {
                     Vehicule.builder().immatriculation("MN-012-OP").typeVehicule(TypeVehicule.VOITURE).personne(p4).build()
             );
 
-            // PLACES
             Place place1 = placeRepository.save(
                     Place.builder().numero("A001").type(TypePlace.STANDARD).statut(StatutPlace.LIBRE)
                             .positionX(10.5).positionY(20.3).zone(zoneA).build()
@@ -122,7 +116,6 @@ public class DataLoader {
                             .positionX(13.5).positionY(20.3).zone(zoneA).build()
             );
 
-            //  STATIONNEMENTS
             stationnementRepository.save(
                     Stationnement.builder()
                             .dateEntree(LocalDateTime.of(2026, 1, 8, 8, 0))
@@ -144,7 +137,6 @@ public class DataLoader {
                             .build()
             );
 
-            // SERVICES
             ServiceEntity service1 = serviceRepository.save(
                     ServiceEntity.builder()
                             .typeService(TypeService.DEPANNAGE)
@@ -159,7 +151,6 @@ public class DataLoader {
                             .build()
             );
 
-            // RESERVATION PLACES
             reservationPlaceRepository.save(
                     ReservationPlace.builder()
                             .personne(p1)
@@ -171,7 +162,6 @@ public class DataLoader {
                             .build()
             );
 
-            // RESERVATION SERVICES
             reservationServiceRepository.save(
                     ReservationService.builder()
                             .personne(p1)

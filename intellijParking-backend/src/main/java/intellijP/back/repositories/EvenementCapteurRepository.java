@@ -14,7 +14,6 @@ public interface EvenementCapteurRepository extends JpaRepository<EvenementCapte
 
     List<EvenementCapteur> findByDateEvenementBetween(LocalDateTime debut, LocalDateTime fin);
 
-    // pour l'historique avec filtre par place et periode
     List<EvenementCapteur> findByPlaceIdAndDateEvenementBetween(Long placeId, LocalDateTime debut, LocalDateTime fin);
 
 }

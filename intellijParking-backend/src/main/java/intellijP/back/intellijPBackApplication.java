@@ -18,14 +18,10 @@ public class intellijPBackApplication {
         return args -> {
             System.out.println("\n\n");
             System.out.println("DÉMARRAGE DE LA DÉMONSTRATION");
-
-
             guidageService.afficherToutesLesReservations();
 
             int ida = 16;
-            //int idb = 26;
             guidageService.afficherCheminVersPlace(Long.valueOf(ida));
-            //guidageService.afficherCheminVersPlace(Long.valueOf(idb));
 
         };
     }

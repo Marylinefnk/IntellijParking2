@@ -27,7 +27,6 @@ public class SimulationController {
             @RequestParam(defaultValue = "2") int vehiculesParPersonneMax,
             @RequestParam(required = false) Long seed) {
 
-        // validation basique des params
         if (nbPersonnes < 1) {
             return ResponseEntity.badRequest().build();
         }
@@ -58,7 +57,6 @@ public class SimulationController {
             return ResponseEntity.badRequest().build();
         }
 
-        // on lance en async et on répond direct
         simulationService.genererReservationsJournee(dateJournee, pasGenerationSecondes, niveau, tauxCible);
 
         Map<String, Object> reponse = new HashMap<>();
@@ -108,7 +106,7 @@ public class SimulationController {
     public ResponseEntity<Map<String, Object>> statut() {
         Map<String, Object> rep = new HashMap<>();
         rep.put("simulationActive", simulationService.isSimulationActive());
-        rep.put("nbClientsSSE", 0); // TODO: brancher sur le service SSE
+        rep.put("nbClientsSSE", 0);
         return ResponseEntity.ok(rep);
     }
 

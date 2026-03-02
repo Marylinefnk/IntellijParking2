@@ -19,19 +19,14 @@ import java.util.Arrays;
 @Aspect
 @Component
 public class LoggingAspect {
-
-
     @Pointcut("execution(* esiag.back.controllers.*.*(..))")
     public void controllerMethods() {}
 
     @Pointcut("execution(* esiag.back.services.*.*(..))")
     public void serviceMethods() {}
-
-
     @Pointcut("execution(* esiag.back.repositories.*.*(..))")
     public void repositoryMethods() {}
 
-      //Log l'entree dans un controller avec les parametres.
     @Before("controllerMethods()")
     public void logControllerEntry(JoinPoint joinPoint) {
         Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
@@ -41,7 +36,6 @@ public class LoggingAspect {
         logger.debug("=> {} - Parametres: {}", methodName, Arrays.toString(args));
     }
 
-    //Log le succes d'un controller avec le resultat.
     @AfterReturning(pointcut = "controllerMethods()", returning = "result")
     public void logControllerSuccess(JoinPoint joinPoint, Object result) {
         Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
@@ -50,7 +44,6 @@ public class LoggingAspect {
         logger.info("<= {} - Succes", methodName);
     }
 
-    //Log les exceptions dans les controllers
     @AfterThrowing(pointcut = "controllerMethods()", throwing = "ex")
     public void logControllerError(JoinPoint joinPoint, Throwable ex) {
         Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
@@ -59,7 +52,6 @@ public class LoggingAspect {
         logger.warn("<= {} - Erreur: {}", methodName, ex.getMessage());
     }
 
-      //Log l'execution complete d'une methode service avec duree.
     @Around("serviceMethods()")
     public Object logServiceExecution(ProceedingJoinPoint joinPoint) throws Throwable {
         Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
@@ -83,7 +75,6 @@ public class LoggingAspect {
         }
     }
 
-    //Resume les arguments pour eviter les logs trop longs.
     private String summarizeArgs(Object[] args) {
         if (args == null || args.length == 0) {
             return "[]";
@@ -98,7 +89,6 @@ public class LoggingAspect {
                 sb.append("null");
             } else {
                 String str = arg.toString();
-                // Tronquer les arguments trop longs
                 if (str.length() > 50) {
                     sb.append(str.substring(0, 47)).append("...");
                 } else {

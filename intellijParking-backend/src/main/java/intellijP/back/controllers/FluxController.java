@@ -19,8 +19,6 @@ public class FluxController {
         this.fluxSSEService = fluxSSEService;
     }
 
-    // endpoint SSE pour les changements d'état des places
-    // produces text/event-stream pour que EventSource côté React fonctionne
     @GetMapping(value = "/places", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter fluxPlaces(
             @RequestParam(required = false) String niveau,

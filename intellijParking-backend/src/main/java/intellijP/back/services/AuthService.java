@@ -1,6 +1,4 @@
 package intellijP.back.services;
-
-
 import intellijP.back.dto.AuthResponse;
 import intellijP.back.dto.LoginRequest;
 import intellijP.back.dto.RegisterRequest;
@@ -18,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-
-
 @Service
 @Transactional
 public class AuthService {
@@ -113,8 +109,6 @@ public class AuthService {
 
         return buildAuthResponse(personne, token);
     }
-
-
     public String extractTokenFromHeader(String authHeader) {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             logger.warn("Header Authorization manquant ou invalide");
@@ -122,8 +116,6 @@ public class AuthService {
         }
         return authHeader.substring(7);
     }
-
-
     public String encodePassword(String rawPassword) {
         return passwordEncoder.encode(rawPassword);
     }
