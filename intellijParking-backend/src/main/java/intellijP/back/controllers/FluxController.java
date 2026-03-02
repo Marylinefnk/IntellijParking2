@@ -28,4 +28,10 @@ public class FluxController {
         return fluxSSEService.abonnerPlaces(niveau, idPlace);
     }
 
+    @GetMapping(value = "/reservations", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter fluxReservations() {
+        logger.info("Nouvelle connexion SSE /flux/reservations");
+        return fluxSSEService.abonnerReservations();
+    }
+
 }

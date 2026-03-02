@@ -61,6 +61,7 @@ public class DataLoader {
             Personne p2 = personneRepository.save(
                     Personne.builder()
                             .nom("bouga")
+
                             .prenom("milca")
                             .mail("milca@gmail.com")
                             .password(passwordEncoder.encode("Milca123"))
