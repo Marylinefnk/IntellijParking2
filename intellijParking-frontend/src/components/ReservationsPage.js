@@ -10,6 +10,11 @@ export default function ReservationsPage() {
     const [personnes, setPersonnes] = useState([]);
     const [vehicules, setVehicules] = useState([]);
     const [filter, setFilter] = useState("TOUS");
+    const [search, setSearch] = useState("");
+    const [filterFrom, setFilterFrom] = useState("");
+    const [filterTo, setFilterTo] = useState("");
+    const [page, setPage] = useState(0);
+    const PAGE_SIZE = 10;
     const [showModal, setShowModal] = useState(false);
     const [form, setForm] = useState({ personneId: "", placeId: "", vehiculeId: "", dateDebut: "", dateFin: "" });
     const [loading, setLoading] = useState(true);
@@ -20,14 +25,12 @@ export default function ReservationsPage() {
     const isAdmin = user?.typePersonne === "SUPERVISEUR";
 
     useEffect(() => {
-        // Attend que le contexte utilisateur soit pret
         if (!userLoading && user) {
             loadReservations();
             loadData();
         }
     }, [userLoading, user]);
 
-    // Gere la place pre-selectionne depuis PlacesPage
     useEffect(() => {
         if (location.state?.placeToReserve) {
             const place = location.state.placeToReserve;
@@ -43,7 +46,6 @@ export default function ReservationsPage() {
     async function loadReservations() {
         try {
             setLoading(true);
-            // Admin voit tout, utilisateur voit ses propres reservations
             const url = isAdmin
                 ? API_RESERVATIONS_PLACE
                 : `${API_RESERVATIONS_PLACE}/personne/${user?.id}`;
@@ -63,7 +65,6 @@ export default function ReservationsPage() {
                 authFetch(`${API_VEHICULES}/personne/${user?.id}`)
             ];
 
-            // Admin peut voir toutes les personnes et vehicules
             if (isAdmin) {
                 requests.push(authFetch(API_PERSONNES));
                 requests.push(authFetch(API_VEHICULES));
@@ -73,8 +74,6 @@ export default function ReservationsPage() {
 
             if (results[0].ok) {
                 const allPlaces = await results[0].json();
-                // Filtre pour ne montrer que les places disponibles (LIBRE)
-                // mais garde aussi la place pre-selectionnee si elle existe
                 const selectedPlaceId = location.state?.placeToReserve?.id;
                 const availablePlaces = allPlaces.filter(p =>
                     p.statutActuel === "LIBRE" || p.id === selectedPlaceId
@@ -113,9 +112,7 @@ export default function ReservationsPage() {
                 try {
                     const err = await res.json();
                     errorMsg = err.message || err.error || errorMsg;
-                } catch {
-                    // Response has no JSON body
-                }
+                } catch {}
                 throw new Error(errorMsg);
             }
             closeModal();
@@ -198,9 +195,34 @@ export default function ReservationsPage() {
         return classes[statut] || "";
     };
 
-    const filteredReservations = filter === "TOUS"
-        ? reservations
-        : reservations.filter(r => r.statut === filter);
+    const filteredReservations = reservations.filter(r => {
+        if (filter !== "TOUS") {
+            if (filter === "EN_ATTENTE") {
+                if (r.statut !== "CONFIRMEE" && r.statut !== "EN_ATTENTE") return false;
+            } else if (r.statut !== filter) {
+                return false;
+            }
+        }
+        if (search.trim()) {
+            const s = search.trim().toLowerCase();
+            const persName = `${r.personne?.nom || ""} ${r.personne?.prenom || ""}`.toLowerCase();
+            const placeNum = (r.place?.numero || "").toLowerCase();
+            const vehicleImmat = (r.vehicule?.immatriculation || "").toLowerCase();
+            if (!persName.includes(s) && !placeNum.includes(s) && !vehicleImmat.includes(s)) return false;
+        }
+        if (filterFrom && new Date(r.dateDebut) < new Date(filterFrom)) return false;
+        if (filterTo) {
+            const endOfDay = new Date(filterTo);
+            endOfDay.setHours(23, 59, 59, 999);
+            if (new Date(r.dateDebut) > endOfDay) return false;
+        }
+        return true;
+    });
+
+    useEffect(() => { setPage(0); }, [filter, search, filterFrom, filterTo]);
+
+    const totalPages = Math.ceil(filteredReservations.length / PAGE_SIZE);
+    const paginatedReservations = filteredReservations.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
     const stats = {
         total: reservations.length,
@@ -251,13 +273,51 @@ export default function ReservationsPage() {
                                 className={`filter-btn ${filter === f ? "active" : ""}`}
                                 onClick={() => setFilter(f)}
                             >
-                                {f === "TOUS" ? "Toutes" : f.replace("_", " ")}
+                                {f === "TOUS" ? "Toutes" : f === "EN_ATTENTE" ? "En attente" : f.replace("_", " ")}
                             </button>
                         ))}
                     </div>
                     <button className="btn btn-primary" onClick={() => setShowModal(true)}>
                         + Nouvelle Reservation
                     </button>
+                </div>
+                <div style={{ padding: "12px 16px", borderBottom: "1px solid #e2e8f0", display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", background: "#f8fafc" }}>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Rechercher par nom, immatriculation, place..."
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                        style={{ flex: 2, minWidth: 180, maxWidth: 320 }}
+                    />
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span style={{ fontSize: "0.85rem", color: "#64748b", whiteSpace: "nowrap" }}>Du</span>
+                        <input
+                            type="date"
+                            className="form-control"
+                            value={filterFrom}
+                            onChange={e => setFilterFrom(e.target.value)}
+                            style={{ width: 150 }}
+                        />
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <span style={{ fontSize: "0.85rem", color: "#64748b", whiteSpace: "nowrap" }}>Au</span>
+                        <input
+                            type="date"
+                            className="form-control"
+                            value={filterTo}
+                            onChange={e => setFilterTo(e.target.value)}
+                            style={{ width: 150 }}
+                        />
+                    </div>
+                    {(search || filterFrom || filterTo) && (
+                        <button
+                            className="btn btn-outline btn-sm"
+                            onClick={() => { setSearch(""); setFilterFrom(""); setFilterTo(""); }}
+                        >
+                            Effacer
+                        </button>
+                    )}
                 </div>
                 <div className="card-body" style={{ padding: 16 }}>
                     {loading ? (
@@ -269,10 +329,12 @@ export default function ReservationsPage() {
                         <div className="empty-state">
                             <div className="empty-state-icon">R</div>
                             <h3>Aucune reservation</h3>
-                            <p>Creez une nouvelle reservation</p>
+                            <p>{(filter !== "TOUS" || search || filterFrom || filterTo)
+                                ? "Aucune reservation ne correspond aux filtres selectionnes"
+                                : "Creez une nouvelle reservation"}</p>
                         </div>
                     ) : (
-                        filteredReservations.map(r => (
+                        paginatedReservations.map(r => (
                             <div key={r.id} className={`reservation-card ${getStatusClass(r.statut)}`}>
                                 <div className="reservation-info">
                                     <h4>
@@ -332,6 +394,62 @@ export default function ReservationsPage() {
                                 </div>
                             </div>
                         ))
+                    )}
+                    {!loading && totalPages > 1 && (
+                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 8, padding: "16px 0 4px" }}>
+                            <button
+                                className="btn btn-outline btn-sm"
+                                onClick={() => setPage(0)}
+                                disabled={page === 0}
+                            >
+                                «
+                            </button>
+                            <button
+                                className="btn btn-outline btn-sm"
+                                onClick={() => setPage(p => p - 1)}
+                                disabled={page === 0}
+                            >
+                                ‹
+                            </button>
+                            {Array.from({ length: totalPages }, (_, i) => i)
+                                .filter(i => i === 0 || i === totalPages - 1 || Math.abs(i - page) <= 2)
+                                .reduce((acc, i, idx, arr) => {
+                                    if (idx > 0 && i - arr[idx - 1] > 1) acc.push("...");
+                                    acc.push(i);
+                                    return acc;
+                                }, [])
+                                .map((item, idx) =>
+                                    item === "..." ? (
+                                        <span key={`ellipsis-${idx}`} style={{ padding: "0 4px", color: "#64748b" }}>…</span>
+                                    ) : (
+                                        <button
+                                            key={item}
+                                            className={`btn btn-sm ${page === item ? "btn-primary" : "btn-outline"}`}
+                                            onClick={() => setPage(item)}
+                                        >
+                                            {item + 1}
+                                        </button>
+                                    )
+                                )
+                            }
+                            <button
+                                className="btn btn-outline btn-sm"
+                                onClick={() => setPage(p => p + 1)}
+                                disabled={page === totalPages - 1}
+                            >
+                                ›
+                            </button>
+                            <button
+                                className="btn btn-outline btn-sm"
+                                onClick={() => setPage(totalPages - 1)}
+                                disabled={page === totalPages - 1}
+                            >
+                                »
+                            </button>
+                            <span style={{ fontSize: "0.85rem", color: "#64748b", marginLeft: 8 }}>
+                                {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, filteredReservations.length)} / {filteredReservations.length}
+                            </span>
+                        </div>
                     )}
                 </div>
             </div>
