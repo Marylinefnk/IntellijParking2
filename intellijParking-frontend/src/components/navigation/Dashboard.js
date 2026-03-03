@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useUser } from "../context/UserContext";
-import Itineraire from "./guidage/Itineraire";
-import { API_PLACES, API_RESERVATIONS_PLACE, API_PERSONNES, API_VEHICULES } from "../constants/back";
+import { useUser } from "../../context/UserContext";
+import Itineraire from "../guidage/Itineraire";
+import { API_PLACES, API_RESERVATIONS_PLACE, API_PERSONNES, API_VEHICULES } from "../../constants/back";
 
 export default function Dashboard() {
     const { user } = useUser();
