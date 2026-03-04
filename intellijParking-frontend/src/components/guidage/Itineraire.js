@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import ParkingPage from '../parking/ParkingPage';
 
-//const responseItineraire = await fetch('/api/guidage/itineraire/18'); //ici je fais pour la reservation 18
-//const responseItineraire = await fetch('/api/guidage/itineraire/${idreservation}'); //pour toute réservation envoyée par api
 
 export default function Itineraire() {
-    const [cheminData, setCheminData] = useState([])
+    const [cheminData, setCheminData] = useState("")
 
     useEffect(() => {
-        fetch("/api/guidage/itineraire/${idreservation}")
+        fetch("/api/guidage/itineraire/18")
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);
                 setCheminData(data);
+                console.log(data);
         })
     }, []);
 
@@ -21,7 +20,22 @@ export default function Itineraire() {
 
         <section>
             <h1> Itinéraire vers votre place </h1>
+
+            <div style={{ position: 'relative'}}>
             <ParkingPage/>
+                <svg
+                    style={{ position: 'relative', width: '1350px', height: '600px' }}>
+
+                    <polyline
+                    points={cheminData.valueOf()}
+                    fill="white"
+                    stroke="red"
+                    strokeWidth="6" />
+                </svg>
+
+
+            </div>
+
 
 
         </section>

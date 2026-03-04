@@ -1,4 +1,4 @@
-package esiag.back.controllers;
+package intellijP.back.controllers;
 
 import intellijP.back.models.Noeud;
 import intellijP.back.models.ReservationPlace;
