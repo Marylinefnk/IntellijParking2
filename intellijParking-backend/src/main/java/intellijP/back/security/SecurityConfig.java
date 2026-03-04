@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .antMatchers("/ws/**", "/ws/info/**", "/ws").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/places/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/zones/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/guidage/**").permitAll()
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/places/**").hasRole("SUPERVISEUR")
                 .antMatchers(HttpMethod.PUT, "/api/places/**").hasRole("SUPERVISEUR")
@@ -59,6 +60,7 @@ public class SecurityConfig {
                 .antMatchers("/api/reservations-place/**").authenticated()
                 .antMatchers("/api/reservations-service/**").authenticated()
                 .antMatchers("/api/vehicules/**").authenticated()
+                .antMatchers("/api/reservations-place/**").authenticated()
                 .anyRequest().authenticated()
             .and()
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

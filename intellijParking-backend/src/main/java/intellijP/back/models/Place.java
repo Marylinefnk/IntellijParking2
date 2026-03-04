@@ -15,6 +15,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = {"zone", "stationnements", "reservations"})
 public class Place {
 
     @Id
