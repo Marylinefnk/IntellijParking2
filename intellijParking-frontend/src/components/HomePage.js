@@ -50,7 +50,7 @@ export default function HomePage() {
                 <button onClick={() => navigate("/ParkingPage")}>
                     Voir parking
                 </button>
-                <button onClick={() => navigate("/Dashboard")}>
+                <button onClick={() => navigate("/PublicLayout")}>
                     Dashboard
                 </button>
             </div>

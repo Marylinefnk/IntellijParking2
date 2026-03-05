@@ -1,7 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import parkingBg from './parkingVF.png';
+import {API_STATUT_CARTE} from "../../constants/back";
 
 export default function Level1() {
+    const [placesStatut, setPlacesStatut] = useState({});
+    useEffect(() => {
+        fetch(API_STATUT_CARTE)
+            .then(res => res.json())
+            .then(data => setPlacesStatut(data))
+            .catch(err => console.error('Erreur:', err));
+    }, []);
+
+
+
+    const [tooltip, setTooltip] = useState({
+        visible: false,
+        x: 0,
+        y: 0,
+        content: ""
+    });
+    const handleMouseEnter = (event, id, type, statut) => {
+        setTooltip({
+            visible: true,
+            x: event.clientX,
+            y: event.clientY,
+            id,
+            type,
+            statut: placesStatut[id] ?? 'Libre'
+        });
+    };
+    const handleMouseMove = (event) => {
+        setTooltip(prev => ({
+            ...prev,
+            x: event.clientX,
+            y: event.clientY
+        }));
+    };
+    const handleMouseLeave = () => {
+        setTooltip(prev => ({
+            ...prev,
+            visible: false
+        }));
+    };
+
+
+
+    const [tooltip2, setTooltip2] = useState({ visible: false, x: 0, y: 0, content: '' });
+    const handleMouseEnter2 = (event, content) => {
+        setTooltip2({ visible: true, x: event.clientX, y: event.clientY, content });
+    };
+    const handleMouseMove2 = (event) => {
+        setTooltip2(prev => ({ ...prev, x: event.clientX, y: event.clientY }));
+    };
+    const handleMouseLeave2 = () => {
+        setTooltip2(prev => ({ ...prev, visible: false }));
+    };
+
+
+
     return (
         <div style={{ position: 'relative', width: '1350px', height: '600px' }}>
 
@@ -122,17 +178,32 @@ export default function Level1() {
                 <line x1="75" y1="170" x2="75" y2="330" className="lane-line" />
 
                 {/* voie entrée */}
-                <rect x="1192" y="106" width="50" height="210" className="lane" />
+                <rect x="1192" y="106" width="50" height="210" className="lane"
+                      onMouseEnter={(e) => handleMouseEnter2(e, 'ENTREE VOITURES')}
+                      onMouseMove={handleMouseMove2}
+                      onMouseLeave={handleMouseLeave2}/>
                 <line x1="1212" y1="215" x2="1212" y2="150" className="arrow" markerEnd="url(#arrow)" />
-                <rect x="1115" y="106" width="80" height="40" className="lane" />
+                <rect x="1115" y="106" width="80" height="40" className="lane"
+                      onMouseEnter={(e) => handleMouseEnter2(e, 'ENTREE VOITURES')}
+                      onMouseMove={handleMouseMove2}
+                      onMouseLeave={handleMouseLeave2}/>
 
                 {/* voie sortie */}
-                <rect x="1260" y="190" width="40" height="209" className="lane" />
+                <rect x="1260" y="190" width="40" height="209" className="lane"
+                      onMouseEnter={(e) => handleMouseEnter2(e, 'SORTIE VOITURES')}
+                      onMouseMove={handleMouseMove2}
+                      onMouseLeave={handleMouseLeave2}/>
                 <line x1="1280" y1="310" x2="1280" y2="235" className="arrow" markerEnd="url(#arrow)" />
-                <rect x="1115" y="359" width="160" height="40" className="lane" />
+                <rect x="1115" y="359" width="160" height="40" className="lane"
+                      onMouseEnter={(e) => handleMouseEnter2(e, 'SORTIE VOITURES')}
+                      onMouseMove={handleMouseMove2}
+                      onMouseLeave={handleMouseLeave2}/>
 
                 {/* entree centre com */}
-                <g id="entree-centre-commercial">
+                <g id="entree-centre-commercial"
+                   onMouseEnter={(e) => handleMouseEnter2(e, 'ENTREE PIETONS')}
+                   onMouseMove={handleMouseMove2}
+                   onMouseLeave={handleMouseLeave2}>
                     <rect x="0" y="220" width="20" height="80"
                           fill="#3498db" stroke="#2980b9" strokeWidth="3" />
                     <text x="10" y="260" fontSize="12" fill="white"
@@ -149,26 +220,35 @@ export default function Level1() {
                 {/* RANGÉE HAUT */}
                 <g id="row-top">
                     {/* PMR */}
-                    <g id="PMR01">
+                    <g id="PMR01"
+                       onMouseEnter={(e) => handleMouseEnter(e, 'PMR01B', 'PMR', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="pmr-rect" x="0" y="95" />
                         <text className="slot-text" x="15" y="117.5" textAnchor="middle" dominantBaseline="middle">PMR1</text>
                     </g>
-                    <g id="PMR02">
+                    <g id="PMR02"
+                       onMouseEnter={(e) => handleMouseEnter(e, 'PMR02B', 'PMR', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>>
                         <rect className="pmr-rect" x="32" y="95" />
                         <text className="slot-text" x="47" y="117.5" textAnchor="middle" dominantBaseline="middle">PMR2</text>
                     </g>
 
                     {[
-                        { id: 'A01', x: 68 }, { id: 'A02', x: 110 }, { id: 'A03', x: 150 },
-                        { id: 'A04', x: 189 }, { id: 'A05', x: 231 }, { id: 'A06', x: 270 },
-                        { id: 'A07', x: 310 }, { id: 'A08', x: 352 }, { id: 'A09', x: 390 },
-                        { id: 'A10', x: 433 }, { id: 'A11', x: 475 }, { id: 'A12', x: 515 },
-                        { id: 'A13', x: 555 }, { id: 'A14', x: 595 }, { id: 'A15', x: 635 },
-                        { id: 'A16', x: 675 }, { id: 'A17', x: 722 }, { id: 'A18', x: 758 },
-                        { id: 'A19', x: 800 }, { id: 'A20', x: 840 }, { id: 'A21', x: 880 },
-                        { id: 'A22', x: 920 },
+                        { id: 'B01', x: 68 }, { id: 'B02', x: 110 }, { id: 'B03', x: 150 },
+                        { id: 'B04', x: 189 }, { id: 'B05', x: 231 }, { id: 'B06', x: 270 },
+                        { id: 'B07', x: 310 }, { id: 'B08', x: 352 }, { id: 'B09', x: 390 },
+                        { id: 'B10', x: 433 }, { id: 'B11', x: 475 }, { id: 'B12', x: 515 },
+                        { id: 'B13', x: 555 }, { id: 'B14', x: 595 }, { id: 'B15', x: 635 },
+                        { id: 'B16', x: 675 }, { id: 'B17', x: 722 }, { id: 'B18', x: 758 },
+                        { id: 'B19', x: 800 }, { id: 'B20', x: 840 }, { id: 'B21', x: 880 },
+                        { id: 'B22', x: 920 },
                     ].map(({ id, x }) => (
-                        <g className="slot" id={id} key={id}>
+                        <g className="slot" id={id} key={id}
+                           onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE', '')}
+                           onMouseMove={handleMouseMove}
+                           onMouseLeave={handleMouseLeave}>
                             <rect className="rect-slot" x={x} y="95" />
                             <text className="slot-text" x={x + 15} y="117.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                         </g>
@@ -177,10 +257,13 @@ export default function Level1() {
 
                 {/* RANGÉE BAS - motos */}
                 {[
-                    { id: 'A23', x: 0 }, { id: 'A24', x: 30 }, { id: 'A25', x: 68 },
-                    { id: 'A26', x: 110 }, { id: 'A27', x: 150 },
+                    { id: 'B23', x: 0 }, { id: 'B24', x: 30 }, { id: 'B25', x: 68 },
+                    { id: 'B26', x: 110 }, { id: 'B27', x: 150 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={`M${id}`} key={id}>
+                    <g className="slot" id={`M${id}`} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'MOTO', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="moto-rect" x={x} y="365" />
                         <text className="slot-text" x={x + 15} y="387.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -188,40 +271,49 @@ export default function Level1() {
 
                 {/* RANGÉE BAS - voitures normales */}
                 {[
-                    { id: 'A28', x: 189 }, { id: 'A29', x: 231 }, { id: 'A30', x: 270 },
-                    { id: 'A31', x: 310 }, { id: 'A32', x: 352 }, { id: 'A33', x: 390 },
-                    { id: 'A34', x: 433 }, { id: 'A35', x: 475 }, { id: 'A36', x: 515 },
-                    { id: 'A37', x: 555 }, { id: 'A38', x: 595 }, { id: 'A39', x: 635 },
-                    { id: 'A40', x: 675 }, { id: 'A41', x: 722 }, { id: 'A42', x: 758 },
-                    { id: 'A43', x: 800 }, { id: 'A44', x: 840 },{ id: 'A45', x: 880 }, { id: 'A46', x: 920 },
+                    { id: 'B28', x: 189 }, { id: 'B29', x: 231 }, { id: 'B30', x: 270 },
+                    { id: 'B31', x: 310 }, { id: 'B32', x: 352 }, { id: 'B33', x: 390 },
+                    { id: 'B34', x: 433 }, { id: 'B35', x: 475 }, { id: 'B36', x: 515 },
+                    { id: 'B37', x: 555 }, { id: 'B38', x: 595 }, { id: 'B39', x: 635 },
+                    { id: 'B40', x: 675 }, { id: 'B41', x: 722 }, { id: 'B42', x: 758 },
+                    { id: 'B43', x: 800 }, { id: 'B44', x: 840 }, { id: 'B45', x: 880 }, { id: 'B46', x: 920 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="365" />
                         <text className="slot-text" x={x + 15} y="387.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
                 ))}
 
 
-                {/* RANGÉE MILIEU HAUT - électriqu */}
+                {/* RANGÉE MILIEU HAUT - électrique */}
                 {[
-                    { id: 'A47', x: 234 }, { id: 'A48', x: 274 }, { id: 'A49', x: 314 },
-                    { id: 'A50', x: 354 }, { id: 'A51', x: 392 },
+                    { id: 'B47', x: 234 }, { id: 'B48', x: 274 }, { id: 'B49', x: 314 },
+                    { id: 'B50', x: 354 }, { id: 'B51', x: 392 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'ELECTRIQUE', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="elec-rect" x={x} y="190" />
                         <text className="slot-text" x={x + 15} y="212.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
                 ))}
 
-                {/* RANGÉE MILIEU HAUT - v normales */}
+                {/* RANGÉE MILIEU HAUT - normales */}
                 {[
-                    { id: 'A52', x: 432 }, { id: 'A54', x: 475 }, { id: 'A55', x: 515 },
-                    { id: 'A56', x: 555 }, { id: 'A57', x: 595 }, { id: 'A58', x: 635 },
-                    { id: 'A59', x: 675 }, { id: 'A60', x: 722 }, { id: 'A61', x: 758 },
-                    { id: 'A62', x: 800 }, { id: 'A63', x: 840 }, { id: 'A64', x: 880 },
-                    { id: 'A65', x: 920 },
+                    { id: 'B52', x: 432 }, { id: 'B54', x: 475 }, { id: 'B55', x: 515 },
+                    { id: 'B56', x: 555 }, { id: 'B57', x: 595 }, { id: 'B58', x: 635 },
+                    { id: 'B59', x: 675 }, { id: 'B60', x: 722 }, { id: 'B61', x: 758 },
+                    { id: 'B62', x: 800 }, { id: 'B63', x: 840 }, { id: 'B64', x: 880 },
+                    { id: 'B65', x: 920 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="190" />
                         <text className="slot-text" x={x + 15} y="212.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -229,31 +321,39 @@ export default function Level1() {
 
                 {/* RANGÉE MILIEU BAS - électrique */}
                 {[
-                    { id: 'A66', x: 234 }, { id: 'A67', x: 274 }, { id: 'A68', x: 314 },
-                    { id: 'A69', x: 354 }, { id: 'A70', x: 392 },
+                    { id: 'B66', x: 234 }, { id: 'B67', x: 274 }, { id: 'B68', x: 314 },
+                    { id: 'B69', x: 354 }, { id: 'B70', x: 392 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'ELECTRIQUE', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="elec-rect" x={x} y="270" />
                         <text className="slot-text" x={x + 15} y="292.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
                 ))}
 
-                {/* RANGÉE MILIEU BAS - voiture normales */}
+                {/* RANGÉE MILIEU BAS - normales */}
                 {[
-                    { id: 'A71', x: 432 }, { id: 'A75', x: 555 }, { id: 'A76', x: 595 },
-                    { id: 'A77', x: 635 }, { id: 'A78', x: 675 }, { id: 'A79', x: 722 },
-                    { id: 'A80', x: 758 }, { id: 'A81', x: 800 }, { id: 'A82', x: 840 },
-                    { id: 'A83', x: 880 }, { id: 'A84', x: 920 },{ id: 'A73', x: 475 }, { id: 'A74', x: 515 },
+                    { id: 'B71', x: 432 }, { id: 'B75', x: 555 }, { id: 'B76', x: 595 },
+                    { id: 'B77', x: 635 }, { id: 'B78', x: 675 }, { id: 'B79', x: 722 },
+                    { id: 'B80', x: 758 }, { id: 'B81', x: 800 }, { id: 'B82', x: 840 },
+                    { id: 'B83', x: 880 }, { id: 'B84', x: 920 }, { id: 'B73', x: 475 }, { id: 'B74', x: 515 }
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="270" />
                         <text className="slot-text" x={x + 15} y="292.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
                 ))}
-
                 {/* Locaux */}
                 {/* Local 1 */}
-                <g id="local-vip1">
+                <g id="local-vip1"
+                   onMouseEnter={(e) => handleMouseEnter2(e, 'LOCAL VIP1')}
+                   onMouseMove={handleMouseMove2}
+                   onMouseLeave={handleMouseLeave2}>
                     <rect x="130" y="223" width="80" height="50"
                           className="vip-local" rx="10" ry="10" />
                     <text x="136" y="252" fontSize="11" fontWeight="bold" fill="#333">VIP 1</text>
@@ -262,7 +362,10 @@ export default function Level1() {
                 </g>
 
                 {/* Local 2 */}
-                <g id="local-vip2">
+                <g id="local-vip2"
+                   onMouseEnter={(e) => handleMouseEnter2(e, 'LOCAL VIP2')}
+                   onMouseMove={handleMouseMove2}
+                   onMouseLeave={handleMouseLeave2}>
                     <rect x="980" y="223" width="80" height="50"
                           className="vip-local" rx="10" ry="10" />
                     <text x="993" y="252" fontSize="11" fontWeight="bold" fill="#333">VIP 2</text>
@@ -270,6 +373,43 @@ export default function Level1() {
                           fill="#dc3545" stroke="#2f2f2f" strokeWidth="1" rx="3" ry="3" />
                 </g>
             </svg>
+            {tooltip.visible && (
+                <div
+                    style={{
+                        position: "fixed",
+                        top: tooltip.y + 10,
+                        left: tooltip.x + 10,
+                        backgroundColor: "white",
+                        padding: "6px 10px",
+                        borderRadius: "6px",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                        fontSize: "12px",
+                        pointerEvents: "none",
+                        zIndex: 1000
+                    }}
+                >
+                    <strong>{tooltip.id}</strong><br/>
+                    <span>Type : {tooltip.type}</span><br/>
+                    <span>Statut : {tooltip.statut}</span>
+
+                </div>
+            )}
+            {tooltip2.visible && (
+                <div style={{
+                    position: "fixed",
+                    top: tooltip2.y + 10,
+                    left: tooltip2.x + 10,
+                    backgroundColor: "white",
+                    padding: "6px 10px",
+                    borderRadius: "6px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                    fontSize: "12px",
+                    pointerEvents: "none",
+                    zIndex: 1000
+                }}>
+                    <strong>{tooltip2.content}</strong><br/>
+                </div>
+            )}
         </div>
     );
 }
