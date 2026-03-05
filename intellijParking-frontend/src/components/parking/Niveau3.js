@@ -1,7 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import parkingBg from './parkingVF.png';
+import {API_STATUT_CARTE} from "../../constants/back";
 
 export default function Level2() {
+
+    const [placesStatut, setPlacesStatut] = useState({});
+    useEffect(() => {
+        fetch(API_STATUT_CARTE)
+            .then(res => res.json())
+            .then(data => setPlacesStatut(data))
+            .catch(err => console.error('Erreur:', err));
+    }, []);
+
+
+
     const [tooltip, setTooltip] = useState({
         visible: false,
         x: 0,
@@ -15,7 +27,7 @@ export default function Level2() {
             y: event.clientY,
             id,
             type,
-            statut
+            statut: placesStatut[id] ?? 'Libre'
         });
     };
     const handleMouseMove = (event) => {

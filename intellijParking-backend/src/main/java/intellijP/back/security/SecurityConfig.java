@@ -60,6 +60,7 @@ public class SecurityConfig {
                 .antMatchers("/api/personnes/**").hasRole("SUPERVISEUR")
                 .antMatchers("/api/services/**").hasRole("SUPERVISEUR")
                 // Authenticated users can access reservations and vehicles
+                .antMatchers(HttpMethod.GET, "/api/reservations-place/statut-carte").permitAll()
                 .antMatchers("/api/reservations-place/**").authenticated()
                 .antMatchers("/api/reservations-service/**").authenticated()
                 .antMatchers("/api/vehicules/**").authenticated()
