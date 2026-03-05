@@ -67,7 +67,7 @@ export default function Router() {
                     <Route index element={<ParkingPage />} />
                 </Route>
 
-                <Route path="/" element={<HomePage />}>
+                <Route path="/HomePage" element={<HomePage />}>
                     <Route index element={<HomePage />} />
                 </Route>
 

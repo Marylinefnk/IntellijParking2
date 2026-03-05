@@ -3,7 +3,6 @@ package intellijP.back.models;
 public enum TypePlace {
 
     STANDARD("Standard"),
-    NORMAL("Normal"),
     PMR("pmr"),
     ELECTRIQUE("Électrique"),
     MOTO("Moto"),
