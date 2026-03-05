@@ -9,7 +9,6 @@ import PersonnesPage from "./navigation/PersonnesPage";
 import VehiculesPage from "./navigation/VehiculesPage";
 import LoginPage from "./Pages_Authentification/LoginPage";
 import RegisterPage from "./Pages_Authentification/RegisterPage";
-import App from "./App";
 import HomePage from "./Pages_Authentification/HomePage";
 import ParkingPage from "./parking/ParkingPage";
 import SimulationPanel from "./navigation/SimulationPanel";

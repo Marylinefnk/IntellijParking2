@@ -31,7 +31,7 @@ pipeline {
                 sh """
                     cd intellijParking-frontend
                     npm install
-                    npm run build
+                    CI=false npm run build
                 """
             }
         }
