@@ -51,6 +51,11 @@ public class GuidageController {
                 cheminSimple.add(point);
             }
 
+            Map<String, Object> pointFinal = new HashMap<>();
+            pointFinal.put("x", reservation.getPlace().getPositionX());
+            pointFinal.put("y", reservation.getPlace().getPositionY());
+            cheminSimple.add(pointFinal);
+
             return ResponseEntity.ok(cheminSimple);
 
         } catch (Exception e) {

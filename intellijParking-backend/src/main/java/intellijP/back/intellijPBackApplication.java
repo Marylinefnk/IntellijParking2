@@ -21,7 +21,7 @@ public class intellijPBackApplication {
                 System.out.println("DÉMARRAGE DE LA DÉMONSTRATION");
                 guidageService.afficherToutesLesReservations();
 
-                int ida = 18;
+                int ida = 1255;
                 guidageService.afficherCheminVersPlace(Long.valueOf(ida));
             } catch (Exception e) {
                 System.out.println("[DEMO] Skipped: " + e.getMessage());
