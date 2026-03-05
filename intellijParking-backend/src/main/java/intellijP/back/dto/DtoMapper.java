@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class DtoMapper {
 
-    //  Personne
     public PersonneDTO toPersonneDTO(Personne personne) {
         if (personne == null) return null;
         return PersonneDTO.builder()
@@ -18,7 +17,6 @@ public class DtoMapper {
                 .build();
     }
 
-    //  Zone
     public ZoneDTO toZoneDTO(Zone zone) {
         if (zone == null) return null;
         return ZoneDTO.builder()
@@ -28,7 +26,6 @@ public class DtoMapper {
                 .build();
     }
 
-    // Vehicule
     public VehiculeDTO toVehiculeDTO(Vehicule vehicule) {
         if (vehicule == null) return null;
         return VehiculeDTO.builder()
@@ -39,7 +36,6 @@ public class DtoMapper {
                 .build();
     }
 
-    // Place
     public PlaceDTO toPlaceDTO(Place place) {
         if (place == null) return null;
         return PlaceDTO.builder()
@@ -53,7 +49,6 @@ public class DtoMapper {
                 .build();
     }
 
-    // Service
     public ServiceDTO toServiceDTO(ServiceEntity service) {
         if (service == null) return null;
         return ServiceDTO.builder()
@@ -63,7 +58,6 @@ public class DtoMapper {
                 .build();
     }
 
-    //  ReservationPlace
     public ReservationPlaceResponseDTO toReservationPlaceResponseDTO(ReservationPlace reservation) {
         if (reservation == null) return null;
         return ReservationPlaceResponseDTO.builder()
@@ -77,7 +71,6 @@ public class DtoMapper {
                 .build();
     }
 
-    //  ReservationService
     public ReservationServiceResponseDTO toReservationServiceResponseDTO(ReservationService reservation) {
         if (reservation == null) return null;
         return ReservationServiceResponseDTO.builder()
@@ -90,7 +83,6 @@ public class DtoMapper {
                 .build();
     }
 
-    //  Stationnement
     public StationnementDTO toStationnementDTO(Stationnement stationnement) {
         if (stationnement == null) return null;
         return StationnementDTO.builder()

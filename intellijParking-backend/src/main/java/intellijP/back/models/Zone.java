@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = {"places", "intersections"})
 public class Zone {
 
     @Id
@@ -33,6 +34,4 @@ public class Zone {
     @OneToMany(mappedBy = "zone")
     @JsonManagedReference("zone-intersections")
     private List<Intersection> intersections;
-
-
 }

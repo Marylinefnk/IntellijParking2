@@ -10,7 +10,5 @@ import java.util.List;
 @Repository
 public interface AreteRepository extends JpaRepository<Arete, Long> {
     List<Arete> findByNoeudSource(Noeud noeudSource);
-    // SELECT * FROM arete WHERE id_noeud_source = ?;
-    //Afficher toutes les aretes partant de ce noeud
 
 }

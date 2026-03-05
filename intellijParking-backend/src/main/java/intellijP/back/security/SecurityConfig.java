@@ -44,16 +44,12 @@ public class SecurityConfig {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-                // Public endpoints - authentication
                 .antMatchers("/api/auth/**").permitAll()
-                // WebSocket endpoints (including SockJS fallback)
                 .antMatchers("/ws/**", "/ws/info/**", "/ws").permitAll()
-                // Public endpoints - viewing places (visitors can see)
                 .antMatchers(HttpMethod.GET, "/api/places/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/zones/**").permitAll()
-                // Swagger/OpenAPI
+                .antMatchers(HttpMethod.GET, "/api/guidage/**").permitAll()
                 .antMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                // Admin only endpoints
                 .antMatchers(HttpMethod.POST, "/api/places/**").hasRole("SUPERVISEUR")
                 .antMatchers(HttpMethod.PUT, "/api/places/**").hasRole("SUPERVISEUR")
                 .antMatchers(HttpMethod.DELETE, "/api/places/**").hasRole("SUPERVISEUR")
@@ -61,10 +57,12 @@ public class SecurityConfig {
                 .antMatchers("/api/services/**").hasRole("SUPERVISEUR")
                 // Authenticated users can access reservations and vehicles
                 .antMatchers(HttpMethod.GET, "/api/reservations-place/statut-carte").permitAll()
+                .antMatchers("/simulation/**").hasRole("SUPERVISEUR")
+                .antMatchers("/flux/**").permitAll()
                 .antMatchers("/api/reservations-place/**").authenticated()
                 .antMatchers("/api/reservations-service/**").authenticated()
                 .antMatchers("/api/vehicules/**").authenticated()
-                // All other requests need authentication
+                .antMatchers("/api/reservations-place/**").authenticated()
                 .anyRequest().authenticated()
             .and()
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

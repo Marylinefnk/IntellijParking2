@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/home.css";
+import "../../styles/home.css";
 
-import imageLocalVip from "../assets/slider/imageLocalVip.jpg";
-import imageParking1 from "../assets/slider/imageParking1.jpg";
-import imageParking2 from "../assets/slider/imageParking2.jpg";
-import imageNiveau1 from "../assets/slider/imageNiveau1.jpg";
+import imageLocalVip from "../../assets/slider/imageLocalVip.jpg";
+import imageParking1 from "../../assets/slider/imageParking1.jpg";
+import imageParking2 from "../../assets/slider/imageParking2.jpg";
+import imageNiveau1 from "../../assets/slider/imageNiveau1.jpg";
 
 
 const images = [imageLocalVip, imageNiveau1, imageParking1, imageParking2];

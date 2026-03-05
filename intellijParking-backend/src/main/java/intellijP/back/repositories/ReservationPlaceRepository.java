@@ -15,6 +15,12 @@ import java.util.List;
  */
 public interface ReservationPlaceRepository extends JpaRepository<ReservationPlace, Long> {
 
+    @Query("SELECT r FROM ReservationPlace r JOIN FETCH r.personne JOIN FETCH r.place JOIN FETCH r.vehicule")
+    List<ReservationPlace> findAllWithRelations();
+
+    @Query("SELECT r FROM ReservationPlace r JOIN FETCH r.personne JOIN FETCH r.place JOIN FETCH r.vehicule WHERE r.personne.id = :personneId")
+    List<ReservationPlace> findByPersonneIdWithRelations(@Param("personneId") Long personneId);
+
     /**
      * Recherche les réservations d'une personne.
      */

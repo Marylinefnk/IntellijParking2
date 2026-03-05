@@ -1,6 +1,4 @@
 package intellijP.back.models;
-
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 

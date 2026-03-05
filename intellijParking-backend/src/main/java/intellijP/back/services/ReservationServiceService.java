@@ -121,7 +121,6 @@ public class ReservationServiceService {
         logger.info("Tentative de creation d'une reservation de service - personne={}, service={}",
             reservation.getPersonne().getId(), reservation.getService().getId());
 
-        // Validation de la personne
         Personne personne = personneRepository.findById(reservation.getPersonne().getId())
                 .orElseThrow(() -> {
                     logger.error("Echec creation: personne non trouvee avec id={}",
@@ -130,7 +129,6 @@ public class ReservationServiceService {
                             reservation.getPersonne().getId());
                 });
 
-        // Validation du service
         ServiceEntity service = serviceRepository.findById(reservation.getService().getId())
                 .orElseThrow(() -> {
                     logger.error("Echec creation: service non trouve avec id={}",
@@ -139,7 +137,6 @@ public class ReservationServiceService {
                             reservation.getService().getId());
                 });
 
-        // Verification des dates
         if (reservation.getDateDebut() == null || reservation.getDateFin() == null) {
             logger.error("Echec creation: dates manquantes");
             throw new RuntimeException("Les dates de debut et de fin sont obligatoires");
@@ -154,7 +151,6 @@ public class ReservationServiceService {
             throw new RuntimeException("La date de debut ne peut pas etre dans le passe");
         }
 
-        // Configuration de la reservation
         reservation.setPersonne(personne);
         reservation.setService(service);
         reservation.setStatut(StatutReservation.CONFIRMEE);
@@ -182,7 +178,6 @@ public class ReservationServiceService {
                     return new RuntimeException("Reservation de service non trouvee avec l'id: " + id);
                 });
 
-        // Verification des nouvelles dates
         if (reservationDetails.getDateDebut() != null && reservationDetails.getDateFin() != null) {
             if (reservationDetails.getDateFin().isBefore(reservationDetails.getDateDebut())) {
                 logger.error("Echec mise a jour: date fin avant date debut");

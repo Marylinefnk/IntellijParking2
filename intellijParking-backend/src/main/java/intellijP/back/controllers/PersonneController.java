@@ -13,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-
 @RestController
 @RequestMapping("/api/personnes")
 public class PersonneController {
@@ -24,9 +22,6 @@ public class PersonneController {
     public PersonneController(PersonneService personneService) {
         this.personneService = personneService;
     }
-
-    // ENDPOINTS DE LECTURE
-
     @GetMapping
     public List<PersonneDTO> getAllPersonnes() {
         return personneService.findAllDTO();
@@ -44,9 +39,6 @@ public class PersonneController {
                 .orElseThrow(() -> new ResourceNotFoundException(
                     "Personne avec email '" + mail + "' non trouvee"));
     }
-
-    // ENDPOINTS DE MODIFICATION
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PersonneDTO createPersonne(@RequestBody PersonneCreateDTO createDTO) {

@@ -30,7 +30,5 @@ public class Intersection {
     @JoinColumn(name = "id_zone")
     @JsonBackReference("zone-intersections")
     private Zone zone;
-
-
 }
 

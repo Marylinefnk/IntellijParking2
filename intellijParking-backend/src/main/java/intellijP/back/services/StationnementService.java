@@ -96,7 +96,7 @@ public class StationnementService {
      */
     public Optional<Stationnement> findActiveByVehicule(Long vehiculeId) {
         logger.debug("Recherche du stationnement actif pour le vehicule id: {}", vehiculeId);
-        return stationnementRepository.findActiveStationnementByVehicule(vehiculeId);
+        return stationnementRepository.findActiveStationnementsByVehicule(vehiculeId).stream().findFirst();
     }
 
     /**
@@ -106,7 +106,7 @@ public class StationnementService {
      */
     public Optional<Stationnement> findActiveByPlace(Long placeId) {
         logger.debug("Recherche du stationnement actif pour la place id: {}", placeId);
-        return stationnementRepository.findActiveStationnementByPlace(placeId);
+        return stationnementRepository.findActiveStationnementsByPlace(placeId).stream().findFirst();
     }
 
     /**
@@ -130,7 +130,6 @@ public class StationnementService {
         logger.info("Tentative d'entree - vehicule={}, place={}",
             stationnement.getVehicule().getId(), stationnement.getPlace().getId());
 
-        // Validation du vehicule
         Vehicule vehicule = vehiculeRepository.findById(stationnement.getVehicule().getId())
                 .orElseThrow(() -> {
                     logger.error("Echec entree: vehicule non trouve avec id={}",
@@ -139,7 +138,6 @@ public class StationnementService {
                             stationnement.getVehicule().getId());
                 });
 
-        // Validation de la place
         Place place = placeRepository.findById(stationnement.getPlace().getId())
                 .orElseThrow(() -> {
                     logger.error("Echec entree: place non trouvee avec id={}",
@@ -148,16 +146,14 @@ public class StationnementService {
                             stationnement.getPlace().getId());
                 });
 
-        // Verification que la place est libre
         if (place.getStatut() != StatutPlace.LIBRE) {
             logger.error("Echec entree: place {} n'est pas libre (statut: {})",
                 place.getNumero(), place.getStatut());
             throw new RuntimeException("Cette place n'est pas libre. Statut actuel: " + place.getStatut());
         }
 
-        // Verification que le vehicule n'est pas deja stationne
         Optional<Stationnement> stationnementActif = stationnementRepository
-                .findActiveStationnementByVehicule(vehicule.getId());
+                .findActiveStationnementsByVehicule(vehicule.getId()).stream().findFirst();
         if (stationnementActif.isPresent()) {
             logger.error("Echec entree: vehicule {} deja stationne sur place {}",
                 vehicule.getImmatriculation(), stationnementActif.get().getPlace().getNumero());
@@ -165,9 +161,8 @@ public class StationnementService {
                     stationnementActif.get().getPlace().getNumero());
         }
 
-        // Verification que la place n'a pas deja un vehicule
         Optional<Stationnement> placeOccupee = stationnementRepository
-                .findActiveStationnementByPlace(place.getId());
+                .findActiveStationnementsByPlace(place.getId()).stream().findFirst();
         if (placeOccupee.isPresent()) {
             logger.error("Echec entree: place {} deja occupee par vehicule {}",
                 place.getNumero(), placeOccupee.get().getVehicule().getImmatriculation());
@@ -175,7 +170,6 @@ public class StationnementService {
                     placeOccupee.get().getVehicule().getImmatriculation());
         }
 
-        // Configuration du stationnement
         stationnement.setVehicule(vehicule);
         stationnement.setPlace(place);
         stationnement.setDateEntree(LocalDateTime.now());
@@ -183,7 +177,6 @@ public class StationnementService {
         stationnement.setTarif(null);
         stationnement.setDureeMin(null);
 
-        // Mise a jour du statut de la place
         place.setStatut(StatutPlace.OCCUPEE);
         placeRepository.save(place);
 
@@ -212,7 +205,6 @@ public class StationnementService {
                     return new RuntimeException("Stationnement non trouve avec l'id: " + id);
                 });
 
-        // Verification que le stationnement n'est pas deja termine
         if (stationnement.getDateSortie() != null) {
             logger.error("Echec sortie: stationnement {} deja termine le {}",
                 id, stationnement.getDateSortie());
@@ -220,7 +212,6 @@ public class StationnementService {
                     stationnement.getDateSortie());
         }
 
-        // Calcul de la duree et du tarif
         LocalDateTime dateSortie = LocalDateTime.now();
         stationnement.setDateSortie(dateSortie);
 
@@ -231,7 +222,6 @@ public class StationnementService {
         double tarif = (dureeMinutes / 60.0) * tarifApplique;
         stationnement.setTarif(Math.round(tarif * 100.0) / 100.0);
 
-        // Liberation de la place
         Place place = stationnement.getPlace();
         place.setStatut(StatutPlace.LIBRE);
         placeRepository.save(place);
@@ -258,7 +248,6 @@ public class StationnementService {
                     return new RuntimeException("Stationnement non trouve avec l'id: " + id);
                 });
 
-        // Si le stationnement est actif, liberer la place
         if (stationnement.getDateSortie() == null) {
             logger.warn("Suppression d'un stationnement actif - liberation de la place {}",
                 stationnement.getPlace().getNumero());

@@ -35,7 +35,5 @@ public class Stationnement {
     @JoinColumn(name = "id_place")
     @JsonBackReference("place-stationnements")
     private Place place;
-
-
 }
 

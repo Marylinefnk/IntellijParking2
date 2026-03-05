@@ -5,10 +5,7 @@ import { useNotification } from '../context/NotificationContext';
 
 const WS_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8080') + '/ws';
 
-/**
- * Hook pour recevoir les notifications en temps reel via WebSocket.
- * Affiche automatiquement des toasts lors de la reception d'evenements.
- */
+
 export function useNotificationWebSocket() {
     const clientRef = useRef(null);
     const [connected, setConnected] = useState(false);

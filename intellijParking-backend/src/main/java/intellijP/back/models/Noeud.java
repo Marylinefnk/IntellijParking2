@@ -6,11 +6,13 @@ import javax.persistence.*;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = {})
 @Table(name = "Noeud")
 public class Noeud {
     @Id

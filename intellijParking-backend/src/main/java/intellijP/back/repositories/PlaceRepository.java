@@ -63,4 +63,7 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
     boolean existsByPositionAndIdNot(@Param("positionX") Double positionX,
                                       @Param("positionY") Double positionY,
                                       @Param("id") Long id);
+
+    @Query("SELECT p FROM Place p WHERE p.zone.nom = :nomZone")
+    List<Place> findByZoneNom(@Param("nomZone") String nomZone);
 }

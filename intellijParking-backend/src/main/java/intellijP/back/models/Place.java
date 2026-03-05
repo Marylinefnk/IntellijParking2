@@ -15,6 +15,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = {"zone", "stationnements", "reservations"})
 public class Place {
 
     @Id
@@ -46,7 +47,5 @@ public class Place {
     @OneToMany(mappedBy = "place")
     @JsonManagedReference("place-reservations")
     private List<ReservationPlace> reservations;
-
-
 }
 

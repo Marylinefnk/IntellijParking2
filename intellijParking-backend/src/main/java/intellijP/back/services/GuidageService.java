@@ -47,7 +47,6 @@ public class GuidageService {
             }
         }
 
-        // Si aucune zone trouvée, chercher le couloir le plus proche
         if (noeudPlusProche == null) {
             for (Noeud n : noeuds) {
                 if (n.getNoeudType() == NoeudType.couloir) {
@@ -109,8 +108,6 @@ public class GuidageService {
                     System.out.println("\nNoeud courant : " + noeudService.findById(noeudLePlusProche).get().getNom() + " (distance = " + distances.get(noeudLePlusProche) + ")");
                     System.out.println(" Test : " + noeudService.findById(noeudLePlusProche).get().getNom() + " vers " + a.getNoeudDestination().getNom() + " = " + distances.get(noeudLePlusProche) + " + " + a.getPoids()
                             + " = " + distanceTotaleJusquAuVoisin);
-
-
                     if (distanceTotaleJusquAuVoisin < distances.get(voisin)) {
                         distances.put(voisin, distanceTotaleJusquAuVoisin);
                         precedents.put(voisin, noeudLePlusProche);
@@ -129,8 +126,6 @@ public class GuidageService {
 
         return chemin;
     }
-
-
     public void afficherCheminVersPlace(Long idReservation) {
         ReservationPlace reservation = reservationPlaceService.findById(idReservation).orElse(null);
         if (reservation == null) {
@@ -169,16 +164,10 @@ public class GuidageService {
 
         }
 
-        // Distance finale jusqu'à la place
         Noeud dernierNoeud = cheminCalcule.get(cheminCalcule.size() - 1);
         double distanceFinale = calculerDistance(dernierNoeud, reservation.getPlace());
-
-
-        //System.out.println(distanceFinale + " mètres");
         System.out.println();
         System.out.println("Arrivée = place " + reservation.getPlace().getNumero());
-
-
         double distanceTotale = calculerDistanceTotale(cheminCalcule, reservation.getPlace(), distances);
         System.out.println();
         System.out.println("Distance totale de l'itinéraire : " +  distanceTotale + " mètres");
@@ -203,24 +192,19 @@ public class GuidageService {
         System.out.println();
     }
 
-    // Méthode pour calculant la distance entre deux aretes via leur poids
     private double calculerDistance(Noeud noeud1, Noeud noeud2) {
         double distanceDesX = noeud2.getPositionX() - noeud1.getPositionX();
         double distanceDesY = noeud2.getPositionY() - noeud1.getPositionY();
         return Math.sqrt(distanceDesX * distanceDesX + distanceDesY * distanceDesY);
     }
-    //Méthode pour calculer la distance entre un noeud et la place
     private double calculerDistance(Noeud n, Place p) {
         double distanceDesX = p.getPositionX() - n.getPositionX();
         double distanceDesY = p.getPositionY() - n.getPositionY();
         return Math.sqrt(distanceDesX * distanceDesX + distanceDesY * distanceDesY);
     }
-
-
     private double calculerDistanceTotale(List<Noeud> chemin, Place destination, Map<Long, Double> distances) {
         if (chemin.isEmpty()) return 0.0;
 
-        // distance totale de tous les noeuds du chemin
         Long dernierNoeudId = chemin.get(chemin.size() - 1).getId();
         double distanceauDernierNoeud = distances.getOrDefault(dernierNoeudId, 0.0);
 

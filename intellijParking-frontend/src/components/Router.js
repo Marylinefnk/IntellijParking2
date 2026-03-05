@@ -1,17 +1,18 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useUser } from "../context/UserContext";
-import Layout from "./Layout";
-import PublicLayout from "./PublicLayout";
-import Dashboard from "./Dashboard";
-import PlacesPage from "./PlacesPage";
-import ReservationsPage from "./ReservationsPage";
-import PersonnesPage from "./PersonnesPage";
-import VehiculesPage from "./VehiculesPage";
-import LoginPage from "./LoginPage";
-import RegisterPage from "./RegisterPage";
+import Layout from "./navigation/Layout";
+import PublicLayout from "./Pages_Authentification/PublicLayout";
+import Dashboard from "./navigation/Dashboard";
+import PlacesPage from "./navigation/PlacesPage";
+import ReservationsPage from "./navigation/ReservationsPage";
+import PersonnesPage from "./navigation/PersonnesPage";
+import VehiculesPage from "./navigation/VehiculesPage";
+import LoginPage from "./Pages_Authentification/LoginPage";
+import RegisterPage from "./Pages_Authentification/RegisterPage";
 import App from "./App";
-import HomePage from "./HomePage";
+import HomePage from "./Pages_Authentification/HomePage";
 import ParkingPage from "./parking/ParkingPage";
+import SimulationPanel from "./navigation/SimulationPanel";
 
 function ProtectedRoute({ children }) {
     const { user, loading } = useUser();
@@ -86,6 +87,11 @@ export default function Router() {
                         </SupervisorRoute>
                     } />
                     <Route path="vehicules" element={<VehiculesPage />} />
+                    <Route path="simulation" element={
+                        <SupervisorRoute>
+                            <SimulationPanel />
+                        </SupervisorRoute>
+                    } />
                 </Route>
             </Routes>
         </BrowserRouter>
