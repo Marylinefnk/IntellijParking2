@@ -1,4 +1,4 @@
-export const LOCAL_HOST = 'http://localhost:8080';
+export const LOCAL_HOST = 'http://localhost:8080'; //'http://172.31.249.253:8081'
 //export const LOCAL_HOST_SAMPLE = LOCAL_HOST + '/sample/';
 //export const GET_SAMPLES = LOCAL_HOST_SAMPLE + 'all';
 //export const UPDATE_SAMPLES = LOCAL_HOST_SAMPLE + 'update';
@@ -11,6 +11,8 @@ export const API_PERSONNES = LOCAL_HOST + '/api/personnes';
 export const API_VEHICULES = LOCAL_HOST + '/api/vehicules';
 export const API_RESERVATIONS_PLACE = LOCAL_HOST + '/api/reservations-place';
 export const API_AUTH = LOCAL_HOST + '/api/auth';
+export const API_RESERVATIONS_PERSONNE = LOCAL_HOST + '/api/reservations-place/personne';
+export const API_GUIDAGE = LOCAL_HOST + '/api/guidage/itineraire';
 
 export const SSE_FLUX_PLACES = LOCAL_HOST + '/flux/places';
 export const SSE_FLUX_RESERVATIONS = LOCAL_HOST + '/flux/reservations';
