@@ -45,7 +45,7 @@ pipeline {
                        sh 'ssh -o StrictHostKeyChecking=no toto@172.31.250.7 killall java 2>/dev/null || true'
                        sh 'ssh -o StrictHostKeyChecking=no toto@172.31.250.7 "pkill serve || true"'
                        sh 'ssh -o StrictHostKeyChecking=no -f toto@172.31.250.7 "cd /home/toto/projet/intellijParking-backend && nohup java -jar intellijParking-backend-1.0.0.jar > backend.log 2>&1 &"'
-                       sh 'ssh -f -o StrictHostKeyChecking=no toto@172.31.250.7 "nohup serve -s /home/toto/projet/intellijParking-frontend/build -l 3000 > /home/toto/projet/intellijParking-frontend/frontend.log 2>&1 &"'
+                       sh 'ssh -f -o StrictHostKeyChecking=no toto@172.31.250.7 "nohup /usr/local/bin/serve -s /home/toto/projet/intellijParking-frontend/build -l 3000 > /home/toto/projet/intellijParking-frontend/frontend.log 2>&1 &"'
 
                 }
             }
