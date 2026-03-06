@@ -12,9 +12,4 @@ build/
 tmp/
 temp/
 
-# Outils IA
-.cursorrules
-.aider*
-claude.md
-.codeium
-.tabnine
+
