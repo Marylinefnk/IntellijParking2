@@ -1,8 +1,11 @@
-export const LOCAL_HOST = 'http://172.31.250.79:8081';
+export const LOCAL_HOST = 'http://172.31.252.244:8081';
 
 export const API_PLACES = LOCAL_HOST + '/api/places';
+export const API_PLACES_STATS = LOCAL_HOST + '/api/places/stats';
 export const API_PLACES_DISPONIBLES = LOCAL_HOST + '/api/places/disponibles';
 export const API_PLACES_AVAILABILITY = LOCAL_HOST + '/api/places/availability';
+export const API_PLACES_AVAILABILITY_PAGE = LOCAL_HOST + '/api/places/availability/page';
+export const API_RESERVATIONS_PLACE_PAGE = LOCAL_HOST + '/api/reservations-place/page';
 export const API_ZONES = LOCAL_HOST + '/api/zones';
 export const API_PERSONNES = LOCAL_HOST + '/api/personnes';
 export const API_VEHICULES = LOCAL_HOST + '/api/vehicules';

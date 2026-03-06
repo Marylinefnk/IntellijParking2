@@ -7,6 +7,7 @@ import intellijP.back.models.*;
 import intellijP.back.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ public class SimulationService {
     private final StationnementRepository stationnementRepository;
     private final FluxSSEService fluxSSEService;
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationContext applicationContext;
 
     private volatile boolean simulationActive = false;
     private volatile boolean reservationActive = false;
@@ -43,7 +45,8 @@ public class SimulationService {
                              ReservationPlaceRepository reservationPlaceRepository,
                              StationnementRepository stationnementRepository,
                              FluxSSEService fluxSSEService,
-                             PasswordEncoder passwordEncoder) {
+                             PasswordEncoder passwordEncoder,
+                             ApplicationContext applicationContext) {
         this.placeRepository = placeRepository;
         this.personneRepository = personneRepository;
         this.vehiculeRepository = vehiculeRepository;
@@ -53,6 +56,7 @@ public class SimulationService {
         this.stationnementRepository = stationnementRepository;
         this.fluxSSEService = fluxSSEService;
         this.passwordEncoder = passwordEncoder;
+        this.applicationContext = applicationContext;
     }
 
     @Transactional
@@ -270,7 +274,7 @@ public class SimulationService {
                                     cycle, capteur.getPlace().getNumero(),
                                     capteur.isPresenceDetectee() ? "PRESENT" : "ABSENT",
                                     nouvellePresence ? "PRESENT" : "ABSENT");
-                            traiterChangementPresence(capteur, nouvellePresence);
+                            applicationContext.getBean(SimulationService.class).traiterChangementPresence(capteur, nouvellePresence);
                         } else {
                             logger.debug("[Cycle {}] Pas de changement pour place={}", cycle, capteur.getPlace().getNumero());
                         }
@@ -527,6 +531,11 @@ public class SimulationService {
             dto.setStatutResaAvant(statutResaAvant);
             dto.setStatutResaApres(statutResaApres);
         }
+
+        dto.setStatsTotal(placeRepository.count());
+        dto.setStatsLibre(placeRepository.countByStatut(StatutPlace.LIBRE));
+        dto.setStatsOccupee(placeRepository.countByStatut(StatutPlace.OCCUPEE));
+        dto.setStatsReservee(placeRepository.countByStatut(StatutPlace.RESERVEE));
 
         return dto;
     }

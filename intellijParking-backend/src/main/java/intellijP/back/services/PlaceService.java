@@ -28,11 +28,17 @@ import intellijP.back.repositories.ZoneRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -261,6 +267,16 @@ public class PlaceService {
         eventPublisher.publishEvent(new PlaceDeletedEvent(id));
         notificationService.notifyPlaceDeleted(id);
     }
+    public Map<String, Long> getStats() {
+        Map<String, Long> stats = new HashMap<>();
+        stats.put("total", placeRepository.count());
+        stats.put("libre", placeRepository.countByStatut(StatutPlace.LIBRE));
+        stats.put("occupee", placeRepository.countByStatut(StatutPlace.OCCUPEE));
+        stats.put("reservee", placeRepository.countByStatut(StatutPlace.RESERVEE));
+        stats.put("horsService", placeRepository.countByStatut(StatutPlace.HORS_SERVICE));
+        return stats;
+    }
+
     public List<PlaceAvailabilityDTO> findAllWithAvailability() {
         LocalDateTime now = LocalDateTime.now();
         List<Place> places = placeRepository.findAll();
@@ -268,6 +284,52 @@ public class PlaceService {
         return places.stream()
                 .map(place -> computeAvailability(place, now))
                 .collect(Collectors.toList());
+    }
+
+    public Page<PlaceAvailabilityDTO> findAllWithAvailabilityPaged(Pageable pageable) {
+        LocalDateTime now = LocalDateTime.now();
+        return placeRepository.findAll(pageable)
+                .map(place -> computeAvailability(place, now));
+    }
+
+    public Page<PlaceAvailabilityDTO> findAllWithAvailabilityByDate(Pageable pageable, LocalDate date) {
+        LocalDateTime debutJournee = date.atStartOfDay();
+        LocalDateTime finJournee = date.atTime(LocalTime.MAX);
+        return placeRepository.findAll(pageable)
+                .map(place -> computeAvailabilityForDay(place, debutJournee, finJournee));
+    }
+
+    private PlaceAvailabilityDTO computeAvailabilityForDay(Place place, LocalDateTime debut, LocalDateTime fin) {
+        if (place.getStatut() == StatutPlace.HORS_SERVICE) {
+            return buildDTO(place, StatutPlace.HORS_SERVICE, null, List.of(), false);
+        }
+
+        List<ReservationPlace> reservationsJour = reservationPlaceRepository
+                .findReservationsForPlaceOnDay(place.getId(), debut, fin);
+
+        StatutPlace statutActuel = place.getStatut();
+        PlaceAvailabilityDTO.ReservationInfo reservationEnCours = null;
+
+        LocalDateTime now = LocalDateTime.now();
+        for (ReservationPlace r : reservationsJour) {
+            if (!r.getDateDebut().isAfter(now) && !r.getDateFin().isBefore(now)) {
+                if (r.getStatut().name().equals("EN_COURS")) {
+                    statutActuel = StatutPlace.OCCUPEE;
+                } else {
+                    statutActuel = StatutPlace.RESERVEE;
+                }
+                reservationEnCours = buildReservationInfo(r);
+                break;
+            }
+        }
+
+        List<PlaceAvailabilityDTO.ReservationInfo> toutesReservations = reservationsJour.stream()
+                .map(this::buildReservationInfo)
+                .collect(Collectors.toList());
+
+        boolean disponible = statutActuel != StatutPlace.HORS_SERVICE;
+
+        return buildDTO(place, statutActuel, reservationEnCours, toutesReservations, disponible);
     }
 
     public Optional<PlaceAvailabilityDTO> findByIdWithAvailability(Long id) {

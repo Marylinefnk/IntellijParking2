@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_PLACES, API_PLACES_AVAILABILITY, API_ZONES } from "../../constants/back";
+import { API_PLACES, API_PLACES_AVAILABILITY_PAGE, API_PLACES_STATS, API_ZONES } from "../../constants/back";
 import { useUser } from "../../context/UserContext";
 import { useNotification } from "../../context/NotificationContext";
 import { useSSEPlaces } from "../../hooks/useSSEPlaces";
@@ -9,10 +9,16 @@ export default function PlacesPage() {
     const [places, setPlaces] = useState([]);
     const [zones, setZones] = useState([]);
     const [filter, setFilter] = useState("TOUS");
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalElements, setTotalElements] = useState(0);
+    const PAGE_SIZE = 12;
     const [showModal, setShowModal] = useState(false);
     const [editingPlace, setEditingPlace] = useState(null);
     const [selectedPlace, setSelectedPlace] = useState(null);
+    const [filterDate, setFilterDate] = useState("");
     const [form, setForm] = useState({ numero: "", type: "STANDARD", statut: "LIBRE", positionX: 0, positionY: 0, zoneId: "" });
+    const [stats, setStats] = useState({ total: 0, libre: 0, occupee: 0, reservee: 0 });
     const [loading, setLoading] = useState(true);
 
     const { user, authFetch } = useUser();
@@ -25,30 +31,53 @@ export default function PlacesPage() {
     useEffect(() => {
         if (!ssePlaces.lastEvent) return;
         const evt = ssePlaces.lastEvent;
+        info(`Place ${evt.numero}: ${evt.ancienStatut} → ${evt.nouveauStatut}`);
         setPlaces(prev => prev.map(p => {
-            if (p.id === evt.idPlace && p.statutActuel !== evt.nouveauStatut) {
-                info(`Place ${evt.numero}: ${evt.ancienStatut} → ${evt.nouveauStatut}`);
+            if (p.id === evt.idPlace) {
                 return { ...p, statutActuel: evt.nouveauStatut };
             }
             return p;
         }));
+        if (evt.statsTotal != null) {
+            setStats({
+                total: evt.statsTotal,
+                libre: evt.statsLibre,
+                occupee: evt.statsOccupee,
+                reservee: evt.statsReservee
+            });
+        }
     }, [ssePlaces.lastEvent]);
 
     useEffect(() => {
         loadPlaces();
         loadZones();
-    }, []);
+        loadStats();
+    }, [page, filterDate]);
 
     async function loadPlaces() {
         try {
             setLoading(true);
-            const res = await fetch(API_PLACES_AVAILABILITY);
-            if (res.ok) setPlaces(await res.json());
+            let url = `${API_PLACES_AVAILABILITY_PAGE}?page=${page}&size=${PAGE_SIZE}`;
+            if (filterDate) url += `&date=${filterDate}`;
+            const res = await fetch(url);
+            if (res.ok) {
+                const data = await res.json();
+                setPlaces(data.content);
+                setTotalPages(data.totalPages);
+                setTotalElements(data.totalElements);
+            }
         } catch (e) {
             console.error(e);
         } finally {
             setLoading(false);
         }
+    }
+
+    async function loadStats() {
+        try {
+            const res = await fetch(API_PLACES_STATS);
+            if (res.ok) setStats(await res.json());
+        } catch (e) {}
     }
 
     async function loadZones() {
@@ -165,13 +194,6 @@ export default function PlacesPage() {
 
     const filteredPlaces = filter === "TOUS" ? places : places.filter(p => p.statutActuel === filter);
 
-    const stats = {
-        total: places.length,
-        libre: places.filter(p => p.statutActuel === "LIBRE").length,
-        occupee: places.filter(p => p.statutActuel === "OCCUPEE").length,
-        reservee: places.filter(p => p.statutActuel === "RESERVEE").length
-    };
-
     return (
         <div>
             <div className="page-header">
@@ -239,11 +261,28 @@ export default function PlacesPage() {
                             </button>
                         ))}
                     </div>
-                    {isAdmin && (
-                        <button className="btn btn-primary" onClick={() => setShowModal(true)}>
-                            + Nouvelle Place
-                        </button>
-                    )}
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        <input
+                            type="date"
+                            className="form-control"
+                            value={filterDate}
+                            onChange={e => { setFilterDate(e.target.value); setPage(0); }}
+                            style={{ width: 160 }}
+                        />
+                        {filterDate && (
+                            <button
+                                className="btn btn-outline btn-sm"
+                                onClick={() => { setFilterDate(""); setPage(0); }}
+                            >
+                                Effacer
+                            </button>
+                        )}
+                        {isAdmin && (
+                            <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+                                + Nouvelle Place
+                            </button>
+                        )}
+                    </div>
                 </div>
                 <div className="card-body">
                     {loading ? (
@@ -315,6 +354,62 @@ export default function PlacesPage() {
                                     )}
                                 </div>
                             ))}
+                        </div>
+                    )}
+                    {!loading && totalPages > 1 && (
+                        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 8, padding: "16px 0 4px" }}>
+                            <button
+                                className="btn btn-outline btn-sm"
+                                onClick={() => setPage(0)}
+                                disabled={page === 0}
+                            >
+                                «
+                            </button>
+                            <button
+                                className="btn btn-outline btn-sm"
+                                onClick={() => setPage(p => p - 1)}
+                                disabled={page === 0}
+                            >
+                                ‹
+                            </button>
+                            {Array.from({ length: totalPages }, (_, i) => i)
+                                .filter(i => i === 0 || i === totalPages - 1 || Math.abs(i - page) <= 2)
+                                .reduce((acc, i, idx, arr) => {
+                                    if (idx > 0 && i - arr[idx - 1] > 1) acc.push("...");
+                                    acc.push(i);
+                                    return acc;
+                                }, [])
+                                .map((item, idx) =>
+                                    item === "..." ? (
+                                        <span key={`ellipsis-${idx}`} style={{ padding: "0 4px", color: "#64748b" }}>…</span>
+                                    ) : (
+                                        <button
+                                            key={item}
+                                            className={`btn btn-sm ${page === item ? "btn-primary" : "btn-outline"}`}
+                                            onClick={() => setPage(item)}
+                                        >
+                                            {item + 1}
+                                        </button>
+                                    )
+                                )
+                            }
+                            <button
+                                className="btn btn-outline btn-sm"
+                                onClick={() => setPage(p => p + 1)}
+                                disabled={page === totalPages - 1}
+                            >
+                                ›
+                            </button>
+                            <button
+                                className="btn btn-outline btn-sm"
+                                onClick={() => setPage(totalPages - 1)}
+                                disabled={page === totalPages - 1}
+                            >
+                                »
+                            </button>
+                            <span style={{ fontSize: "0.85rem", color: "#64748b", marginLeft: 8 }}>
+                                {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, totalElements)} / {totalElements}
+                            </span>
                         </div>
                     )}
                 </div>
