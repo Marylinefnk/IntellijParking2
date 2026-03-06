@@ -76,7 +76,7 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(List.of("*"));
         //configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000", "http://172.31.253.157:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With",  "Accept", "Cache-Control", "Last-Event-ID"));
         configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowCredentials(true);
 
