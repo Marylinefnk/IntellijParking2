@@ -1,4 +1,4 @@
-export const LOCAL_HOST = 'http://172.31.250.7:8081';
+export const LOCAL_HOST = 'http://172.31.249.253:8081';
 
 export const API_PLACES = LOCAL_HOST + '/api/places';
 export const API_PLACES_STATS = LOCAL_HOST + '/api/places/stats';
