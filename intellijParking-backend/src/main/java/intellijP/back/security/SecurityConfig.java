@@ -46,8 +46,6 @@ public class SecurityConfig {
             .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/ws/**", "/ws/info/**", "/ws").permitAll()
-                .antMatchers(HttpMethod.GET, "/ws/**").permitAll()
-                .antMatchers(HttpMethod.OPTIONS, "/ws/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/places/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/zones/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/guidage/**").permitAll()
