@@ -9,7 +9,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @RequestMapping("/flux")
-@CrossOrigin(origins = "*")
 public class FluxController {
 
     private static final Logger logger = LoggerFactory.getLogger(FluxController.class);
