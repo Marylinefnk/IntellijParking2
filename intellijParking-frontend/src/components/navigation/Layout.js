@@ -99,6 +99,10 @@ export default function Layout() {
                         <span className="nav-icon">V</span>
                         {isAdmin ? "Vehicules" : "Mes Vehicules"}
                     </NavLink>
+                    <NavLink to="/app/carte" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
+                        <span className="nav-icon">C</span>
+                        {isAdmin ? "Carte" : "Le parking"}
+                    </NavLink>
 
                     {isAdmin && (
                         <NavLink to="/app/personnes" className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}>
