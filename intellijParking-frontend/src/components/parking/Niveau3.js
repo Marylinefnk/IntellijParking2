@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import parkingBg from './parkingVF.png';
 import {API_STATUT_CARTE} from "../../constants/back";
+import { useUser } from '../../context/UserContext';
 
 export default function Level2() {
 
@@ -12,7 +13,16 @@ export default function Level2() {
             .catch(err => console.error('Erreur:', err));
     }, []);
 
+    const { user, authFetch } = useUser();
+    const [maPlace, setMaPlace] = useState(null);
 
+    useEffect(() => {
+        if (!user?.id) return;
+        authFetch(`/api/reservations-place/ma-place/${user.id}`)
+            .then(res => res.status === 204 ? null : res.json())
+            .then(data => data && setMaPlace(data.placeId))
+            .catch(err => console.error(err));
+    }, [user, authFetch]);
 
     const [tooltip, setTooltip] = useState({
         visible: false,
@@ -43,6 +53,14 @@ export default function Level2() {
             visible: false
         }));
     };
+    const formatStatut = (statut) => {
+        const map = {
+            'EN_COURS': 'Occupée',
+            'LIBRE': 'Libre',
+            'RESERVEE': 'Réservée',
+        };
+        return map[statut] ?? statut;
+    };
 
 
 
@@ -56,7 +74,19 @@ export default function Level2() {
     const handleMouseLeave2 = () => {
         setTooltip2(prev => ({ ...prev, visible: false }));
     };
-
+// pour indiquer la plce
+    const LabelMaPlace = ({ id, x, y }) => {
+        if (!user || maPlace !== id) return null;
+        return (
+            <g>
+                <rect x={x - 5} y={y - 20} width="50" height="16" rx="4" fill="#ff4444" opacity="0.9" />
+                <text x={x + 20} y={y - 12} textAnchor="middle" dominantBaseline="middle"
+                      fontSize="9" fontWeight="bold" fill="white" style={{ pointerEvents: 'none' }}>
+                    Votre place
+                </text>
+            </g>
+        );
+    };
 
 
     return (
@@ -227,6 +257,7 @@ export default function Level2() {
                        onMouseLeave={handleMouseLeave}>
                         <rect className="pmr-rect" x="0" y="95" />
                         <text className="slot-text" x="15" y="117.5" textAnchor="middle" dominantBaseline="middle">PMR1</text>
+                        <LabelMaPlace id={'PMR01'} x={0} y={95} />
                     </g>
                     <g id="PMR02"
                        onMouseEnter={(e) => handleMouseEnter(e, 'PMR02', 'PMR', '')}
@@ -234,6 +265,7 @@ export default function Level2() {
                        onMouseLeave={handleMouseLeave}>>
                         <rect className="pmr-rect" x="32" y="95" />
                         <text className="slot-text" x="47" y="117.5" textAnchor="middle" dominantBaseline="middle">PMR2</text>
+                        <LabelMaPlace id={'PMR02'} x={32} y={95} />
                     </g>
 
                     {[
@@ -252,6 +284,7 @@ export default function Level2() {
                            onMouseLeave={handleMouseLeave}>
                             <rect className="rect-slot" x={x} y="95" />
                             <text className="slot-text" x={x + 15} y="117.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
+                            <LabelMaPlace id={id} x={x} y={95} />
                         </g>
                     ))}
                 </g>
@@ -267,6 +300,7 @@ export default function Level2() {
                        onMouseLeave={handleMouseLeave}>
                         <rect className="moto-rect" x={x} y="365" />
                         <text className="slot-text" x={x + 15} y="387.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
+                        <LabelMaPlace id={id} x={x} y={365} />
                     </g>
                 ))}
 
@@ -285,6 +319,7 @@ export default function Level2() {
                        onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="365" />
                         <text className="slot-text" x={x + 15} y="387.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
+                        <LabelMaPlace id={id} x={x} y={365} />
                     </g>
                 ))}
 
@@ -300,6 +335,7 @@ export default function Level2() {
                        onMouseLeave={handleMouseLeave}>
                         <rect className="elec-rect" x={x} y="190" />
                         <text className="slot-text" x={x + 15} y="212.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
+                        <LabelMaPlace id={id} x={x} y={190} />
                     </g>
                 ))}
 
@@ -317,6 +353,7 @@ export default function Level2() {
                        onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="190" />
                         <text className="slot-text" x={x + 15} y="212.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
+                        <LabelMaPlace id={id} x={x} y={190} />
                     </g>
                 ))}
 
@@ -331,6 +368,7 @@ export default function Level2() {
                        onMouseLeave={handleMouseLeave}>
                         <rect className="elec-rect" x={x} y="270" />
                         <text className="slot-text" x={x + 15} y="292.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
+                        <LabelMaPlace id={id} x={x} y={270} />
                     </g>
                 ))}
 
@@ -347,6 +385,7 @@ export default function Level2() {
                        onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="270" />
                         <text className="slot-text" x={x + 15} y="292.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
+                        <LabelMaPlace id={id} x={x} y={270} />
                     </g>
                 ))}
 
@@ -391,7 +430,7 @@ export default function Level2() {
                 >
                     <strong>{tooltip.id}</strong><br/>
                     <span>Type : {tooltip.type}</span><br/>
-                    <span>Statut : {tooltip.statut}</span>
+                    <span>Statut : {formatStatut(tooltip.statut)}</span>
 
                 </div>
             )}
