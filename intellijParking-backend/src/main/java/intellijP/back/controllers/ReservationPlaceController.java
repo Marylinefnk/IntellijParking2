@@ -113,5 +113,21 @@ public class ReservationPlaceController {
         }
         return result;
     }
+
+    @GetMapping("/ma-place/{personneId}")
+    public ResponseEntity<Map<String, String>> getMaPlace(@PathVariable Long personneId) {
+        List<ReservationPlaceResponseDTO> reservations = reservationService
+                .findByPersonneDTO(personneId);
+
+        return reservations.stream()
+                .filter(r -> r.getStatut() == StatutReservation.EN_COURS)
+                .findFirst()
+                .map(r -> {
+                    Map<String, String> result = new HashMap<>();
+                    result.put("placeId", r.getPlace().getNumero());
+                    return ResponseEntity.ok(result);
+                })
+                .orElse(ResponseEntity.noContent().build());
+    }
 }
 

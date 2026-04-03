@@ -42,6 +42,14 @@ export default function Level1() {
             visible: false
         }));
     };
+    const formatStatut = (statut) => {
+        const map = {
+            'EN_COURS': 'Occupée',
+            'LIBRE': 'Libre',
+            'RESERVEE': 'Réservée',
+        };
+        return map[statut] ?? statut;
+    };
 
 
 
@@ -390,7 +398,7 @@ export default function Level1() {
                 >
                     <strong>{tooltip.id}</strong><br/>
                     <span>Type : {tooltip.type}</span><br/>
-                    <span>Statut : {tooltip.statut}</span>
+                    <span>Statut : {formatStatut(tooltip.statut)}</span>
 
                 </div>
             )}

@@ -91,6 +91,7 @@ export default function Router() {
                             <SimulationPanel />
                         </SupervisorRoute>
                     } />
+                    <Route path="carte" element={<ParkingPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>
