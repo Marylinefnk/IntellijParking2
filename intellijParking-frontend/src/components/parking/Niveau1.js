@@ -1,7 +1,69 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import parkingBg from './parkingVF.png';
+import {API_STATUT_CARTE} from "../../constants/back";
 
 export default function Level0() {
+    const [placesStatut, setPlacesStatut] = useState({});
+    useEffect(() => {
+        fetch(API_STATUT_CARTE)
+            .then(res => res.json())
+            .then(data => setPlacesStatut(data))
+            .catch(err => console.error('Erreur:', err));
+    }, []);
+
+
+
+    const [tooltip, setTooltip] = useState({
+        visible: false,
+        x: 0,
+        y: 0,
+        content: ""
+    });
+    const handleMouseEnter = (event, id, type, statut) => {
+        setTooltip({
+            visible: true,
+            x: event.clientX,
+            y: event.clientY,
+            id,
+            type,
+            statut: placesStatut[id] ?? 'Libre'
+        });
+    };
+    const handleMouseMove = (event) => {
+        setTooltip(prev => ({
+            ...prev,
+            x: event.clientX,
+            y: event.clientY
+        }));
+    };
+    const handleMouseLeave = () => {
+        setTooltip(prev => ({
+            ...prev,
+            visible: false
+        }));
+    };
+    const formatStatut = (statut) => {
+        const map = {
+            'EN_COURS': 'Occupée',
+            'LIBRE': 'Libre',
+            'RESERVEE': 'Réservée',
+        };
+        return map[statut] ?? statut;
+    };
+
+
+
+    const [tooltip2, setTooltip2] = useState({ visible: false, x: 0, y: 0, content: '' });
+    const handleMouseEnter2 = (event, content) => {
+        setTooltip2({ visible: true, x: event.clientX, y: event.clientY, content });
+    };
+    const handleMouseMove2 = (event) => {
+        setTooltip2(prev => ({ ...prev, x: event.clientX, y: event.clientY }));
+    };
+    const handleMouseLeave2 = () => {
+        setTooltip2(prev => ({ ...prev, visible: false }));
+    };
+
     return (
         <div style={{ position: 'relative', width: '1350px', height: '600px' }}>
 
@@ -122,17 +184,32 @@ export default function Level0() {
                 <line x1="75" y1="170" x2="75" y2="330" className="lane-line" />
 
                 {/* voie entrée */}
-                <rect x="1192" y="106" width="50" height="210" className="lane" />
+                <rect x="1192" y="106" width="50" height="210" className="lane"
+                      onMouseEnter={(e) => handleMouseEnter2(e, 'ENTREE VOITURES')}
+                      onMouseMove={handleMouseMove2}
+                      onMouseLeave={handleMouseLeave2}/>
                 <line x1="1212" y1="215" x2="1212" y2="150" className="arrow" markerEnd="url(#arrow)" />
-                <rect x="1115" y="106" width="80" height="40" className="lane" />
+                <rect x="1115" y="106" width="80" height="40" className="lane"
+                      onMouseEnter={(e) => handleMouseEnter2(e, 'ENTREE VOITURES')}
+                      onMouseMove={handleMouseMove2}
+                      onMouseLeave={handleMouseLeave2}/>
 
                 {/* voie sortie */}
-                <rect x="1260" y="190" width="40" height="209" className="lane" />
+                <rect x="1260" y="190" width="40" height="209" className="lane"
+                      onMouseEnter={(e) => handleMouseEnter2(e, 'SORTIE VOITURES')}
+                      onMouseMove={handleMouseMove2}
+                      onMouseLeave={handleMouseLeave2}/>
                 <line x1="1280" y1="310" x2="1280" y2="235" className="arrow" markerEnd="url(#arrow)" />
-                <rect x="1115" y="359" width="160" height="40" className="lane" />
+                <rect x="1115" y="359" width="160" height="40" className="lane"
+                      onMouseEnter={(e) => handleMouseEnter2(e, 'SORTIE VOITURES')}
+                      onMouseMove={handleMouseMove2}
+                      onMouseLeave={handleMouseLeave2}/>
 
-                {/* entree centre com (pietons)*/}
-                <g id="entree-centre-commercial">
+                {/* entree centre com */}
+                <g id="entree-centre-commercial"
+                   onMouseEnter={(e) => handleMouseEnter2(e, 'ENTREE PIETONS')}
+                   onMouseMove={handleMouseMove2}
+                   onMouseLeave={handleMouseLeave2}>
                     <rect x="0" y="220" width="20" height="80"
                           fill="#3498db" stroke="#2980b9" strokeWidth="3" />
                     <text x="10" y="260" fontSize="12" fill="white"
@@ -149,26 +226,35 @@ export default function Level0() {
                 {/* RANGÉE HAUT */}
                 <g id="row-top">
                     {/* PMR */}
-                    <g id="PMR01">
+                    <g id="PMR01"
+                       onMouseEnter={(e) => handleMouseEnter(e, 'PMR01C', 'PMR', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="pmr-rect" x="0" y="95" />
                         <text className="slot-text" x="15" y="117.5" textAnchor="middle" dominantBaseline="middle">PMR1</text>
                     </g>
-                    <g id="PMR02">
+                    <g id="PMR02"
+                       onMouseEnter={(e) => handleMouseEnter(e, 'PMR02C', 'PMR', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>>
                         <rect className="pmr-rect" x="32" y="95" />
                         <text className="slot-text" x="47" y="117.5" textAnchor="middle" dominantBaseline="middle">PMR2</text>
                     </g>
 
                     {[
-                        { id: 'A01', x: 68 }, { id: 'A02', x: 110 }, { id: 'A03', x: 150 },
-                        { id: 'A04', x: 189 }, { id: 'A05', x: 231 }, { id: 'A06', x: 270 },
-                        { id: 'A07', x: 310 }, { id: 'A08', x: 352 }, { id: 'A09', x: 390 },
-                        { id: 'A10', x: 433 }, { id: 'A11', x: 475 }, { id: 'A12', x: 515 },
-                        { id: 'A13', x: 555 }, { id: 'A14', x: 595 }, { id: 'A15', x: 635 },
-                        { id: 'A16', x: 675 }, { id: 'A17', x: 722 }, { id: 'A18', x: 758 },
-                        { id: 'A19', x: 800 }, { id: 'A20', x: 840 }, { id: 'A21', x: 880 },
-                        { id: 'A22', x: 920 },
+                        { id: 'C01', x: 68 }, { id: 'C02', x: 110 }, { id: 'C03', x: 150 },
+                        { id: 'C04', x: 189 }, { id: 'C05', x: 231 }, { id: 'C06', x: 270 },
+                        { id: 'C07', x: 310 }, { id: 'C08', x: 352 }, { id: 'C09', x: 390 },
+                        { id: 'C10', x: 433 }, { id: 'C11', x: 475 }, { id: 'C12', x: 515 },
+                        { id: 'C13', x: 555 }, { id: 'C14', x: 595 }, { id: 'C15', x: 635 },
+                        { id: 'C16', x: 675 }, { id: 'C17', x: 722 }, { id: 'C18', x: 758 },
+                        { id: 'C19', x: 800 }, { id: 'C20', x: 840 }, { id: 'C21', x: 880 },
+                        { id: 'C22', x: 920 },
                     ].map(({ id, x }) => (
-                        <g className="slot" id={id} key={id}>
+                        <g className="slot" id={id} key={id}
+                           onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE', '')}
+                           onMouseMove={handleMouseMove}
+                           onMouseLeave={handleMouseLeave}>
                             <rect className="rect-slot" x={x} y="95" />
                             <text className="slot-text" x={x + 15} y="117.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                         </g>
@@ -177,10 +263,13 @@ export default function Level0() {
 
                 {/* RANGÉE BAS - motos */}
                 {[
-                    { id: 'A23', x: 0 }, { id: 'A24', x: 30 }, { id: 'A25', x: 68 },
-                    { id: 'A26', x: 110 }, { id: 'A27', x: 150 },
+                    { id: 'C23', x: 0 }, { id: 'C24', x: 30 }, { id: 'C25', x: 68 },
+                    { id: 'C26', x: 110 }, { id: 'C27', x: 150 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={`M${id}`} key={id}>
+                    <g className="slot" id={`M${id}`} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'MOTO', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="moto-rect" x={x} y="365" />
                         <text className="slot-text" x={x + 15} y="387.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -188,14 +277,17 @@ export default function Level0() {
 
                 {/* RANGÉE BAS - voitures normales */}
                 {[
-                    { id: 'A28', x: 189 }, { id: 'A29', x: 231 }, { id: 'A30', x: 270 },
-                    { id: 'A31', x: 310 }, { id: 'A32', x: 352 }, { id: 'A33', x: 390 },
-                    { id: 'A34', x: 433 }, { id: 'A35', x: 475 }, { id: 'A36', x: 515 },
-                    { id: 'A37', x: 555 }, { id: 'A38', x: 595 }, { id: 'A39', x: 635 },
-                    { id: 'A40', x: 675 }, { id: 'A41', x: 722 }, { id: 'A42', x: 758 },
-                    { id: 'A43', x: 800 }, { id: 'A44', x: 840 },{ id: 'A45', x: 880 }, { id: 'A46', x: 920 },
+                    { id: 'C28', x: 189 }, { id: 'C29', x: 231 }, { id: 'C30', x: 270 },
+                    { id: 'C31', x: 310 }, { id: 'C32', x: 352 }, { id: 'C33', x: 390 },
+                    { id: 'C34', x: 433 }, { id: 'C35', x: 475 }, { id: 'C36', x: 515 },
+                    { id: 'C37', x: 555 }, { id: 'C38', x: 595 }, { id: 'C39', x: 635 },
+                    { id: 'C40', x: 675 }, { id: 'C41', x: 722 }, { id: 'C42', x: 758 },
+                    { id: 'C43', x: 800 }, { id: 'C44', x: 840 }, { id: 'C45', x: 880 }, { id: 'C46', x: 920 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="365" />
                         <text className="slot-text" x={x + 15} y="387.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -204,10 +296,13 @@ export default function Level0() {
 
                 {/* RANGÉE MILIEU HAUT - électrique */}
                 {[
-                    { id: 'A47', x: 234 }, { id: 'A48', x: 274 }, { id: 'A49', x: 314 },
-                    { id: 'A50', x: 354 }, { id: 'A51', x: 392 },
+                    { id: 'C47', x: 234 }, { id: 'C48', x: 274 }, { id: 'C49', x: 314 },
+                    { id: 'C50', x: 354 }, { id: 'C51', x: 392 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'ELECTRIQUE', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="elec-rect" x={x} y="190" />
                         <text className="slot-text" x={x + 15} y="212.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -215,13 +310,16 @@ export default function Level0() {
 
                 {/* RANGÉE MILIEU HAUT - normales */}
                 {[
-                    { id: 'A52', x: 432 }, { id: 'A54', x: 475 }, { id: 'A55', x: 515 },
-                    { id: 'A56', x: 555 }, { id: 'A57', x: 595 }, { id: 'A58', x: 635 },
-                    { id: 'A59', x: 675 }, { id: 'A60', x: 722 }, { id: 'A61', x: 758 },
-                    { id: 'A62', x: 800 }, { id: 'A63', x: 840 }, { id: 'A64', x: 880 },
-                    { id: 'A65', x: 920 },
+                    { id: 'C52', x: 432 }, { id: 'C54', x: 475 }, { id: 'C55', x: 515 },
+                    { id: 'C56', x: 555 }, { id: 'C57', x: 595 }, { id: 'C58', x: 635 },
+                    { id: 'C59', x: 675 }, { id: 'C60', x: 722 }, { id: 'C61', x: 758 },
+                    { id: 'C62', x: 800 }, { id: 'C63', x: 840 }, { id: 'C64', x: 880 },
+                    { id: 'C65', x: 920 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="190" />
                         <text className="slot-text" x={x + 15} y="212.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -229,10 +327,13 @@ export default function Level0() {
 
                 {/* RANGÉE MILIEU BAS - électrique */}
                 {[
-                    { id: 'A66', x: 234 }, { id: 'A67', x: 274 }, { id: 'A68', x: 314 },
-                    { id: 'A69', x: 354 }, { id: 'A70', x: 392 },
+                    { id: 'C66', x: 234 }, { id: 'C67', x: 274 }, { id: 'C68', x: 314 },
+                    { id: 'C69', x: 354 }, { id: 'C70', x: 392 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'ELECTRIQUE', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="elec-rect" x={x} y="270" />
                         <text className="slot-text" x={x + 15} y="292.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -240,12 +341,15 @@ export default function Level0() {
 
                 {/* RANGÉE MILIEU BAS - normales */}
                 {[
-                    { id: 'A71', x: 432 }, { id: 'A75', x: 555 }, { id: 'A76', x: 595 },
-                    { id: 'A77', x: 635 }, { id: 'A78', x: 675 }, { id: 'A79', x: 722 },
-                    { id: 'A80', x: 758 }, { id: 'A81', x: 800 }, { id: 'A82', x: 840 },
-                    { id: 'A83', x: 880 }, { id: 'A84', x: 920 },{ id: 'A73', x: 475 }, { id: 'A74', x: 515 },
+                    { id: 'C71', x: 432 }, { id: 'C75', x: 555 }, { id: 'C76', x: 595 },
+                    { id: 'C77', x: 635 }, { id: 'C78', x: 675 }, { id: 'C79', x: 722 },
+                    { id: 'C80', x: 758 }, { id: 'C81', x: 800 }, { id: 'C82', x: 840 },
+                    { id: 'C83', x: 880 }, { id: 'C84', x: 920 }, { id: 'C73', x: 475 }, { id: 'C74', x: 515 },
                 ].map(({ id, x }) => (
-                    <g className="slot" id={id} key={id}>
+                    <g className="slot" id={id} key={id}
+                       onMouseEnter={(e) => handleMouseEnter(e, id, 'NORMALE', '')}
+                       onMouseMove={handleMouseMove}
+                       onMouseLeave={handleMouseLeave}>
                         <rect className="rect-slot" x={x} y="270" />
                         <text className="slot-text" x={x + 15} y="292.5" textAnchor="middle" dominantBaseline="middle">{id}</text>
                     </g>
@@ -253,7 +357,10 @@ export default function Level0() {
 
                 {/* Locaux */}
                 {/* Local 1 */}
-                <g id="local-vip1">
+                <g id="local-livraison1"
+                   onMouseEnter={(e) => handleMouseEnter2(e, 'LIVRAISON 1')}
+                   onMouseMove={handleMouseMove2}
+                   onMouseLeave={handleMouseLeave2}>
                     <rect x="130" y="223" width="80" height="50"
                           className="delivery-local" rx="10" ry="10" />
                     <text x="136" y="252" fontSize="11" fontWeight="bold" fill="#333">LIVRAISON 1</text>
@@ -262,7 +369,10 @@ export default function Level0() {
                 </g>
 
                 {/* Local 2 */}
-                <g id="local-vip2">
+                <g id="local-livraison2"
+                   onMouseEnter={(e) => handleMouseEnter2(e, 'LIVRAISON 2',)}
+                   onMouseMove={handleMouseMove2}
+                   onMouseLeave={handleMouseLeave2}>
                     <rect x="980" y="223" width="80" height="50"
                           className="delivery-local" rx="10" ry="10" />
                     <text x="983" y="252" fontSize="11" fontWeight="bold" fill="#333">LIVRAISON 2</text>
@@ -271,6 +381,43 @@ export default function Level0() {
                 </g>
 
             </svg>
+            {tooltip.visible && (
+                <div
+                    style={{
+                        position: "fixed",
+                        top: tooltip.y + 10,
+                        left: tooltip.x + 10,
+                        backgroundColor: "white",
+                        padding: "6px 10px",
+                        borderRadius: "6px",
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                        fontSize: "12px",
+                        pointerEvents: "none",
+                        zIndex: 1000
+                    }}
+                >
+                    <strong>{tooltip.id}</strong><br/>
+                    <span>Type : {tooltip.type}</span><br/>
+                    <span>Statut : {formatStatut(tooltip.statut)}</span>
+
+                </div>
+            )}
+            {tooltip2.visible && (
+                <div style={{
+                    position: "fixed",
+                    top: tooltip2.y + 10,
+                    left: tooltip2.x + 10,
+                    backgroundColor: "white",
+                    padding: "6px 10px",
+                    borderRadius: "6px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                    fontSize: "12px",
+                    pointerEvents: "none",
+                    zIndex: 1000
+                }}>
+                    <strong>{tooltip2.content}</strong><br/>
+                </div>
+            )}
         </div>
     );
 }

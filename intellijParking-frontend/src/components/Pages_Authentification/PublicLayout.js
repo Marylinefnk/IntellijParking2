@@ -35,8 +35,8 @@ export default function PublicLayout() {
                     </span>
                 </div>
                 <nav style={{ display: "flex", gap: 16, alignItems: "center" }}>
-                    <Link to="/" style={{ color: "#3b82f6", textDecoration: "none", fontWeight: 500 }}>
-                        Voir les places
+                    <Link to="/HomePage" style={{ color: "#3b82f6", textDecoration: "none", fontWeight: 500 }}>
+                        Voir le parking
                     </Link>
                     {user ? (
                         <button

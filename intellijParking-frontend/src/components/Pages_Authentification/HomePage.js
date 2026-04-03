@@ -48,9 +48,9 @@ export default function HomePage() {
             {/* les boutons */}
             <div className="home-buttons">
                 <button onClick={() => navigate("/ParkingPage")}>
-                    Voir parking
+                    Voir les places
                 </button>
-                <button onClick={() => navigate("/Dashboard")}>
+                <button onClick={() => navigate("/")}>
                     Dashboard
                 </button>
             </div>

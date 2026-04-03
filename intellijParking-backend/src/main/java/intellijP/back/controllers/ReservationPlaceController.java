@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/reservations-place")
@@ -76,4 +78,36 @@ public class ReservationPlaceController {
     public void deleteReservation(@PathVariable Long id) {
         reservationService.deleteDTO(id);
     }
+
+    //le endpoint pour la carte du p
+
+    @GetMapping("/statut-carte")
+    @CrossOrigin(origins = "http://localhost:3000")
+    public Map<String, String> getStatutCarte() {
+        List<ReservationPlaceResponseDTO> actives = reservationService
+                .findByStatutDTO(StatutReservation.EN_COURS);
+
+        Map<String, String> result = new HashMap<>();
+        for (ReservationPlaceResponseDTO r : actives) {
+            result.put(r.getPlace().getNumero(), r.getStatut().name());
+        }
+        return result;
+    }
+
+    @GetMapping("/ma-place/{personneId}")
+    public ResponseEntity<Map<String, String>> getMaPlace(@PathVariable Long personneId) {
+        List<ReservationPlaceResponseDTO> reservations = reservationService
+                .findByPersonneDTO(personneId);
+
+        return reservations.stream()
+                .filter(r -> r.getStatut() == StatutReservation.EN_COURS)
+                .findFirst()
+                .map(r -> {
+                    Map<String, String> result = new HashMap<>();
+                    result.put("placeId", r.getPlace().getNumero());
+                    return ResponseEntity.ok(result);
+                })
+                .orElse(ResponseEntity.noContent().build());
+    }
 }
+

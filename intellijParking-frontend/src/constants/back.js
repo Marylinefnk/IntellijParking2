@@ -1,4 +1,4 @@
-export const LOCAL_HOST = 'http://localhost:8080'; //'http://172.31.249.253:8081'
+export const LOCAL_HOST = 'http://localhost:8081';
 //export const LOCAL_HOST_SAMPLE = LOCAL_HOST + '/sample/';
 //export const GET_SAMPLES = LOCAL_HOST_SAMPLE + 'all';
 //export const UPDATE_SAMPLES = LOCAL_HOST_SAMPLE + 'update';
@@ -22,3 +22,5 @@ export const SIMULATION_RESERVATIONS = LOCAL_HOST + '/simulation/reservations/jo
 export const SIMULATION_DEMARRER = LOCAL_HOST + '/simulation/capteurs/demarrer';
 export const SIMULATION_ARRETER = LOCAL_HOST + '/simulation/capteurs/arreter';
 export const SIMULATION_STATUT = LOCAL_HOST + '/simulation/statut';
+
+export const API_STATUT_CARTE = LOCAL_HOST + '/api/reservations-place/statut-carte';
