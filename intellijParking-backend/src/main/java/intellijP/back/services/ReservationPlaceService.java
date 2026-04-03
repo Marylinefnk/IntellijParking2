@@ -15,6 +15,8 @@ import intellijP.back.exceptions.ResourceNotFoundException;
 import intellijP.back.exceptions.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +63,16 @@ public class ReservationPlaceService {
                 .collect(Collectors.toList());
         logger.info("Nombre de reservations de places recuperees: {}", result.size());
         return result;
+    }
+
+    public Page<ReservationPlaceResponseDTO> findAllDTOPaged(Pageable pageable) {
+        return reservationRepository.findAllWithRelations(pageable)
+                .map(dtoMapper::toReservationPlaceResponseDTO);
+    }
+
+    public Page<ReservationPlaceResponseDTO> findByPersonneDTOPaged(Long personneId, Pageable pageable) {
+        return reservationRepository.findByPersonneIdWithRelations(personneId, pageable)
+                .map(dtoMapper::toReservationPlaceResponseDTO);
     }
 
     public Optional<ReservationPlaceResponseDTO> findByIdDTO(Long id) {

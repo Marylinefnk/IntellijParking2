@@ -2,8 +2,9 @@ import { useEffect, useRef, useCallback, useState } from 'react';
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { useNotification } from '../context/NotificationContext';
+import { LOCAL_HOST } from '../constants/back';
 
-const WS_URL = (process.env.REACT_APP_API_URL || 'http://localhost:8080') + '/ws';
+const WS_URL = LOCAL_HOST + '/ws';
 
 
 export function useNotificationWebSocket() {

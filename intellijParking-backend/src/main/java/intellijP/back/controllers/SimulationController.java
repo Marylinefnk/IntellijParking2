@@ -68,12 +68,22 @@ public class SimulationController {
         return ResponseEntity.accepted().body(reponse);
     }
 
+    @PostMapping("/reservations/arreter")
+    @PreAuthorize("hasRole('SUPERVISEUR')")
+    public ResponseEntity<Map<String, String>> arreterReservations() {
+        simulationService.arreterReservation();
+        Map<String, String> rep = new HashMap<>();
+        rep.put("message", "Arrêt de la génération de réservations demandé");
+        return ResponseEntity.ok(rep);
+    }
+
     @PostMapping("/capteurs/demarrer")
     @PreAuthorize("hasRole('SUPERVISEUR')")
     public ResponseEntity<Map<String, Object>> demarrer(
             @RequestParam(defaultValue = "2") int intervalleSecondes,
             @RequestParam(required = false) String niveau,
-            @RequestParam(defaultValue = "0.5") double probabilitePresence) {
+            @RequestParam(defaultValue = "0.5") double probabilitePresence,
+            @RequestParam(defaultValue = "1") int nbCapteursParCycle) {
 
         if (simulationService.isSimulationActive()) {
             Map<String, Object> rep = new HashMap<>();
@@ -81,13 +91,14 @@ public class SimulationController {
             return ResponseEntity.ok(rep);
         }
 
-        simulationService.demarrerSimulation(intervalleSecondes, niveau, probabilitePresence);
+        simulationService.demarrerSimulation(intervalleSecondes, niveau, probabilitePresence, nbCapteursParCycle);
 
         Map<String, Object> reponse = new HashMap<>();
         reponse.put("message", "Simulation capteurs démarrée");
         reponse.put("intervalleSecondes", intervalleSecondes);
         reponse.put("niveau", niveau != null ? niveau : "tous");
         reponse.put("probabilitePresence", probabilitePresence);
+        reponse.put("nbCapteursParCycle", nbCapteursParCycle);
 
         return ResponseEntity.accepted().body(reponse);
     }
@@ -106,6 +117,7 @@ public class SimulationController {
     public ResponseEntity<Map<String, Object>> statut() {
         Map<String, Object> rep = new HashMap<>();
         rep.put("simulationActive", simulationService.isSimulationActive());
+        rep.put("reservationActive", simulationService.isReservationActive());
         rep.put("nbClientsSSE", 0);
         return ResponseEntity.ok(rep);
     }
