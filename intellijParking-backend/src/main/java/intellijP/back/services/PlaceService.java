@@ -1,6 +1,7 @@
 package intellijP.back.services;
 
 import intellijP.back.dto.PlaceAvailabilityDTO;
+import intellijP.back.exceptions.BadRequestException;
 import intellijP.back.models.Place;
 import intellijP.back.models.ReservationPlace;
 import intellijP.back.models.StatutPlace;
@@ -186,8 +187,13 @@ public class PlaceService {
 
     public Place create(Place place) {
         logger.info("Creation d'une place: numero={}", place.getNumero());
-
-        if (place.getNumero() != null && placeRepository.existsByNumero(place.getNumero())) {
+if (place.getNumero() == null) {
+    throw new BadRequestException("Numero de place requis");
+}
+        if (place.getPositionX() == null || place.getPositionY() == null) {
+            throw new BadRequestException("les positions sont requises");
+        }
+        if (placeRepository.existsByNumero(place.getNumero())) {
             throw new ConflictException("Une place avec le numero '" + place.getNumero() + "' existe deja");
         }
 
