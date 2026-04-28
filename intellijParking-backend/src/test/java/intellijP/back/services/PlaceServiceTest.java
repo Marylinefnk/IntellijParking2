@@ -13,6 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.util.Map;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -68,11 +71,26 @@ public class PlaceServiceTest {
       @Test
 void testSupprimerPlaceOccupee() {
         Place place = new Place();
-        place.setId(6);
+        place.setId(6L);
         place.setNumero("A03");
         place.setStatut(StatutPlace.OCCUPEE);
-          when(placeRepository.findById(6)).thenReturn(Optional.of(place));
-          assertThrows(OperationNotAllowedException.class, () -> placeService.deleteDTO(6));
+          when(placeRepository.findById(6L)).thenReturn(Optional.of(place));
+          assertThrows(OperationNotAllowedException.class, () -> placeService.deleteDTO(6L));
 
       }
+      @Test
+    void testGetStats(){
+          when(placeRepository.count()).thenReturn(10L);
+          when(placeRepository.countByStatut(StatutPlace.LIBRE)).thenReturn(5L);
+          when(placeRepository.countByStatut(StatutPlace.OCCUPEE)).thenReturn(3L);
+          when(placeRepository.countByStatut(StatutPlace.RESERVEE)).thenReturn(1L);
+          when(placeRepository.countByStatut(StatutPlace.HORS_SERVICE)).thenReturn(1L);
+          Map<String, Long> stats = placeService.getStats();
+          assertEquals(10L,stats.get("total"));
+          assertEquals(5L, stats.get("libre"));
+          assertEquals(3L, stats.get("occupee"));
+          assertEquals(1L, stats.get("reservee"));
+          assertEquals(1L, stats.get("horsService"));
+
+    }
 }
