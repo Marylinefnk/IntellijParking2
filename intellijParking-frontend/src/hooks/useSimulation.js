@@ -3,6 +3,7 @@ import { useUser } from "../context/UserContext";
 import {
     SIMULATION_INITIALISER,
     SIMULATION_RESERVATIONS,
+    SIMULATION_RESERVATIONS_ARRETER,
     SIMULATION_DEMARRER,
     SIMULATION_ARRETER,
     SIMULATION_STATUT
@@ -58,10 +59,23 @@ export function useSimulation() {
         }
     }, [authFetch]);
 
-    const demarrerCapteurs = useCallback(async (intervalle = 3, probabilite = 0.5) => {
+    const arreterReservations = useCallback(async () => {
         setLoading(true);
         try {
-            const url = `${SIMULATION_DEMARRER}?intervalleSecondes=${intervalle}&probabilitePresence=${probabilite}`;
+            const res = await authFetch(SIMULATION_RESERVATIONS_ARRETER, { method: "POST" });
+            if (res.ok) {
+                return await res.json();
+            }
+            throw new Error(`HTTP ${res.status}`);
+        } finally {
+            setLoading(false);
+        }
+    }, [authFetch]);
+
+    const demarrerCapteurs = useCallback(async (intervalle = 3, probabilite = 0.5, nbCapteurs = 1) => {
+        setLoading(true);
+        try {
+            const url = `${SIMULATION_DEMARRER}?intervalleSecondes=${intervalle}&probabilitePresence=${probabilite}&nbCapteursParCycle=${nbCapteurs}`;
             const res = await authFetch(url, { method: "POST" });
             if (res.ok) {
                 const data = await res.json();
@@ -96,6 +110,7 @@ export function useSimulation() {
         refreshStatut,
         initialiser,
         genererReservations,
+        arreterReservations,
         demarrerCapteurs,
         arreterCapteurs
     };

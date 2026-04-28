@@ -9,17 +9,18 @@ import intellijP.back.models.StatutPlace;
 import intellijP.back.models.TypePlace;
 import intellijP.back.models.Zone;
 import intellijP.back.services.PlaceService;
-import intellijP.back.dto.PlaceAvailabilityDTO;
-import intellijP.back.dto.PlaceCreateDTO;
-import intellijP.back.dto.PlaceDTO;
 import intellijP.back.exceptions.ResourceNotFoundException;
-import intellijP.back.models.StatutPlace;
-import intellijP.back.models.TypePlace;
 import intellijP.back.services.PlaceService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 @RestController
 @RequestMapping("/api/places")
 public class PlaceController {
@@ -41,6 +42,11 @@ public class PlaceController {
                 .orElseThrow(() -> new ResourceNotFoundException("Place", id));
     }
 
+    @GetMapping("/stats")
+    public Map<String, Long> getPlacesStats() {
+        return placeService.getStats();
+    }
+
     @GetMapping("/disponibles")
     public List<PlaceDTO> getPlacesDisponibles() {
         return placeService.findPlacesDisponiblesDTO();
@@ -49,6 +55,18 @@ public class PlaceController {
     @GetMapping("/availability")
     public List<PlaceAvailabilityDTO> getAllPlacesWithAvailability() {
         return placeService.findAllWithAvailability();
+    }
+
+    @GetMapping("/availability/page")
+    public Page<PlaceAvailabilityDTO> getAllPlacesWithAvailabilityPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String date) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("numero"));
+        if (date != null && !date.isBlank()) {
+            return placeService.findAllWithAvailabilityByDate(pageRequest, LocalDate.parse(date));
+        }
+        return placeService.findAllWithAvailabilityPaged(pageRequest);
     }
 
     @GetMapping("/{id}/availability")

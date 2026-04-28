@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { API_RESERVATIONS_PLACE, API_PLACES_AVAILABILITY, API_PERSONNES, API_VEHICULES } from "../../constants/back";
+import { API_RESERVATIONS_PLACE, API_RESERVATIONS_PLACE_PAGE, API_PLACES_AVAILABILITY, API_PERSONNES, API_VEHICULES } from "../../constants/back";
 import { useUser } from "../../context/UserContext";
 import { useNotification } from "../../context/NotificationContext";
 
 export default function ReservationsPage() {
     const [reservations, setReservations] = useState([]);
+    const [totalElements, setTotalElements] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
     const [places, setPlaces] = useState([]);
     const [personnes, setPersonnes] = useState([]);
     const [vehicules, setVehicules] = useState([]);
@@ -29,7 +31,7 @@ export default function ReservationsPage() {
             loadReservations();
             loadData();
         }
-    }, [userLoading, user]);
+    }, [userLoading, user, page]);
 
     useEffect(() => {
         if (location.state?.placeToReserve) {
@@ -47,10 +49,15 @@ export default function ReservationsPage() {
         try {
             setLoading(true);
             const url = isAdmin
-                ? API_RESERVATIONS_PLACE
-                : `${API_RESERVATIONS_PLACE}/personne/${user?.id}`;
+                ? `${API_RESERVATIONS_PLACE_PAGE}?page=${page}&size=${PAGE_SIZE}`
+                : `${API_RESERVATIONS_PLACE}/personne/${user?.id}/page?page=${page}&size=${PAGE_SIZE}`;
             const res = await authFetch(url);
-            if (res.ok) setReservations(await res.json());
+            if (res.ok) {
+                const data = await res.json();
+                setReservations(data.content);
+                setTotalElements(data.totalElements);
+                setTotalPages(data.totalPages);
+            }
         } catch (e) {
             console.error(e);
         } finally {
@@ -221,11 +228,8 @@ export default function ReservationsPage() {
 
     useEffect(() => { setPage(0); }, [filter, search, filterFrom, filterTo]);
 
-    const totalPages = Math.ceil(filteredReservations.length / PAGE_SIZE);
-    const paginatedReservations = filteredReservations.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
-
     const stats = {
-        total: reservations.length,
+        total: totalElements,
         enAttente: reservations.filter(r => r.statut === "EN_ATTENTE" || r.statut === "CONFIRMEE").length,
         enCours: reservations.filter(r => r.statut === "EN_COURS").length,
         terminee: reservations.filter(r => r.statut === "TERMINEE").length
@@ -334,7 +338,7 @@ export default function ReservationsPage() {
                                 : "Creez une nouvelle reservation"}</p>
                         </div>
                     ) : (
-                        paginatedReservations.map(r => (
+                        filteredReservations.map(r => (
                             <div key={r.id} className={`reservation-card ${getStatusClass(r.statut)}`}>
                                 <div className="reservation-info">
                                     <h4>
@@ -447,7 +451,7 @@ export default function ReservationsPage() {
                                 »
                             </button>
                             <span style={{ fontSize: "0.85rem", color: "#64748b", marginLeft: 8 }}>
-                                {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, filteredReservations.length)} / {filteredReservations.length}
+                                {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, totalElements)} / {totalElements}
                             </span>
                         </div>
                     )}
