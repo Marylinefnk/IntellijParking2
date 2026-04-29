@@ -54,6 +54,15 @@ export default function Itineraire() {
     const conducteur = cheminData[indexActuel]
     console.log(indexActuel, conducteur)
 
+    let placex = 0
+    let placey= 0
+
+    if (indexActuel === cheminData.length - 1 ) {
+
+        placex = 15
+        placey = 22.5
+    }
+
     return (
 
         <section>
@@ -65,16 +74,10 @@ export default function Itineraire() {
                     style={{ position: 'absolute', width: '1350px', height: '600px', top: 0, left: 0, zIndex: 999 }}>
 
 
-                    <polyline
-                        points={points()}
-                        fill="none"
-                        stroke="red"
-                        strokeWidth="6" />
-
                     {conducteur && (
                     <circle
-                        cx={conducteur.x}
-                        cy={conducteur.y}
+                        cx={conducteur.x + placex}
+                        cy={conducteur.y + placey}
                         r={10}
                         fill="red" /> )}
 
