@@ -10,11 +10,21 @@ import {useUser} from '../../context/UserContext';
 export default function Itineraire() {
     const [cheminData, setCheminData] = useState([])
     const {user, authFetch } = useUser()
+    const [indexActuel, setIndexActuel] = useState(0)
 
     useEffect(() => {
         fetchItineraire();
     }, [user]);
 
+
+    useEffect(() => {
+        if (cheminData.length === 0) return
+        if (indexActuel >= cheminData.length - 1) return
+
+        const timer = setTimeout(() => {
+            setIndexActuel(indexActuel + 1);}, 800)
+
+        return () => clearTimeout(timer); },  [indexActuel, cheminData]);
 
     const fetchItineraire = async () => {
         const response = await authFetch(`${API_RESERVATIONS_PERSONNE}/${user.id}`)
@@ -41,6 +51,8 @@ export default function Itineraire() {
             count = count + cheminData[i].x + "," + cheminData[i].y + " "
         } return count
     }
+    const conducteur = cheminData[indexActuel]
+    console.log(indexActuel, conducteur)
 
     return (
 
@@ -58,6 +70,15 @@ export default function Itineraire() {
                         fill="none"
                         stroke="red"
                         strokeWidth="6" />
+
+                    {conducteur && (
+                    <circle
+                        cx={conducteur.x}
+                        cy={conducteur.y}
+                        r={10}
+                        fill="red" /> )}
+
+
                 </svg>
 
 
