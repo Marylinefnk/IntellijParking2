@@ -2,22 +2,29 @@ package intellijP.back.services;
 
 import intellijP.back.dto.InitialisationResultatDTO;
 import intellijP.back.repositories.CapteurRepository;
+import intellijP.back.repositories.EvenementCapteurRepository;
 import intellijP.back.repositories.PersonneRepository;
 import intellijP.back.repositories.PlaceRepository;
+import intellijP.back.repositories.ReservationPlaceRepository;
+import intellijP.back.repositories.StationnementRepository;
 import intellijP.back.repositories.VehiculeRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -31,17 +38,19 @@ class SimulationServiceTest {
     @Mock
     private CapteurRepository capteurRepository;
     @Mock
+    private EvenementCapteurRepository evenementCapteurRepository;
+    @Mock
+    private ReservationPlaceRepository reservationPlaceRepository;
+    @Mock
+    private StationnementRepository stationnementRepository;
+    @Mock
+    private FluxSSEService fluxSSEService;
+    @Mock
     private PasswordEncoder passwordEncoder;
-
+    @Mock
+    private ApplicationContext applicationContext;
+    @InjectMocks
     private SimulationService simulationService;
-
-    @BeforeEach
-    void init() {
-        simulationService = new SimulationService(
-                placeRepository, personneRepository, vehiculeRepository,
-                capteurRepository, null, null, null, null,
-                passwordEncoder, null);
-    }
 
     @Test
     void testInitialiser() {
@@ -63,5 +72,12 @@ class SimulationServiceTest {
     void testArreterReservation(){
         simulationService.arreterReservation();
         assertFalse(simulationService.isReservationActive());
+    }
+
+       @Test
+    void testGenererReservationsAucunePlace() {
+        when(placeRepository.findAll()).thenReturn(List.of());
+        simulationService.genererReservationsJournee(LocalDate.of(2026, 6, 1), 0, null, null);
+        verify(vehiculeRepository, never()).findAll();
     }
 }
