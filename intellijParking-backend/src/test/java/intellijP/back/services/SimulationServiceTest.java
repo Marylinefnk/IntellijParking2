@@ -1,29 +1,67 @@
 package intellijP.back.services;
 
+import intellijP.back.dto.InitialisationResultatDTO;
+import intellijP.back.repositories.CapteurRepository;
+import intellijP.back.repositories.PersonneRepository;
+import intellijP.back.repositories.PlaceRepository;
+import intellijP.back.repositories.VehiculeRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SimulationServiceTest {
+    @Mock
+    private PlaceRepository placeRepository;
+    @Mock
+    private PersonneRepository personneRepository;
+    @Mock
+    private VehiculeRepository vehiculeRepository;
+    @Mock
+    private CapteurRepository capteurRepository;
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
-    @Test
-    void testPlaceholder() {
-        assertTrue(true);
+    private SimulationService simulationService;
+
+    @BeforeEach
+    void init() {
+        simulationService = new SimulationService(
+                placeRepository, personneRepository, vehiculeRepository,
+                capteurRepository, null, null, null, null,
+                passwordEncoder, null);
     }
 
     @Test
-    void testCapteurNullShouldBeHandled() {
-        // TODO: cas limite capteur null
-        assertTrue(true);
-    }
+    void testInitialiser() {
+        when(passwordEncoder.encode("sirius2026")).thenReturn("hashe");
+        when(vehiculeRepository.findByImmatriculation(anyString())).thenReturn(Optional.empty());
+        when(placeRepository.findAll()).thenReturn(List.of());
 
+        InitialisationResultatDTO resultat = simulationService.initialiser(1, 1, 42L);
+        assertEquals(1, resultat.getNbPersonnesCreees());
+        assertEquals(1, resultat.getNbVehiculesCreees());
+        assertEquals(0, resultat.getNbCapteursCreees());
+    }
+      @Test
+    void testArreterSimulation() {
+        simulationService.arreterSimulation();
+        assertFalse(simulationService.isSimulationActive());
+    }
     @Test
-    void testGenererReservationsSansVehicule() {
-        // TODO: completer ce cas limite
-        assertTrue(true);
+    void testArreterReservation(){
+        simulationService.arreterReservation();
+        assertFalse(simulationService.isReservationActive());
     }
-
 }
