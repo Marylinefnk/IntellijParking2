@@ -13,6 +13,7 @@ export default function SimulationPanel() {
     const [pasSecondes, setPasSecondes] = useState(1);
     const [intervalle, setIntervalle] = useState(3);
     const [probabilite, setProbabilite] = useState(0.5);
+    const [nbCapteurs, setNbCapteurs] = useState(1);
 
     const [resaEnCours, setResaEnCours] = useState(false);
     const [capteursActifs, setCapteursActifs] = useState(false);
@@ -22,7 +23,10 @@ export default function SimulationPanel() {
 
     useEffect(() => {
         simulation.refreshStatut().then((s) => {
-            if (s) setCapteursActifs(s.simulationActive);
+            if (s) {
+                setCapteursActifs(s.simulationActive);
+                setResaEnCours(s.reservationActive);
+            }
         });
     }, []);
 
@@ -50,9 +54,19 @@ export default function SimulationPanel() {
         }
     };
 
+    const handleArreterReservations = async () => {
+        try {
+            await simulation.arreterReservations();
+            setResaEnCours(false);
+            addNotification("Arret de la generation des reservations demande", "info");
+        } catch (e) {
+            addNotification("Erreur lors de l'arret des reservations", "error");
+        }
+    };
+
     const handleDemarrerCapteurs = async () => {
         try {
-            await simulation.demarrerCapteurs(intervalle, probabilite);
+            await simulation.demarrerCapteurs(intervalle, probabilite, nbCapteurs);
             setCapteursActifs(true);
             addNotification("Simulation capteurs demarree", "success");
         } catch (e) {
@@ -190,14 +204,25 @@ export default function SimulationPanel() {
                                 style={{ width: "100%" }}
                             />
                         </div>
-                        <button
-                            className="btn btn-warning"
-                            onClick={handleGenererReservations}
-                            disabled={simulation.loading}
-                            style={{ width: "100%", marginTop: 8 }}
-                        >
-                            {simulation.loading ? "Chargement..." : "Generer les reservations"}
-                        </button>
+                        {!resaEnCours ? (
+                            <button
+                                className="btn btn-warning"
+                                onClick={handleGenererReservations}
+                                disabled={simulation.loading}
+                                style={{ width: "100%", marginTop: 8 }}
+                            >
+                                {simulation.loading ? "Chargement..." : "Generer les reservations"}
+                            </button>
+                        ) : (
+                            <button
+                                className="btn btn-danger"
+                                onClick={handleArreterReservations}
+                                disabled={simulation.loading}
+                                style={{ width: "100%", marginTop: 8 }}
+                            >
+                                {simulation.loading ? "Chargement..." : "Arreter la generation"}
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -232,6 +257,19 @@ export default function SimulationPanel() {
                                 max="100"
                                 value={probabilite * 100}
                                 onChange={(e) => setProbabilite(parseInt(e.target.value) / 100)}
+                                style={{ width: "100%" }}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">
+                                Capteurs par cycle : {nbCapteurs}
+                            </label>
+                            <input
+                                type="range"
+                                min="1"
+                                max="50"
+                                value={nbCapteurs}
+                                onChange={(e) => setNbCapteurs(parseInt(e.target.value))}
                                 style={{ width: "100%" }}
                             />
                         </div>

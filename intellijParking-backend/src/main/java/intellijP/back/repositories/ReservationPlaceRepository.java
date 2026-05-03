@@ -2,6 +2,8 @@ package intellijP.back.repositories;
 
 import intellijP.back.models.ReservationPlace;
 import intellijP.back.models.StatutReservation;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,8 +20,16 @@ public interface ReservationPlaceRepository extends JpaRepository<ReservationPla
     @Query("SELECT r FROM ReservationPlace r JOIN FETCH r.personne JOIN FETCH r.place JOIN FETCH r.vehicule")
     List<ReservationPlace> findAllWithRelations();
 
+    @Query(value = "SELECT r FROM ReservationPlace r JOIN FETCH r.personne JOIN FETCH r.place JOIN FETCH r.vehicule",
+           countQuery = "SELECT COUNT(r) FROM ReservationPlace r")
+    Page<ReservationPlace> findAllWithRelations(Pageable pageable);
+
     @Query("SELECT r FROM ReservationPlace r JOIN FETCH r.personne JOIN FETCH r.place JOIN FETCH r.vehicule WHERE r.personne.id = :personneId")
     List<ReservationPlace> findByPersonneIdWithRelations(@Param("personneId") Long personneId);
+
+    @Query(value = "SELECT r FROM ReservationPlace r JOIN FETCH r.personne JOIN FETCH r.place JOIN FETCH r.vehicule WHERE r.personne.id = :personneId",
+           countQuery = "SELECT COUNT(r) FROM ReservationPlace r WHERE r.personne.id = :personneId")
+    Page<ReservationPlace> findByPersonneIdWithRelations(@Param("personneId") Long personneId, Pageable pageable);
 
     /**
      * Recherche les réservations d'une personne.
@@ -104,4 +114,12 @@ public interface ReservationPlaceRepository extends JpaRepository<ReservationPla
     List<ReservationPlace> findFutureReservations(
             @Param("placeId") Long placeId,
             @Param("moment") LocalDateTime moment);
+
+    @Query("SELECT r FROM ReservationPlace r WHERE r.place.id = :placeId " +
+           "AND r.dateDebut <= :fin AND r.dateFin >= :debut " +
+           "ORDER BY r.dateDebut ASC")
+    List<ReservationPlace> findReservationsForPlaceOnDay(
+            @Param("placeId") Long placeId,
+            @Param("debut") LocalDateTime debut,
+            @Param("fin") LocalDateTime fin);
 }

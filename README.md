@@ -57,4 +57,11 @@ Nous utilisons une organisation Git inspirée des pratiques professionnelles.
 ### Branches de fonctionnalités
 Chaque fonctionnalité est développée dans une branche dédiée :
 
-feature/nom-de-la-feature ou nom-etudiant
+feature/Tatiana/r2-simulation
+
+#### US Dévéloppées
+
+Maryline :
+ Obtenir un itineraire → feature/Maryline-obtenir-itineraire R2
+ Afficher un itineraire sur la carte → feature/affichage-itineraire R3
+

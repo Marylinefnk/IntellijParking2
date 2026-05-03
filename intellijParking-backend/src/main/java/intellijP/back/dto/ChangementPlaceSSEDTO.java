@@ -34,4 +34,9 @@ public class ChangementPlaceSSEDTO {
     private String statutResaAvant;
     private String statutResaApres;
 
+    private Long statsTotal;
+    private Long statsLibre;
+    private Long statsOccupee;
+    private Long statsReservee;
+
 }

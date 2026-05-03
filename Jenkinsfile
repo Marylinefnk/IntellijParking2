@@ -11,7 +11,7 @@ pipeline {
 
     environment {
         VM_USER = "toto"
-        VM_IP = " 172.31.249.253"
+        VM_IP = "172.31.253.157"
         BACKEND_DIR = "/home/toto/projet/intellijParking-backend"
         FRONTEND_DIR = "/home/toto/projet/intellijParking-frontend"
     }

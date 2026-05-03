@@ -7,6 +7,7 @@ import intellijP.back.models.*;
 import intellijP.back.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,10 @@ public class SimulationService {
     private final StationnementRepository stationnementRepository;
     private final FluxSSEService fluxSSEService;
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationContext applicationContext;
 
     private volatile boolean simulationActive = false;
+    private volatile boolean reservationActive = false;
 
     public SimulationService(PlaceRepository placeRepository,
                              PersonneRepository personneRepository,
@@ -42,7 +45,8 @@ public class SimulationService {
                              ReservationPlaceRepository reservationPlaceRepository,
                              StationnementRepository stationnementRepository,
                              FluxSSEService fluxSSEService,
-                             PasswordEncoder passwordEncoder) {
+                             PasswordEncoder passwordEncoder,
+                             ApplicationContext applicationContext) {
         this.placeRepository = placeRepository;
         this.personneRepository = personneRepository;
         this.vehiculeRepository = vehiculeRepository;
@@ -52,6 +56,7 @@ public class SimulationService {
         this.stationnementRepository = stationnementRepository;
         this.fluxSSEService = fluxSSEService;
         this.passwordEncoder = passwordEncoder;
+        this.applicationContext = applicationContext;
     }
 
     @Transactional
@@ -127,6 +132,7 @@ public class SimulationService {
     @Async
     @Transactional
     public void genererReservationsJournee(LocalDate date, int pasSecondes, String niveau, Double tauxCible) {
+        reservationActive = true;
         logger.info("Génération réservations journée {} - niveau={}, pas={}s", date, niveau, pasSecondes);
 
         List<Place> places;
@@ -151,10 +157,14 @@ public class SimulationService {
         int compteur = 0;
 
         for (Place place : places) {
-            LocalDateTime curseur = LocalDateTime.of(date, LocalTime.of(6, 0));
-            LocalDateTime finJournee = LocalDateTime.of(date, LocalTime.of(22, 0));
+            if (!reservationActive) {
+                logger.info("Génération réservations interrompue après {} réservations", compteur);
+                return;
+            }
+            LocalDateTime curseur = LocalDateTime.of(date, LocalTime.of(0, 0));
+            LocalDateTime finJournee = LocalDateTime.of(date, LocalTime.of(23, 59));
 
-            while (curseur.isBefore(finJournee)) {
+            while (curseur.isBefore(finJournee) && reservationActive) {
                 int dureeMin = 30 + rng.nextInt(150);
                 LocalDateTime debut = curseur.plusMinutes(rng.nextInt(30));
                 LocalDateTime fin = debut.plusMinutes(dureeMin);
@@ -212,11 +222,21 @@ public class SimulationService {
             }
         }
 
+        reservationActive = false;
         logger.info("Génération terminée: {} réservations créées pour le {}", compteur, date);
     }
 
+    public void arreterReservation() {
+        reservationActive = false;
+        logger.info("Arrêt génération réservations demandé");
+    }
+
+    public boolean isReservationActive() {
+        return reservationActive;
+    }
+
     @Async
-    public void demarrerSimulation(int intervalleSecondes, String niveau, double probaPresence) {
+    public void demarrerSimulation(int intervalleSecondes, String niveau, double probaPresence, int nbCapteursParCycle) {
         if (simulationActive) {
             logger.warn("Simulation déjà active, on ignore la demande");
             return;
@@ -224,7 +244,7 @@ public class SimulationService {
 
         simulationActive = true;
         logger.info("========================================");
-        logger.info("SIMULATION DEMARREE - intervalle={}s, niveau={}, proba={}", intervalleSecondes, niveau, probaPresence);
+        logger.info("SIMULATION DEMARREE - intervalle={}s, niveau={}, proba={}, nbCapteurs={}", intervalleSecondes, niveau, probaPresence, nbCapteursParCycle);
         logger.info("========================================");
 
         Random rng = new Random();
@@ -243,17 +263,21 @@ public class SimulationService {
                 if (capteurs.isEmpty()) {
                     logger.warn("[Cycle {}] Aucun capteur actif trouve - simulation en attente", cycle);
                 } else {
-                    Capteur capteur = capteurs.get(rng.nextInt(capteurs.size()));
-                    boolean nouvellePresence = rng.nextDouble() < probaPresence;
+                    int nb = Math.min(nbCapteursParCycle, capteurs.size());
+                    Collections.shuffle(capteurs, rng);
+                    for (int i = 0; i < nb; i++) {
+                        Capteur capteur = capteurs.get(i);
+                        boolean nouvellePresence = rng.nextDouble() < probaPresence;
 
-                    if (nouvellePresence != capteur.isPresenceDetectee()) {
-                        logger.info("[Cycle {}] Changement detecte place={} : {} -> {}",
-                                cycle, capteur.getPlace().getNumero(),
-                                capteur.isPresenceDetectee() ? "PRESENT" : "ABSENT",
-                                nouvellePresence ? "PRESENT" : "ABSENT");
-                        traiterChangementPresence(capteur, nouvellePresence);
-                    } else {
-                        logger.debug("[Cycle {}] Pas de changement pour place={}", cycle, capteur.getPlace().getNumero());
+                        if (nouvellePresence != capteur.isPresenceDetectee()) {
+                            logger.info("[Cycle {}] Changement detecte place={} : {} -> {}",
+                                    cycle, capteur.getPlace().getNumero(),
+                                    capteur.isPresenceDetectee() ? "PRESENT" : "ABSENT",
+                                    nouvellePresence ? "PRESENT" : "ABSENT");
+                            applicationContext.getBean(SimulationService.class).traiterChangementPresence(capteur, nouvellePresence);
+                        } else {
+                            logger.debug("[Cycle {}] Pas de changement pour place={}", cycle, capteur.getPlace().getNumero());
+                        }
                     }
                 }
 
@@ -507,6 +531,11 @@ public class SimulationService {
             dto.setStatutResaAvant(statutResaAvant);
             dto.setStatutResaApres(statutResaApres);
         }
+
+        dto.setStatsTotal(placeRepository.count());
+        dto.setStatsLibre(placeRepository.countByStatut(StatutPlace.LIBRE));
+        dto.setStatsOccupee(placeRepository.countByStatut(StatutPlace.OCCUPEE));
+        dto.setStatsReservee(placeRepository.countByStatut(StatutPlace.RESERVEE));
 
         return dto;
     }

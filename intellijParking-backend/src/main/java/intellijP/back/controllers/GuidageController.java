@@ -51,10 +51,17 @@ public class GuidageController {
                 cheminSimple.add(point);
             }
 
-            Map<String, Object> pointFinal = new HashMap<>();
-            pointFinal.put("x", reservation.getPlace().getPositionX());
-            pointFinal.put("y", reservation.getPlace().getPositionY());
-            cheminSimple.add(pointFinal);
+            Noeud noeudDansCouloir = chemin.get(chemin.size() - 1);
+
+            Map<String, Object> pointEnFaceDeLaPlace = new HashMap<>();
+            pointEnFaceDeLaPlace.put("x", reservation.getPlace().getPositionX());
+            pointEnFaceDeLaPlace.put("y", noeudDansCouloir.getPositionY());
+            cheminSimple.add(pointEnFaceDeLaPlace);
+
+            Map<String, Object> placeReservee = new HashMap<>();
+            placeReservee.put("x", reservation.getPlace().getPositionX());
+            placeReservee.put("y", reservation.getPlace().getPositionY());
+            cheminSimple.add(placeReservee);
 
             return ResponseEntity.ok(cheminSimple);
 

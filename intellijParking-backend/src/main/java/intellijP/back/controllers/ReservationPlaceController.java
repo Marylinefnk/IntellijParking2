@@ -5,8 +5,12 @@ import intellijP.back.dto.ReservationPlaceResponseDTO;
 import intellijP.back.exceptions.ResourceNotFoundException;
 import intellijP.back.models.StatutReservation;
 import intellijP.back.services.ReservationPlaceService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +28,23 @@ public class ReservationPlaceController {
     @GetMapping
     public List<ReservationPlaceResponseDTO> getAllReservations() {
         return reservationService.findAllDTO();
+    }
+
+    @GetMapping("/page")
+    public Page<ReservationPlaceResponseDTO> getAllReservationsPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return reservationService.findAllDTOPaged(
+                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dateDebut")));
+    }
+
+    @GetMapping("/personne/{personneId}/page")
+    public Page<ReservationPlaceResponseDTO> getReservationsByPersonnePaged(
+            @PathVariable Long personneId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return reservationService.findByPersonneDTOPaged(personneId,
+                PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "dateDebut")));
     }
 
     @GetMapping("/{id}")

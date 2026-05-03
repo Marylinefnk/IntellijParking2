@@ -10,7 +10,13 @@ import java.util.List;
 @Setter
 @Getter
 @Entity
-@Table(name = "place")
+@Table(name = "place", indexes = {
+    @Index(name = "idx_place_numero", columnList = "numero", unique = true),
+    @Index(name = "idx_place_statut", columnList = "statut"),
+    @Index(name = "idx_place_type", columnList = "type_place"),
+    @Index(name = "idx_place_zone", columnList = "id_zone"),
+    @Index(name = "idx_place_position", columnList = "positionX, positionY")
+})
 @Data
 @Builder
 @AllArgsConstructor
