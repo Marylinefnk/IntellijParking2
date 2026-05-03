@@ -192,7 +192,7 @@ public class GuidageService {
         System.out.println();
     }
 
-    private double calculerDistance(Noeud noeud1, Noeud noeud2) {
+    public static double calculerDistance(Noeud noeud1, Noeud noeud2) {
         double distanceDesX = noeud2.getPositionX() - noeud1.getPositionX();
         double distanceDesY = noeud2.getPositionY() - noeud1.getPositionY();
         return Math.sqrt(distanceDesX * distanceDesX + distanceDesY * distanceDesY);
